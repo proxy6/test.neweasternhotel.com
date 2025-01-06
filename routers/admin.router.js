@@ -21,7 +21,7 @@ getSingleBooking,
 deleteBooking,
 getEditBooking,
 updateBookingById} = require('../controllers/admin.controller')
-const { getSingleRoleWithPermissions } = require('../services/admin.service')
+const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
 //     getPrayerRequestList, getDonationList, 
@@ -49,7 +49,7 @@ const { getSingleRoleWithPermissions } = require('../services/admin.service')
 //     updateDonation,
 //     setLivestream,
 //     removeLivestream} =  require('../controllers/admin.controller');
-// const { isAdmin } = require('../middleware/authorization');
+
 
 // const upload = multer({ dest: 'uploads/' }).single('label_photo'); 
 
@@ -93,49 +93,49 @@ const { getSingleRoleWithPermissions } = require('../services/admin.service')
 const upload = multer({ dest: 'uploads/' }).single('image'); 
 router.post('/states', getStates)
 router.get('/quote', getQuote)
-router.get('/', getDashboard)
-router.get('/roles', getRoleList)
-router.post('/roles', addRole)
-router.get('/roles/add', addRolesPage)
-router.get('/roles/:id', getRoleEditPage)
-router.post('/roles/:id', updateRoleById);
-router.post('/roles/:id/delete', deleteRole);
+router.get('/', isAuthorized, getDashboard)
+router.get('/roles', isAuthorized,  getRoleList)
+router.post('/roles', isAuthorized, addRole)
+router.get('/roles/add', isAuthorized, addRolesPage)
+router.get('/roles/:id', isAuthorized, getRoleEditPage)
+router.post('/roles/:id', isAuthorized, updateRoleById);
+router.post('/roles/:id/delete', isAuthorized, deleteRole);
 
 
-router.get('/employees', getEmployeeList)
-router.get('/employees/add', getaddEmployeePage)
-router.post('/employees', upload, addEmployee)
-router.put('/employees/:id/update-status', updateEmployeeStatus)
-router.get('/employees/:id', getEmployeeEditPage)
-router.post('/employees/:id', upload, updateEmployeeById);
-router.post('/employees/:id/delete', deleteEmployee)
+router.get('/employees', isAuthorized, getEmployeeList)
+router.get('/employees/add', isAuthorized, getaddEmployeePage)
+router.post('/employees', isAuthorized, upload, addEmployee)
+router.put('/employees/:id/update-status', isAuthorized, updateEmployeeStatus)
+router.get('/employees/:id', isAuthorized,  getEmployeeEditPage)
+router.post('/employees/:id', isAuthorized, upload, updateEmployeeById);
+router.post('/employees/:id/delete', isAuthorized, deleteEmployee)
 
 
-router.get('/addons', getAddonList)
-router.post('/addons', upload, addAddons)
-router.get('/addons/:id', getAddonEditPage)
-router.post('/addons/:id', upload, updateAddonById);
-router.post('/addons/:id/delete', deleteAddon)
+router.get('/addons', isAuthorized, getAddonList)
+router.post('/addons', isAuthorized, upload, addAddons)
+router.get('/addons/:id', isAuthorized, getAddonEditPage)
+router.post('/addons/:id', isAuthorized, upload, updateAddonById);
+router.post('/addons/:id/delete', isAuthorized, deleteAddon)
 
 
-router.get('/rooms', getAllRooms)
-router.get('/rooms/add', getAddRoomPage)
-router.post('/rooms', upload, addRoom)
-router.put('/rooms/:id/update-status', updateRoomStatus)
-router.get('/rooms/:id', getRoomEditPage)
-router.post('/rooms/:id', updateRoomById);
-router.post('/rooms/:id/delete', deleteRoom)
+router.get('/rooms', isAuthorized, getAllRooms)
+router.get('/rooms/add', isAuthorized, getAddRoomPage)
+router.post('/rooms', isAuthorized, upload, addRoom)
+router.put('/rooms/:id/update-status', isAuthorized, updateRoomStatus)
+router.get('/rooms/:id', isAuthorized, getRoomEditPage)
+router.post('/rooms/:id', isAuthorized, updateRoomById);
+router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
 
-router.get('/bookings', getAllBookings)
-router.get('/bookings/add', getAddBookingPage)
-router.post('/bookings/add', addBooking)
-router.get('/bookings/:id', getSingleBooking)
-router.get('/bookings/:id/edit', getEditBooking)
+router.get('/bookings', isAuthorized, getAllBookings)
+router.get('/bookings/add', isAuthorized, getAddBookingPage)
+router.post('/bookings/add', isAuthorized, addBooking)
+router.get('/bookings/:id', isAuthorized, getSingleBooking)
+router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
 // router.put('/rooms/:id/update-status', updateRoomStatus)
 // router.get('/rooms/:id', getRoomEditPage)
-router.post('/bookings/:id', updateBookingById);
-router.post('/bookings/:id/delete', deleteBooking)
+router.post('/bookings/:id', isAuthorized, updateBookingById);
+router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
 
 
 module.exports = router

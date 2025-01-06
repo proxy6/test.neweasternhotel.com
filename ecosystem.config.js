@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'KingDunamis App',
+        name: 'New Eastern Hotel App',
         script: './server.js',
     }]
 };
