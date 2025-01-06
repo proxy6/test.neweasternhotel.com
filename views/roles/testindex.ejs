@@ -1,0 +1,37 @@
+<% 
+        // Track processed tables to avoid creating duplicate columns
+        const processedTables = {};
+        %>
+        
+        <% role.Permissions.forEach(permission => { %>
+            <% 
+            if (!processedTables[permission.table]) {
+                // Mark table as processed
+                processedTables[permission.table] = true; 
+            %>
+                <td>
+                    <strong><%= permission.table.charAt(0).toUpperCase() + permission.table.slice(1) %>:</strong>
+                    <br>
+                    <% ['create', 'read', 'update', 'delete'].forEach(action => { %>
+                        <label class="d-block">
+                            <input type="radio" 
+                                <%= permission.action === action ? 'checked' : '' %>
+                            />
+                            <%= action.charAt(0).toUpperCase() + action.slice(1) %>
+                        </label>
+                    <% }) %>
+                </td>
+            <% } else { %>
+                <!-- For repeated tables, check only the corresponding actions -->
+                <% ['create', 'read', 'update', 'delete'].forEach(action => { %>
+                    <td>
+                        <label class="d-block">
+                            <input type="radio" 
+                                <%= permission.action === action ? 'checked' : '' %>
+                            />
+                            <%= action.charAt(0).toUpperCase() + action.slice(1) %>
+                        </label>
+                    </td>
+                <% }) %>
+            <% } %>
+        <% }) %>

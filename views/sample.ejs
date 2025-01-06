@@ -1,0 +1,143 @@
+<%- include('partials/header') %>
+<%- include('partials/sidenav') %>
+<div class="page-body">
+                    <div class="container-fluid">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Sample Page</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="https://larathemes.pixelstrap.com/edmin/admin/default-dashboard">
+                                <svg class="svg-color">
+                                    <use href="./icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item">Pages</li>
+                        <li class="breadcrumb-item active">Sample Page</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h4>Sample Card</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-3 pills-blogger">
+                            <div class="blog-wrapper"> <img class="blog-img img-100"
+                                    src="https://larathemes.pixelstrap.com/edmin/assets/images/dashboard2/product/headphones.png" alt="head-phone"></div>
+                            <div class="blog-content">
+                                <p> <em class="font-primary fw-bold">Smart headphones</em> — also called smart earbuds or
+                                    hearable — are high-tech in-ear devices that do more than transmit audio. These
+                                    headphones are usually wireless, and they can sync up with your phone, tablet, computer
+                                    or other Bluetooth-enabled device. The main appeal of hearables is convenience, as they
+                                    allow you to complete common tasks without directly accessing your phone or computer.
+                                    Smart wireless headphones sync up to other devices using Bluetooth technology, and many
+                                    of their features rely on data from your smartphone or computer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid ends-->
+</div>
+
+<%- include('partials/footer') %>
+
+
+</div>
+</main>
+
+
+
+<%- include('partials/script') %>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('change', '.toggle-status', function() {
+
+            let status = $(this).prop('checked') ? 1 : 0;
+            let url = $(this).data('route');
+            let clickedToggle = $(this);
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {
+                    status: status,
+                    _token: 'PKmT1k1dKy3vIFjKnCoi0zQ6t3NNn5pRaJC39E8W',
+                },
+                success: function(data) {
+                    clickedToggle.prop('checked', status);
+                    toastr.success("Status Updated Successfully");
+                },
+                error: function(xhr, status, error) {
+                    console.log(error)
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#country_code').select2({
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                var $result = $('<span><img src="' + $(data.element).data('image') +
+                    '" class="flag-img" /> +' + data.text.trim() + '</span>');
+                return $result;
+            },
+            templateSelection: function(selection) {
+                if (selection.text == ' ') {
+                    return selection.text;
+                }
+                return ' + ' + selection.text;
+            }
+        });
+    });
+</script>
+    <script>
+    $(document).ready(function() {
+        $('.toastr-message').each(function() {
+            var messageType = $(this).data('type');
+            var messageText = $(this).text();
+            toastr.options = {
+                "closeButton": false,
+                "progressBar": true,
+                "extendedTimeOut": 0,
+                "timeOut": 0,
+            };
+
+            switch (messageType) {
+                case 'success':
+                    toastr.success(messageText);
+                    break;
+                case 'error':
+                    toastr.error(messageText);
+                    break;
+                case 'info':
+                    toastr.info(messageText);
+                    break;
+                case 'warning':
+                    toastr.warning(messageText);
+                    break;
+                default:
+                    toastr.info(messageText);
+            }
+        });
+    });
+</script>
+    
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+            <div class="page-body">
+                <div class="container-fluid">
+    <div class="row page-title">
+        <div class="col-sm-6">
+            <h3>Roles Management</h3>
+        </div>
+        <div class="col-sm-6">
+            <nav>
+                <ol class="breadcrumb justify-content-sm-end align-items-center">
+                    <li class="breadcrumb-item"> <a href="/">
+                            <svg class="svg-color">
+                                <use href="/icons/iconly-sprite.svg#Home"></use>
+                            </svg></a></li>
+                    <li class="breadcrumb-item"><a href="/roles" style="color: #43b9b299;">Role Management</a></li>
+                    <li class="breadcrumb-item active">Edit Role</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card height-equal">
+                <div class="card-header">
+                    <h4>Edit Role</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/roles/<%= role.id %>" method="POST">
+                        <input type="hidden" name="_method" value="PUT">
+                      
+                        <div class="row">
+                          <div class="col">
+                            <div class="mb-3">
+                              <label>Name <span> *</span></label>
+                              <div>
+                                <input 
+                                  class="form-control" 
+                                  type="text" 
+                                  placeholder="Enter Role" 
+                                  name="roleName" 
+                                  value="<%= role.name %>" 
+                                  required>
+                              </div>
+                            </div>
+                      
+                            <div class="mb-3">
+                                <label>Permissions <span> *</span></label>
+                                <div>
+                                  <% const permissions = role.Permissions.map(p => ({ table: p.table, action: p.action })); %>
+                                
+                                  <!-- Users Permissions -->
+                                  <% if (typeof pages !== 'undefined') { %>
+                                    <% pages.forEach((page, index) => { %>
+                                      <div class="mb-2 card-wrapper border rounded-3 checkbox-checked">
+                                        <h6 class="sub-title"><%= page.name %>:</h6>
+                                        <div class="form-check-size rtl-input">
+                                          <!-- Hidden input for table -->
+                                          <input 
+                                            type="hidden" 
+                                            name="permissions[<%= index %>][table]" 
+                                            value="<%= page.name %>"
+                                          >
+                                
+                                          <!-- Permissions for each action -->
+                                          <% ['create', 'read', 'update', 'delete'].forEach(action => { %>
+                                            <label class="d-block" for="<%= page.name %>.<%= action %>">
+                                              <input 
+                                                type="checkbox" 
+                                                name="permissions[<%= index %>][actions][]" 
+                                                value="<%= action %>" 
+                                                class="checkbox_animated module_users" 
+                                                id="<%= page.name %>.<%= action %>" 
+                                                <%= permissions.some(p => p.table === page.name && p.action === action) ? 'checked' : '' %>
+                                              >
+                                              <%= action.charAt(0).toUpperCase() + action.slice(1) %>
+                                            </label>
+                                          <% }) %>
+                                        </div>
+                                      </div>
+                                    <% }) %>
+                                  <% } %>
+                                </div>
+                                
+                            </div>
+                          </div>
+                        </div>
+                      
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                      </form>
+                      
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+            
+        <!-- footer start-->
+        <%- include('../partials/footer') %>
+    </div>
+</main>
+
+<%- include('../partials/script') %>
+
+  
+
+
+</body>
+</html>

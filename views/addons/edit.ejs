@@ -1,0 +1,360 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+            <div class="page-body">
+                <div class="container-fluid">
+  <div class="row page-title">
+      <div class="col-sm-6">
+          <h3>Categories Management</h3>
+      </div>
+      <div class="col-sm-6">
+          <nav>
+              <ol class="breadcrumb justify-content-sm-end align-items-center">
+                  <li class="breadcrumb-item"> <a href="/">
+                          <svg class="svg-color">
+                              <use href="/icons/iconly-sprite.svg#Home"></use>
+                          </svg></a></li>
+                  <li class="breadcrumb-item">Categories</li>
+                  <li class="breadcrumb-item active">Create</li>
+              </ol>
+          </nav>
+      </div>
+  </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xxl-5 col-lg-6">
+            <div class="card height-equal">
+                <div class="card-header">
+                    <h4>Categories</h4>
+                </div>
+                <div class="card-body">
+                    <div class="cf nestable-lists">
+    <div class="dd" id="nestable3">
+        <ol class="dd-list">
+            <% if(typeof addons !== 'undefined'){ %>
+                <% addons.forEach((addon) => { %>
+                    <li class="dd-item dd3-item " data-id="1">
+                        <% if (addon.SubAddon && addon.SubAddon.length > 0) { %>
+                        <button class="dd-collapse" data-action="collapse" type="button">Collapse</button><button class="dd-expand" data-action="expand" type="button">Expand</button>
+                        <% } %>
+                        <div class="dd-handle dd3-handle"><svg>
+                            <use href="/icons/iconly-sprite.svg#arrow-four"></use>
+                        </svg>Drag</div>
+                        <div class="dd3-content"><%= addon.name %>
+                           
+                                <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">
+                                <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                    <svg>
+                                        <use href="/icons/iconly-sprite.svg#delete-icon"></use>
+                                    </svg>
+                                </a>
+
+                                <a href="/addons/<%= addon.id %>?type=addon" class="edit-icon">
+                                    <svg>
+                                        <use href="/icons/iconly-sprite.svg#edit-icon"></use>
+                                    </svg>
+                                </a>
+
+                                <div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirm delete</h5>
+                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 class="mb-3">Are you sure want to delete ?</h4>
+                                                <p>This Item Will Be Deleted Permanently. You Can Not Undo This Action.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form method="POST" action="/addons/<%= addon.id %>/delete?type=addon">
+                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off"> 
+                                                    <input type="hidden" name="type" value="addon">                                                   
+                                                                                 
+                                                    <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
+                                                    <button class="btn btn-danger delete spinner-btn" type="submit">Delete</button>
+                                                </form>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                        </div>
+
+                        <% if (addon.SubAddon && addon.SubAddon.length > 0) { %>
+                            <% addon.SubAddon.forEach(function(subAddon) { %>
+                                <ol class="dd-list">
+                                    <li class="dd-item dd3-item " data-id="1">
+                                        <div class="dd-handle dd3-handle"><svg>
+                                            <use href="/icons/iconly-sprite.svg#arrow-four"></use>
+                                        </svg>Drag</div>
+                                        <div class="dd3-content"><%= subAddon.name %>
+
+                                                <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                                    <svg>
+                                                        <use href="/icons/iconly-sprite.svg#delete-icon"></use>
+                                                    </svg>
+                                                </a>
+                
+                                                <a href="/addons/<%= subAddon.id %>?type=subaddon" class="edit-icon">
+                                                    <svg>
+                                                        <use href="/icons/iconly-sprite.svg#edit-icon"></use>
+                                                    </svg>
+                                                </a>
+                
+                                                <div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Confirm delete</h5>
+                                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <h4 class="mb-3">Are you sure want to delete ?</h4>
+                                                                <p>This Item Will Be Deleted Permanently. You Can Not Undo This Action.</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form method="POST" action="/addons/<%= subAddon.id %>/delete?type=subaddon">
+                                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">       
+                                                                    <input type="hidden" name="type" value="subaddon">
+                                                                    <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
+                                                                    <button class="btn btn-danger delete spinner-btn" type="submit">Delete</button>
+                                                                </form>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                        </div>
+                                    </li>
+                                </ol>
+                            <% }) %>
+                        <% } %>
+
+                    </li>
+            <% }) %> 
+            <% } %>       
+         </ol>
+
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-7 col-lg-6">
+            <div class="card height-equal">
+                <div class="card-header">
+                    <h4>Edit Category</h4>
+                </div>
+                <div class="card-body">
+                    <% if(typeof addon !== 'undefined'){ %>
+                    <form class="row g-3 custom-input" id="categoryForm" action="/addons/<%= addon.id %>" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">  
+                        <input type="hidden" name="type" value="<%= type %>">  
+                        <div class="col-12">
+                            <label class="form-label" for="">Name<span> *</span></label>
+                        
+                            <input class="form-control" type="text" value="<%= addon.name %>" name="name">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="">Description</label>
+                            <textarea class="form-control" name="desc"><%= addon.desc %></textarea>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="">Price</label>
+                            <input class="form-control" value="<%= addon.price %>"  type="number" name="price">
+                        </div>
+                    <div class="col-6">
+                        <label class="form-label" for="">Parent Addon</label>
+                        <select class="form-select js-example-basic-single" name="parent_id">
+                            <% if (addon.SubAddon && addon.SubAddon.length > 0) { %>
+                            <option class="option" value="">This is a Parent Addon</option>
+                            <% }%>
+                            <option class="option" value="<%= addon.addon_id %>"><%= addon.addon_id %></option>
+                            <option class="option" value="">This is a Parent Addon</option>
+                            <% if(typeof addons !== 'undefined'){ %>
+                                <% addons.forEach((addon) => { %>
+                                    <option class="option" value="<%= addon.id %>"><%= addon.name %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <% if(addon.image != null){ %>
+                        <div class="col-12">
+                                <label>Current Image Picture</label>
+                                <br>
+                            <img src="<%= addon.image %>" alt="Addon Image">  
+                        </div>
+                    <% } %>
+                    <div class="col-6">
+                        <label class="form-label" for="">Image</label>
+                        <input class="form-control"  type="file" name="image">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="">Status</label>
+                        <select class="form-select js-example-basic-single" name="status">
+                            <option value="<%= addon.status %>"><%= addon.status %></option>
+                            <option value="1">Active</option>
+                            <option value="0"  >Deactive</option>
+                        </select>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary">save</button>
+                    </div>                    
+                    </form>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div>
+            
+   
+               <!-- footer start-->
+               <%- include('../partials/footer') %>
+
+
+            </div>
+          </main>
+                 
+                  
+                  
+          <%- include('../partials/script') %>
+    
+  
+<script>
+    $(document).ready(function() {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+      function updateToDatabase() {
+        idString = $('.dd').nestable('toArray', {
+          attribute: 'data-id'
+        });
+        var orderIndex = [];
+        $('#nestable3 li').each(function(index) {
+          if ($(this).attr('data-id')) {
+            orderIndex.push({
+              id: $(this).attr('data-id'),
+              order: index
+            })
+          }
+        });
+        var mergedArray = Object.values(Object.groupBy([...orderIndex, ...idString],
+          ({
+            id
+          }) => id)).map(e => e.reduce((acc, cur) => ({
+          ...acc,
+          ...cur
+        })));
+  
+        $.ajax({
+          url: 'https://larathemes.pixelstrap.com/edmin/admin/category/update-orders',
+          method: 'POST',
+          data: {
+            categories: mergedArray
+          },
+          success: function() {
+            //
+          }
+        });
+      }
+  
+      $('.dd').nestable({
+        maxDepth: 12
+      }).on('change', updateToDatabase);
+    })
+</script>
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+        $(document).on('change', '.toggle-status', function() {
+
+            let status = $(this).prop('checked') ? 1 : 0;
+            let url = $(this).data('route');
+            let clickedToggle = $(this);
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {
+                    status: status,
+                    _token: 'LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI',
+                },
+                success: function(data) {
+                    clickedToggle.prop('checked', status);
+                    toastr.success("Status Updated Successfully");
+                },
+                error: function(xhr, status, error) {
+                    console.log(error)
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#country_code').select2({
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                var $result = $('<span><img src="' + $(data.element).data('image') +
+                    '" class="flag-img" /> +' + data.text.trim() + '</span>');
+                return $result;
+            },
+            templateSelection: function(selection) {
+                if (selection.text == ' ') {
+                    return selection.text;
+                }
+                return ' + ' + selection.text;
+            }
+        });
+    });
+</script>
+    <script>
+    $(document).ready(function() {
+        $('.toastr-message').each(function() {
+            var messageType = $(this).data('type');
+            var messageText = $(this).text();
+            toastr.options = {
+                "closeButton": false,
+                "progressBar": true,
+                "extendedTimeOut": 0,
+                "timeOut": 0,
+            };
+
+            switch (messageType) {
+                case 'success':
+                    toastr.success(messageText);
+                    break;
+                case 'error':
+                    toastr.error(messageText);
+                    break;
+                case 'info':
+                    toastr.info(messageText);
+                    break;
+                case 'warning':
+                    toastr.warning(messageText);
+                    break;
+                default:
+                    toastr.info(messageText);
+            }
+        });
+    });
+</script>
+    
+
+</body>
+</html>

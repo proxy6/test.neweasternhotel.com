@@ -1,0 +1,43 @@
+{
+  "name": "neweastern",
+  "version": "1.0.0",
+  "description": "hotel booking management application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "neweastern"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "hotel",
+    "management",
+    "app",
+    "admin",
+    "dashboard"
+  ],
+  "author": "proxy6",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "connect-session-sequelize": "^7.1.7",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.5",
+    "nodemailer": "^6.9.16",
+    "sequelize": "^6.37.5",
+    "sequelize-cli": "^6.6.2",
+    "session": "^0.1.0",
+    "uuid": "^11.0.3"
+  }
+}

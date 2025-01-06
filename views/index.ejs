@@ -1,0 +1,347 @@
+<%- include('partials/header') %>
+<%- include('partials/sidenav') %>
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Dashboard</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="/">
+                                <svg class="svg-color">
+                                    <use href="./icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item active">Dashboard</li>
+                      
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid default-dashboard">
+        <div class="row">
+            <div class="col-sm-6 col-xl-6">
+                <div class="card profile-greeting card-hover">
+                    <div class="card-body">
+                        <div class="img-overlay">
+                            <h1 id="greeting"></h1>
+                            <p id="advice"></p>
+                            <a class="btn btn-primary" href="/bookings">Check Bookings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-6">
+                <div class="card summary-card">
+                    <div class="card-header pb-0">
+                        <h4>Summary</h4>
+                     
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-8 custom-width-1">
+                                <div class="project-cost">
+                                    <h5 class="font-light">
+                                        <svg class="svg-w-20 stroke-light me-2">
+                                            <use href="/icons/iconly-sprite.svg#Chart">
+                                            </use>
+                                        </svg>Estimated Total Count
+                                    </h5>
+                                    <ul class="d-flex">
+                                        <li class="card-hover">
+                                            <div class="d-flex bg-light-primary flex-column">
+                                                <div class="flex-shrink-0 border-primary">
+                                                    <svg class="svg-w-24 stroke-primary">
+                                                        <use href="/icons/iconly-sprite.svg#Calendar">
+                                                        </use>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="f-w-500">Bookings</h6>
+                                                    <h4 class="f-w-700">32</h4>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="card-hover">
+                                            <div class="d-flex bg-light-secondary flex-column">
+                                                <div class="flex-shrink-0 border-secondary">
+                                                    <svg class="svg-w-24 stroke-secondary">
+                                                        <use href="/icons/iconly-sprite.svg#Ticket-star">
+                                                        </use>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="f-w-500">Rooms</h6>
+                                                    <h4 class="f-w-700">78</h4>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="card-hover">
+                                            <div class="d-flex bg-light-tertiary flex-column">
+                                                <div class="flex-shrink-0 border-tertiary">
+                                                    <svg class="svg-w-24 stroke-tertiary">
+                                                        <use href="/icons/iconly-sprite.svg#Profile">
+                                                        </use>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="f-w-500">Employees</h6>
+                                                    <h4 class="f-w-700">54</h4>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                            
+                                </div>
+                            </div>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-xl-8">
+                <!-- Bookings-->
+                <div class="card invoice-card">
+                    <div class="card-header pb-0">
+                        <h4>Bookings</h4>
+                        <div class="dropdown icon-dropdown">
+                            <button class="btn dropdown-toggle" id="userdropdown4" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-more-alt"></i></button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown4">
+                                <a class="dropdown-item" href="/bookings">View All</a>
+                                <a class="dropdown-item" href="/bookings/add">Add Booking</a>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body invoice-table checkbox-checked">
+                        <div class="table-responsive" style="overflow-x: auto;">
+                            <div class="datatable-wrapper datatable-loading no-footer searchable fixed-columns">
+
+                            <div class="datatable-container">
+                                <table class="table datatable-table" id="all-invoice" tabindex="2">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th title="Name">Name</th>
+                                            <th title="Total Price">Total Price</th>
+                                            <th title="Created At">Created At</th>
+                                            <th title="Status">Status</th>
+                                            <th title="Action">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (typeof bookings !== 'undefined') { %>
+                                            <% bookings.booking.forEach((booking, index) => { %>
+                                        <tr class="odd">
+                                            <td><%= index + 1 %></td>
+                                            <td class="sorting_1"><%= booking.Customer.name %></td>
+
+                                       
+                                            <td>&#8358;<%= booking.total_price %></td>
+                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
+                                            <!-- <td>
+                                                <div class="action-div mt-0">
+                                                <label class="switch">
+                                                    <a href=""><button class="btn btn-sm btn-light-tertiary">Checkout</button></a>
+                                                    <input data-route="https://larathemes.pixelstrap.com/edmin/admin/tag/status/1" data-id="1" class="form-check-input toggle-status" type="checkbox" name="status" value="1" checked="">
+                                                    <span class="switch-state"></span>
+                                                </label>
+                                            </div>
+                                        </td> -->
+                                            <td>
+                                                <div class="action-div mt-0">
+                                                    <a href="https://larathemes.pixelstrap.com/edmin/admin/tag/1/edit" class="edit-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                                    
+                                                    </a>
+                                                    <a href="#confirmationModal1" data-bs-toggle="modal">
+                                                        <svg class="feather">
+                                                            <use href="/icons/feather-sprite.svg#eye"></use>
+                                                        </svg>
+                                          
+                                                    </a>
+                                                    <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                                        <svg class="feather">
+                                                            <use href="/icons/feather-sprite.svg#check-circle"></use>
+                                                        </svg>
+                                                        <!-- <i data-feather="printer"></i> -->
+                                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                     -->
+                                                    </a>
+
+                                              
+                                               
+                                                <!-- <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                                
+                                                    <svg class="svg-menu">
+                                                        <use href="/icons/iconly-sprite.svg#Show"></use>
+                                                    </svg>
+                                        
+                                                </a> -->
+                                                <!-- Remove File Confirmation-->
+                                                <div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Confirm delete</h4>
+                                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                                <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                <form action="https://larathemes.pixelstrap.com/edmin/admin/tag/1" method="post">
+                                                                    <input type="hidden" name="_token" value="JcwTIw5DkUPPmAO0uPN35eJNyCiYl6XMOVRs9Yk6" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                              
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="col-md-6 col-xl-4">
+                <!-- Bookings-->
+                <div class="card invoice-card">
+                    <div class="card-header pb-0">
+                        <h4>Available Rooms</h4>
+                        <div class="dropdown icon-dropdown">
+                            <button class="btn dropdown-toggle" id="userdropdown4" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-more-alt"></i></button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown4">
+                                <a class="dropdown-item" href="/rooms">View All Rooms</a>
+                     
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body invoice-table checkbox-checked">
+                        <div class="table-responsive" style="overflow-x: auto;">
+                            <div class="datatable-wrapper datatable-loading no-footer searchable fixed-columns">
+
+                            <div class="datatable-container">
+                                <table class="table datatable-table" id="all-invoice" tabindex="2">
+                                    <thead>
+                                        <tr>
+                                            <th title="Thumbnail">S/N</th>
+                                            <th title="Title">Number</th>
+                                            <th title="Type">Type</th>
+                                            <th title="Title">Price</th>
+                                            <th title="Status">Status</th>
+                                            <th title="Action">Action</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if(typeof rooms !== 'undefined'){ %>
+                                            <% rooms.forEach((room, index) => { %>
+                                                <tr class="odd">
+                                                    <td><%= index + 1 %></td>
+                                                    <td><%= room.number %></td>
+                                                    <td><%= room.type %></td>
+                                                    <td><%= room.price %></td>
+                                                 
+                                                    <td>
+                                                        <div class="action-div mt-0">
+                                                            <label class="switch">
+                                                                <input data-route="/rooms/<%= room.id %>/update-status" class="form-check-input toggle-status" type="checkbox" name="status" value="1"  <%= room.status == 1 ? 'checked' : '' %>>
+                                                                <span class="switch-state"></span>
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="action-div mt-0">
+                                                            <a href="/rooms/<%= room.id %>" class="edit-icon">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                                    
+                                                            </a>
+                                                            <a href="#confirmationModal30" data-bs-toggle="modal" class="delete-svg">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                            </a>
+                                                            <!-- Remove File Confirmation-->
+                                                            <div class="modal fade" id="confirmationModal30" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel30" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirm delete</h4>
+                                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                                            <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                            <form action="/rooms/<%= room.id %>/delete" method="post">
+                                                                                <input type="hidden" name="_token" value="rwnauSNjj4K7I1IG63q1vM18gBWLMOmxzdW7vteu" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                    
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                              
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+
+            
+        </div>
+    </div>
+</div>
+            
+<%- include('partials/footer') %>
+
+
+  </div>
+</main>
+       
+<%- include('partials/script') %>    
+<% if (typeof user !== 'undefined') { %>
+
+<script>
+        
+    let username = `<%= user.first_name %>!`
+     
+</script> 
+<% } %>
+        
+<script src="/js/custom/dashboard.js"></script>
+
+
+</body>
+</html>

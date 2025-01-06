@@ -1,0 +1,419 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+
+            <div class="page-body">
+                    <div class="container-fluid">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Employees Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="/">
+                                <svg class="svg-color">
+                                    <use href="/icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"><a href="/employees" style="color: #43b9b299;">Employees Management</a></li>
+                        <li class="breadcrumb-item active">Add Employee</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h4 class="mb-3">Add Employee</h4>
+                        <p class="desc mb-0 mt-1"><span></span><code></code><span></span></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="form theme-form">
+                            <form class="custom-input" id="userForm" action="/employees" method="POST" enctype="multipart/form-data">
+                          <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">  
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>First Name<span> *</span></label>
+                                        <input class="form-control" type="text" name="first_name"
+                                            value=""
+                                            placeholder="Enter First Name" required>
+                                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Middle Name</label>
+                                        <input class="form-control" type="text" name="middle_name"
+                                            value=""
+                                            placeholder="Enter Middle Name" >
+                                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                <div class="mb-3">
+                                    <label>Last Name<span> *</span></label>
+                                    <input class="form-control" type="text" name="last_name"
+                                        value=""
+                                        placeholder="Enter Last Name" required>
+                                            </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Email <span> *</span></label>
+                                        <input class="form-control" type="email" id="email"
+                                            value="" name="email"
+                                            placeholder="Enter Email" required>
+                                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                
+                                        <label>Phone <span> *</span></label>
+                                        <div class="row phone-select">
+                                            <div class="col-3 pe-0">
+                                                <select class="select-2 form-control select-country-code" id="country_code"
+                                                name="country_code" data-placeholder="">
+                                                <option class="option" value="234" data-image="/images/flags/NG.png" data-default="1"> 234                                                       
+                                                </select>
+                                            </div>
+                                            <div class="col-9 ps-0">
+                                                <input class="form-control" type="number" name="phone"
+                                                    value="" placeholder="Enter Phone" required>
+                                                                </div>
+                                        </div>
+                                    </div>
+                                
+                                <div class="col-sm-4 ">
+                                    <div class="mb-3 position-relative">
+                                        <label>Password <span> *</span></label>
+                                        <!-- <input class="form-control" type="password" id="password" name="password" placeholder="Enter Password"
+                                            autocomplete="off" required>
+                                            <div class="show-hide"><span class="show"> </span></div> -->
+
+
+
+                                            <!-- <div class="form-input position-relative"> -->
+                                                <input class="form-control " type="password"
+                                                    name="password" required placeholder="*********"
+                                                    autocomplete="current-password">
+                                                <div class="show-hide"><span class="show"> </span></div>
+                                                                               
+                                        </div>
+                                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Birth Date</label>
+                                        <input class="datepicker-here form-control" type="date" name="dob"
+                                            value="" 
+                                            data-language="en" 
+                                            placeholder="Enter Birth Date">
+                                                </div>
+                                </div>
+                            
+
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                                    <label>Profile Picture</label>
+                                        <input class="form-control" type="file" name="image">
+
+                                                        <div class="mt-3 comman-image">
+                                                                </div>
+
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Gender</label>
+                                        <select class="form-select" name="gender" class="form-control btn-square">
+                                            <option value="" selected hidden disabled>Select Gender</option>
+                                            <option value="male"
+                                                >Male</option>
+                                            <option value="female"
+                                                >Female</option>
+                                        </select>
+                                                </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Role <span> *</span></label>
+                                        <select class="form-select" name="role_id" class="form-control btn-square">
+                                            <option selected disabled hidden>Select Role</option>
+                                                    <% roles.forEach(role => { %>
+                                                        <option value="<%= role.id %>"><%= role.name.charAt(0).toUpperCase() + role.name.slice(1) %> </option>
+                                                    <% }) %>
+                                                   
+                                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Status</label>
+                                        <select class="form-select" name="status" class="form-control btn-square">
+                                            <option value="1"  selected>Active
+                                            </option>
+                                            <option value="0"  >Deactive
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Country</label>
+                                        <select class="form-select" id="country" name="country_id">
+                                            <option value="" selected disabled hidden>Select Country</option>
+                                            <% if(typeof countries !== 'undefined'){ %>
+                                                <% countries.forEach(country => { %>
+                                                    <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>" ><%= country.name %> </option>
+                                                <% }) %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>State</label>
+                                        <select class="form-control btn-square" id="state" name="state_id">
+                                                            <option value="" selected disabled hidden>Select State</option>
+                                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>City</label>
+                                        <input class="form-control" type="text" name="city"
+                                            value="" placeholder="Enter City">
+                                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Address</label>
+                                        <input class="form-control" type="number" name="address"
+                                            value=""
+                                            placeholder="Address">
+                                                </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Account Name</label>
+                                        <input class="form-control" type="text" name="account_name"
+                                        value="" placeholder="Account Name">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Account Number</label>
+                                        <input class="form-control" type="text" name="account_no"
+                                            value="" placeholder="Account Number">
+                                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Bank Name</label>
+                                        <select class="form-select" id="country" name="bank_name">
+                                            <option value="" selected disabled hidden>Select Bank</option>
+                                                                <option value="4" >
+                                                    Afghanistan</option>
+                                                                <option value="8" >
+                                                    Albania</option>
+                                                                <option value="10" >
+                                                    Nauru</option>
+                                                                <option value="524" >
+                                                    Nepal</option>
+                                                                <option value="528" >
+                                                    Netherlands</option>
+                                                                <option value="531" >
+                                                    Curaçao</option>
+                                                                <option value="533" >
+                                                    Nicaragua</option>
+                                                                <option value="562" >
+                                                    Niger</option>
+                                                                <option value="566" >
+                                                    Nigeria</option>
+                                                                <option value="570" >
+                                                    Niue</option>
+                                                                <option value="574" >
+                                                    Norfolk Island</option>
+                                                                <option value="578" >
+                                                    Norway</option>
+                                                    <option value="580" >
+                                                    </select>
+                                                </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Referre Name</label>
+                                        <input class="form-control" type="text" name="referee_name"
+                                            value="" placeholder="Enter City">
+                                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Referee Phone</label>
+                                        <input class="form-control" type="number" name="referee_phone"
+                                            value=""
+                                            placeholder="Address">
+                                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="mb-3">
+                                        <label>Referee Address</label>
+                                        <input class="form-control" type="number" name="referee_address"
+                                            value=""
+                                            placeholder="Address">
+                                                </div>
+                                </div>
+                            </div>
+
+
+<div class="row">
+    <div class="col">
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">save</button>
+        </div>
+    </div>
+</div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+            <!-- footer start-->
+            <%- include('../partials/footer') %>
+
+
+        </div>
+      </main>
+             
+              
+              
+      <%- include('../partials/script') %>
+
+      <script src="/js/custom/employee.js"></script>
+
+  
+    <script>
+        $(document).ready(function() {
+            $('#country_code').select2({
+                templateResult: function(option) {
+                    if (option.element && option.element.dataset.image) {
+                        return $('<span><img src="' + option.element.dataset.image +
+                            '" width="20" height="15" /> ' + option.text + '</span>');
+                    }
+                    return option.text;
+                }
+            });
+        });
+    </script>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('change', '.toggle-status', function() {
+
+            let status = $(this).prop('checked') ? 1 : 0;
+            let url = $(this).data('route');
+            let clickedToggle = $(this);
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {
+                    status: status,
+                    _token: 'LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI',
+                },
+                success: function(data) {
+                    clickedToggle.prop('checked', status);
+                    toastr.success("Status Updated Successfully");
+                },
+                error: function(xhr, status, error) {
+                    console.log(error)
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#country_code').select2({
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                var $result = $('<span><img src="' + $(data.element).data('image') +
+                    '" class="flag-img" /> +' + data.text.trim() + '</span>');
+                return $result;
+            },
+            templateSelection: function(selection) {
+                if (selection.text == ' ') {
+                    return selection.text;
+                }
+                return ' + ' + selection.text;
+            }
+        });
+    });
+</script>
+    <script>
+    $(document).ready(function() {
+        $('.toastr-message').each(function() {
+            var messageType = $(this).data('type');
+            var messageText = $(this).text();
+            toastr.options = {
+                "closeButton": false,
+                "progressBar": true,
+                "extendedTimeOut": 0,
+                "timeOut": 0,
+            };
+
+            switch (messageType) {
+                case 'success':
+                    toastr.success(messageText);
+                    break;
+                case 'error':
+                    toastr.error(messageText);
+                    break;
+                case 'info':
+                    toastr.info(messageText);
+                    break;
+                case 'warning':
+                    toastr.warning(messageText);
+                    break;
+                default:
+                    toastr.info(messageText);
+            }
+        });
+    });
+</script>
+    
+
+</body>
+</html>

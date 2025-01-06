@@ -1,0 +1,62 @@
+    /* Container for responsiveness */
+.table-container {
+    display: flex; /* Enables flexbox */
+    justify-content: space-between; /* Pushes items to extremes */
+    align-items: center; /* Aligns vertically in the center */
+    flex-wrap: wrap; /* Ensures responsiveness for small screens */
+    padding: 10px 0; /* Optional padding */
+    gap: 10px; /* Small gap between elements on smaller screens */
+    margin-top: 20px;
+}
+
+/* Info text styling */
+.dataTables_info {
+    font-size: 14px; /* Adjust font size */
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+/* Pagination container */
+.dataTables_paginate {
+    display: flex; /* Aligns buttons in a row */
+    gap: 5px; /* Adds space between buttons */
+}
+
+/* Pagination buttons styling */
+.dataTables_paginate a {
+    padding: 5px 10px; /* Padding inside buttons */
+    border: 1px solid #ccc; /* Thin border for buttons */
+    border-radius: 4px; /* Rounded corners */
+    text-decoration: none; /* Removes underline */
+    color: #43B9B2; /* Text color */
+}
+
+/* Hover effect */
+.dataTables_paginate a:hover {
+    background-color: #f1f1f1; /* Light gray hover effect */
+}
+
+/* Active page styling */
+.dataTables_paginate a.current {
+    background-color: #43B9B2; /* Blue background for active */
+    color: white; /* White text for active */
+    border: 1px solid #43B9B2;
+}
+
+/* Disabled button styling */
+.dataTables_paginate a.disabled {
+    color: #ccc; /* Gray color for disabled */
+    cursor: not-allowed;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    .table-container {
+        flex-direction: column; /* Stack elements vertically on small screens */
+        align-items: flex-start; /* Align left */
+        gap: 15px; /* Increase gap for smaller screens */
+    }
+
+    .dataTables_paginate {
+        justify-content: flex-start; /* Align pagination buttons to the left */
+    }
+}

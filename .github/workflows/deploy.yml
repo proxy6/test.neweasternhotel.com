@@ -1,0 +1,65 @@
+name: Deploy App on Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Upload code to cPanel
+      uses: appleboy/scp-action@master
+      env:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_KEY }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        passphrase: ${{ secrets.KEY_PASSPHRASE }}
+      with:
+        source: "./"
+        host: ${{ secrets.SERVER_IP }}
+        target: ${{ secrets.SERVER_PATH }}
+        port: ${{ secrets.SERVER_PORT }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        key: ${{ secrets.SERVER_KEY }}
+        use_insecure_cipher: true
+        passphrase: ${{ secrets.KEY_PASSPHRASE }}
+
+    - name: SSH into server and run npm install & start app
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        passphrase: ${{ secrets.KEY_PASSPHRASE }}
+        use_insecure_cipher: true
+        script: |
+          source ${{ secrets.SERVER_SOURCE_PATH }} && \
+          cd ${{ secrets.SERVER_PATH }} && \
+          # install NPM packages
+          npm i && \
+          # add db migration
+          # npx sequelize-cli db:migrate && \
+          # install pm2 
+          npm install pm2 -g && \
+          # remove git folders for security
+          rm -rf .git && \
+          rm -rf .github && \
+          rm -rf .vscode && \
+          rm -rf .gitignore && \
+          rm -rf .eslintrc.json && \
+          rm -rf .env.example && \
+          rm -rf sync.js && \
+          # upload new ENV
+          # restart server
+          pm2 startOrReload ecosystem.config.js
+          

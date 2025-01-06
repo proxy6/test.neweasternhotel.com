@@ -1,0 +1,100 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+            <div class="page-body">
+                    <div class="container-fluid">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Roles Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="/dashboard">
+                                <svg class="svg-color">
+                                    <use href="/icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"><a href="/roles" style="color: #43b9b299;">Roles Management</a></li>
+                        <li class="breadcrumb-item active">Add Role</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card height-equal">
+                    <div class="card-header">
+                        <h4>Add Role</h4>
+                    </div>
+    <form class="form theme-form" id="roleForm">
+    <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">                        <div class="card-body custom-input">
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label>Name <span> *</span></label>
+                <div>
+                    <input class="form-control" type="text"
+                        placeholder="Enter Role" name="roleName" required>
+                </div>
+                            </div>
+            <div class="mb-3">
+                <label>Permissions <span> *</span></label>
+                <div>
+                    <% if (typeof pages !== 'undefined') { %>
+                        <% pages.forEach((page, index) => { %>
+                            <div class="mb-2 card-wrapper border rounded-3 checkbox-checked">
+                                <h6 class="sub-title"><%= page.name %></h6>
+                                <div class="form-check-size rtl-input">
+                                    <!-- Make sure the table input is included -->
+                                    <input type="hidden" name="permissions[<%= index %>][table]" value="<%= page.name %>">
+                                    
+                                    <label class="d-block" for="<%= page.name %>.create" data-action="create" data-module="<%= page.name %>">
+                                        <input type="checkbox" name="permissions[<%= index %>][actions][]" value="create" class="checkbox_animated module_<%= page.name %>" id="<%= page.name %>.create" >Create
+                                    </label>
+                                    <label class="d-block" for="<%= page.name %>.read" data-action="read" data-module="<%= page.name %>">
+                                        <input type="checkbox" name="permissions[<%= index %>][actions][]" value="read" class="checkbox_animated module_<%= page.name %>" id="<%= page.name %>.read" >Read
+                                    </label>
+                                    <label class="d-block" for="<%= page.name %>.update" data-action="edit" data-module="<%= page.name %>">
+                                        <input type="checkbox" name="permissions[<%= index %>][actions][]" value="update" class="checkbox_animated module_<%= page.name %>" id="<%= page.name %>.update" >Update
+                                    </label>
+                                    <label class="d-block" for="<%= page.name %>.delete" data-action="delete" data-module="<%= page.name %>">
+                                        <input type="checkbox" name="permissions[<%= index %>][actions][]" value="delete" class="checkbox_animated module_<%= page.name %>" id="<%= page.name %>.delete" >Delete
+                                    </label>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+<div class="card-footer text-end">
+    <div class="col-sm-9 offset-sm-3">
+        <button class="btn btn-primary me-3" type="submit">save</button>
+    </div>
+</div>              
+    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+            </div>
+            
+            <!-- footer start-->
+            <%- include('../partials/footer') %>
+        </div>
+    </main>
+
+    <%- include('../partials/script') %>
+    <script src="/js/custom/role.js"></script>
+    <!-- jquery-->
+
+
+</body>
+</html>

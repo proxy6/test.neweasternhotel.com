@@ -1,0 +1,255 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+    <div class="page-body">
+                <div class="container-fluid">
+    <div class="row page-title">
+      <div class="col-sm-6">
+        <h3>Add Booking</h3>
+      </div>
+      <div class="col-sm-6">
+        <nav>
+          <ol class="breadcrumb justify-content-sm-end align-items-center">
+            <li class="breadcrumb-item"> <a href="/">
+                <svg class="svg-color">
+                  <use href="/icons/iconly-sprite.svg#Home"></use>
+                </svg></a></li>
+            <li class="breadcrumb-item"><a style="color: #43b9b299;" href="/bookings">Booking Management</a></li>
+            <li class="breadcrumb-item active">Add Booking</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+</div>
+<!-- Container-fluid starts-->
+<div class="container-fluid add-product">
+    <form id="bookingForm">
+        <div class="row"> 
+            <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                <div class="product-info">
+                    <h4>Customer Info</h4>
+                
+                    <div class="product-group">
+                        <div class="row"> 
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                            <label class="form-label">Name <span>*</span></label>
+                            <input class="form-control" name="name" placeholder="Enter Customer Name" type="text" required>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row"> 
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                            <label class="form-label">Phone Number <span>*</span></label>
+                            <input class="form-control" name="phone" placeholder="Enter Customer Phone Number" type="text" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                            <label class="form-label">Email Address </label>
+                            <input class="form-control" name="email" placeholder="Enter Customer Email Address" type="text">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row"> 
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <input class="form-control" name="address" placeholder="Enter Customer Address" type="text" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nationality</label>
+                                    <input class="form-control" name="nationality" placeholder="Enter Customer Nationality" type="text">
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+               
+                    <h4 class="mt-4">Customer Profile</h4>
+                    <div class="product-group">
+                        <div class="row">   
+                            <div class="col-sm-6">   
+                                <div class="mb-3">
+                                <label class="form-label">ID Type</label>
+                                <select name="id_type" class="form-select"> 
+                                    <option value="">Select..</option>
+                                    <option value="Passport">Passport</option>
+                                    <option value="Drivers License">Drivers License</option>
+                                    <option value="NIN">NIN</option>
+                                    <option value="Voters Card">Voters Card</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6"> 
+                                <div class="mb-3">
+                                <label class="form-label">ID Number</label>
+                                <input class="form-control" name="id_number" placeholder="Enter ID number" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">   
+                            <div class="col-sm-6">   
+                                <div class="mb-3">
+                                <label class="form-label">ID Issuer Country</label>
+                          
+                               <select class="form-select" id="country" name="id_issue_country">
+                                            <option value="" selected disabled hidden>Select Country</option>
+                                            <% if(typeof countries !== 'undefined'){ %>
+                                                <% countries.forEach(country => { %>
+                                                    <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>" ><%= country.name %> </option>
+                                                <% }) %>
+                                            <% } %>
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6"> 
+                                <div class="mb-3">
+                                <label class="form-label">ID Expring Date</label>
+                                <input class="form-control" name="id_exp_date" type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">   
+                            <div class="col-sm-6">   
+                                <div class="mb-3">
+                                <label class="form-label">Occupation</label>
+                                <input class="form-control" name="occupation" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm-6"> 
+                                <div class="mb-3">
+                                <label class="form-label">Business Type</label>
+                                <input class="form-control" name="bus_type" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">   
+                        <div class="col-sm-12">  
+                            <div class="mb-3">
+                            <label class="form-label">Date of Last Entry to Nigeria</label>
+                            <input class="form-control" name="last_country_entry_date" type="date">
+                            </div>
+                        </div>
+                        </div>
+                
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-xl-6">
+            <div class="card"> 
+                <div class="card-body">
+                    <div class="product-info room-section" data-index="0" id="room-container">
+                        <h4>Room Details Info</h4>
+                        <div class="product-group">
+                            <div class="row"> 
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                <label class="form-label">Room Number/Name <span>*</span></label>
+                             
+                                <select required name="room_id_0" class="form-select"> 
+                                    <option value="">Select..</option>   
+                                    <% if(typeof rooms !== 'undefined'){ %>
+                                        <% rooms.forEach(room => { %>
+
+                                    <option value="<%= room.id %>"><%= room.number.charAt(0).toUpperCase() + room.number.slice(1) %> - &#8358;<%= room.price%> </option>
+                                   
+                          
+                                <% }) %>
+                                <% }%>
+                            </select>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row"> 
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Check In Date <span>*</span></label>
+                                <input class="form-control" name="check_in_date_0" type="date" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Check In Date Time <span>*</span></label>
+                                <input class="form-control" name="check_in_time_0" type="time" required>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Number of Persons</label>
+                                    <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Number of Days Booked</label>
+                                        <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number">
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="row"> 
+                            
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Status<span>*</span></label>
+                                            <select required name="status_0" class="form-select" required> 
+                                                <option value="">Select an Option</option> 
+                                                <option value="pending">Pending</option>
+                                                <option value="checkedin">Checkin</option>
+                                         
+             
+                                        </select>
+                                        </div>
+                                    </div>
+                                    </div>
+                        </div>
+                        
+                
+                    </div>
+                <div class="mt-4">
+                    <div class="row"> 
+                    <div class="col-sm-12 text-end">
+                        <a class="btn btn-primary" id="add-room-btn">Add Room </a>
+                        <a class="btn btn-secondary" id="submit-btn">Submit</a>
+                        <a class="btn btn-danger" href="/bookings">Cancel</a></div>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+              <!-- Container-fluid ends-->
+            </div>
+            
+            <%- include('../partials/footer') %>
+
+
+        </div>
+      </main>
+             
+              
+              
+      <%- include('../partials/script') %>
+
+      <% if (typeof rooms !== 'undefined') { %>
+        <script>
+          // Pass rooms data to JavaScript
+          const rooms = <%- JSON.stringify(rooms) %>;
+        </script>
+      <% } %>
+      
+      <script src="/js/custom/booking.js"></script>
+   
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+
+    
+    <%- include('partials/header') %>
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+          
+    <div class="loader-wrapper">
+        <div class="loader"></div>
+    </div>
+    <div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-12">
+                <div class="login-card login-dark">
+                    <div>
+                        <div><a class="logo" href="/"><img class="img-fluid for-light"
+                                    src="/images/logo.png" alt="looginpage"><img class="for-dark"
+                                    src="/images/dark-logo.png" alt="logo"></a></div>
+                        <div class="login-main">
+                            <form class="theme-form" method="POST" action="<%= url  %>">
+                                <input type="hidden" name="_token" value="QIoUdebwNug5jBoCNSfUc6CkNDryS2uPqrn7YoNq" autocomplete="off">  
+                                <input name="email" type="hidden" value="<%= email %>"  autocomplete="off">                                                            
+                                  <h4 class="f-w-500">Verify Email</h4>
+                                  <% if(typeof message !== 'undefined'){ %>
+                                    <p class="mb-3"><%= message %> <span class="fw-bold"><%= maskedEmail%></span></p>
+                                    <% }%>
+                                <div class="form-group">
+                                   
+                                    <div class="form-input position-relative mb-3">
+                                        <input class="form-control" placeholder="" type="text" id="otp" name="otp" required autofocus>
+                                        <% if(typeof error !== 'undefined'){ %>
+                                        <span class="" role="alert"> <strong><%= error %></strong></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="text-end">
+                                        <button class="btn btn-primary" type="submit" style="inline-size: -webkit-fill-available;">Confirm Email</button>
+                                    </div>
+                                </div>
+                                <div class="mt-5 text-center">
+                                    <p class="text-muted mb-0">
+                                        Didn't receive an email? 
+                                        <a href="#" id="resend-button" class="text-primary fw-semibold">Resend</a>
+                                        <span id="countdown-timer" class="text-muted"></span>
+                                    </p>
+                                </div>
+                            </form>
+
+                            <div class="form-group mt-3">
+                                <a href="/signin" class="text-center nav-link">
+                                    <p>
+                                        <i class="fa fa-long-arrow-left"></i>
+                                        Back to Login Page
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- page-wrapper end-->
+
+    <script src="/js/custom/login.js"></script>
+    <%- include('partials/footer') %>
+
