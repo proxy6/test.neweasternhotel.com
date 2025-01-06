@@ -17,7 +17,7 @@ isAuthorized: async (req, res, next) => {
    next()
  }catch (err) {
   
-   res.render('signin', { error: 'Authorization Failed'});
+   res.render('auth/login', { error: 'Authorization Failed'});
  }
 },
 isAdmin: async (req, res, next) => {
