@@ -11,8 +11,16 @@ $(document).ready(function() {
                 _token: '6Fu0mPnkf8AM2Gh7CQVlLI7TTaEuhxtdWXs9IhLp',
             },
             success: function(data) {
+           
+                if(data.status != true){
+                    toastr.error(data.error);
+                    setTimeout(() => {
+                        location.reload(); // Reloads the current page
+                    }, 1000); // 
+                }else{
                 clickedToggle.prop('checked', status);
                 toastr.success("Status Updated Successfully");
+                }
             },
             error: function(xhr, status, error) {
                 console.log(error)

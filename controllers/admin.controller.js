@@ -125,13 +125,18 @@ getQuote: async(req, res, next)=>{
         const employeeCount = await AdminService.countEmployee()
         let totalPages = Math.ceil(employeeCount / limit);
         let currentPage = page
+        
         const employees = await AdminService.getAllEmployeesWithRole(page, limit)
+        //get all roles
+        const roles = await AdminService.countEmployeeByRole()
+       
         res.render('employees/index', 
           {
             employees,
             totalPages,
             currentPage,
             employeeCount,
+            roles,
             user: req.session.user
           })
     },
@@ -391,16 +396,16 @@ getQuote: async(req, res, next)=>{
 
     updateRoomStatus: async(req, res)=>{
         try {
-            console.log('got here')
+      
             const data = req.body
             data.id = req.params.id
             console.log(data)
             const room = await AdminService.updateRoomStatus(data);
           
             if(room){
-               return res.status(201).json({ message: 'Update Successful' });
+               return res.status(201).json({ status: true, message: 'Update Successful' });
             }
-            return res.status(404).json({ error: 'Something went wrong!' });
+            return res.status(201).json({ status: false, error: 'This romm is currently booked!' });
               
           } catch (error) {
             console.error(error);

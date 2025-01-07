@@ -35676,7 +35676,7 @@ table.fixedHeader-floating, .email-left-aside, .footer {
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    background: url(https://larathemes.pixelstrap.com/edmin/build/assets/login_bg-BeUGoQjJ.jpg);
+    background: url(/images/login_bg-BeUGoQjJ.jpg);
     background-position: center;
     padding: 30px 12px;
 }
@@ -35943,7 +35943,7 @@ table.fixedHeader-floating, .email-left-aside, .footer {
 .login-card .login-main .theme-form .or:before {
     width: 55%}
 }.comingsoon-bgimg {
-    background: url(https://larathemes.pixelstrap.com/edmin/build/assets/coming-soon-bg-Ud08H5rb.jpg);
+    background: url(/images/coming-soon-bg-Ud08H5rb.jpg);
     background-position: bottom;
     background-size: cover;
 }
@@ -36517,7 +36517,7 @@ table.fixedHeader-floating, .email-left-aside, .footer {
     font-size: .85em;
 }
 .left-msg .msg-img {
-    background-image: url(https://larathemes.pixelstrap.com/edmin/build/assets/1-CLN0ogCf.jpg);
+    background-image: url(/images/1-CLN0ogCf.jpg);
     width: 33px;
     height: 33px;
 }
@@ -36546,7 +36546,7 @@ table.fixedHeader-floating, .email-left-aside, .footer {
 }
 .right-msg .msg-img {
     margin: 0 0 0 10px;
-    background-image: url(https://larathemes.pixelstrap.com/edmin/build/assets/2-BF5hmt_J.jpg);
+    background-image: url(/images/2-BF5hmt_J.jpg);
     width: 33px;
     height: 33px;
 }

@@ -2,6 +2,8 @@ const { DATE } = require('sequelize');
 const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages } = require('../models');
 // const Booking = require('../models/booking');
 const { sequelize } = require('../models'); // Database connection
+const { Op } = require('sequelize'); // Import Sequelize operators
+
 const bookingRooms = require('../models/bookingRooms');
 
 
@@ -53,6 +55,7 @@ static async getAllRolesWithPermissions(page, limit){
   return roles;
 
 }
+
 static async getAllPages(){
   const pages = await Pages.findAll({
 
@@ -193,6 +196,22 @@ static async countEmployee(){
   return employeeCount
 
 }
+static async countEmployeeByRole() {
+  const employeeCount = await Employee.findAll({
+    attributes: [
+      [sequelize.col('Employee.role_id'), 'role_id'], // Explicitly specify Employee's role_id
+      [sequelize.fn('COUNT', sequelize.col('Employee.id')), 'count'] // Explicitly specify Employee's id
+    ],
+    include: {
+      model: Role,
+      attributes: ['id', 'name'] // Include role details
+    },
+    group: ['Role.id'] // Group by Role.id
+  });
+  return employeeCount;
+}
+
+
 static async getAllEmployeesWithRole(page, limit){
   let offset = 0;
   if(page == null){
@@ -623,6 +642,20 @@ return room;
 
 }
 static async updateRoomStatus(data){
+
+    //check if a booking currentllt has it in use
+    const booking  = await BookingRooms.findOne({
+      where:{
+        room_id: data.id,
+        status: {
+          [Op.not]: 'checkedout' // Exclude 'checkedout' status
+        }
+      }
+    })
+    console.log(booking)
+    if(booking){
+      return false
+    }
   if(data.status == '1'){
     await Rooms.update({
       status: true
