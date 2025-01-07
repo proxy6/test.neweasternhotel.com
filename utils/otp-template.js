@@ -58,10 +58,10 @@ module.exports = {
             <div class="otp-code">${data.message}</div>
             <p>If you didn't request this change, please ignore this email or contact our support team immediately.</p>
             <p>Thank you for your attention to account security.</p>
-            <p>Blessings,<br>King Dunamis Ministries Team</p>
+            <p>Blessings,<br>New Eastern Hotel Management</p>
         </div>
         <div class="footer">
-            <p>&copy; 2024 King Dunamis Ministries. All rights reserved.</p>
+            <p>&copy; 2024 New Eastern Hotels and Suites. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -88,7 +88,7 @@ module.exports = {
               });
               await transporter.sendMail(
                   {
-                      from: `"King Dunamis Ministries Team" <${process.env.EMAIL_USER}>`,
+                      from: `"New Eastern Hotel Team" <${process.env.EMAIL_USER}>`,
                       to: `${data.email}`,
                       subject: `${data.title}`,
                       html: output, // html body

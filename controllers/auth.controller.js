@@ -9,7 +9,7 @@ module.exports = {
     },
     signIn: async(req, res)=>{
       try{
-            console.log(req.body)
+          
             const {password, email} = req.body
             const user = await AdminService.getSingleEmployeeByEmail(email)
             
@@ -41,7 +41,8 @@ module.exports = {
              
             }
           
-            const access_token = await GenerateSignature({email: user.email, role: user.Role.name})
+            const access_token = await GenerateSignature({email: user.email, role: user.Role.name,
+               permission: user.Role.Permissions, lastUpdated: user.updatedAt })
      
             const omitdata = _.omit(user.toJSON(), 
             ['id', 'password', 'otp', 'createdAt', 'updatedAt', 'status', 'country', 'state', 'city', 'address', 'account_name',
@@ -51,7 +52,7 @@ module.exports = {
             req.session.token = access_token;
             req.session.user = omitdata;  
             const redirectEndpoint = '/'
-            console.log(req.session)
+        
             // Clear the originalEndpoint from session
             // delete req.session.originalEndpoint;
 
@@ -66,13 +67,16 @@ module.exports = {
     
     },
 
+    unauthorizedPage: async(req, res)=>{
+      res.render('unauthorized', {  user: req.session.user})
+  },
     getVerifySigninPage: async (req, res)=>{
       try{
         // let email = 'testadmin@gmail.com'
         // let url = '/verify/otp'
  
         const {email, url} = req.session
-        console.log(req.session)
+   
         const maskedEmail = maskEmail(email);
         
         return res.render('auth/otp', {  email, message: `Please enter the 4 digit code sent to`, maskedEmail,  url}) 

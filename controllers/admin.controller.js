@@ -69,7 +69,7 @@ getQuote: async(req, res, next)=>{
     addRole: async(req, res)=>{
         try {
             const { roleName, permissions } = req.body;
-            console.log(permissions)
+          
             const role = await AdminService.createRoleWithPermissions(roleName, permissions);
             res.status(201).json({ message: 'Role created!', role });
           } catch (error) {
@@ -90,7 +90,6 @@ getQuote: async(req, res, next)=>{
     updateRoleById: async(req, res)=>{
         const { roleName, permissions } = req.body;
         const roleId = req.params.id;
-        console.log(req.body.permissions)
 
         try {
           const role = await AdminService.updateRole(roleId, roleName, permissions);
@@ -146,8 +145,10 @@ getQuote: async(req, res, next)=>{
       
         //call countries api
         const countries = await getCountries();
+         //call bank list api
+        const banks = await getBanks();
   
-        res.render('employees/add', {roles, countries, user: req.session.user})
+        res.render('employees/add', {roles, countries, banks, user: req.session.user})
     },
 
     addEmployee: async(req, res)=>{
@@ -160,7 +161,7 @@ getQuote: async(req, res, next)=>{
                 var imageUrl = await uploadSingleFilesToCloudinary(file);
                 data['profile_pic'] = imageUrl;
             }
-            console.log(data)
+     
             if(data.password){
               let userPassword = await HashPassword(data.password)
               data.password = userPassword
@@ -212,11 +213,13 @@ getQuote: async(req, res, next)=>{
       
         //call countries api
         const countries = await getCountries();
+        //call bank list api
+        const banks = await getBanks();
         const employee = await AdminService.getSingleEmployee(employeeId)
         if (!employee) {
             return res.status(404).send('Role not found');
           }
-        res.render('employees/edit', {roles, countries, employee, user: req.session.user})
+        res.render('employees/edit', {roles, countries, employee,banks, user: req.session.user})
     },
     
     updateEmployeeById: async(req, res)=>{
@@ -385,7 +388,7 @@ getQuote: async(req, res, next)=>{
         try {
          
             const data = req.body
-            console.log(data)
+           
             await AdminService.addRoom(data);
             res.redirect('/rooms')
           } catch (error) {
@@ -399,7 +402,7 @@ getQuote: async(req, res, next)=>{
       
             const data = req.body
             data.id = req.params.id
-            console.log(data)
+          
             const room = await AdminService.updateRoomStatus(data);
           
             if(room){
@@ -478,9 +481,9 @@ getQuote: async(req, res, next)=>{
         try {
          
             const data = req.body
-            console.log(data)
+      
             const booking = await AdminService.addBooking(data);
-            console.log(booking)
+       
             if (typeof booking === 'string') {
               return res.status(500).json({ message: booking });
             }
@@ -497,10 +500,10 @@ getQuote: async(req, res, next)=>{
       try {
          
       const bookingId = req.params.id
-      console.log(bookingId)
+    
       const booking = await AdminService.getSingleBooking(bookingId)
       const bookingRooms = await AdminService.getBookingRoom(bookingId)
-      console.log(bookingRooms)
+     
 
       res.render('booking/view', {
         booking,
@@ -539,9 +542,9 @@ updateBookingById: async(req, res)=>{
   try {
       const data = req.body
       data.id = req.params.id;
-      console.log(data)
+      
       const booking = await AdminService.updateBooking(data);
-      console.log(booking)
+  
       if (typeof booking === 'string') {
         return res.status(500).json({ message: booking });
       }
@@ -618,4 +621,20 @@ const getCountries = async()=>{
     }catch(error){
         console.error('Error:', error);  
     }
+}
+
+const getBanks = async()=>{
+  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
+  try {
+    const response = await axios.get('https://api.paystack.co/bank', {
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      },
+    });
+    const banks = response.data.data;
+    return banks
+  } catch (error) {
+    console.error('Error fetching banks:', error.message);
+  }
+
 }

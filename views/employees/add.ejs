@@ -174,7 +174,7 @@
                                     <div class="mb-3">
                                         <label>Country</label>
                                         <select class="form-select" id="country" name="country_id">
-                                            <option value="" selected disabled hidden>Select Country</option>
+                                            <option value="">Select Country</option>
                                             <% if(typeof countries !== 'undefined'){ %>
                                                 <% countries.forEach(country => { %>
                                                     <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>" ><%= country.name %> </option>
@@ -234,32 +234,12 @@
                                     <div class="mb-3">
                                         <label>Bank Name</label>
                                         <select class="form-select" id="country" name="bank_name">
-                                            <option value="" selected disabled hidden>Select Bank</option>
-                                                                <option value="4" >
-                                                    Afghanistan</option>
-                                                                <option value="8" >
-                                                    Albania</option>
-                                                                <option value="10" >
-                                                    Nauru</option>
-                                                                <option value="524" >
-                                                    Nepal</option>
-                                                                <option value="528" >
-                                                    Netherlands</option>
-                                                                <option value="531" >
-                                                    Curaçao</option>
-                                                                <option value="533" >
-                                                    Nicaragua</option>
-                                                                <option value="562" >
-                                                    Niger</option>
-                                                                <option value="566" >
-                                                    Nigeria</option>
-                                                                <option value="570" >
-                                                    Niue</option>
-                                                                <option value="574" >
-                                                    Norfolk Island</option>
-                                                                <option value="578" >
-                                                    Norway</option>
-                                                    <option value="580" >
+                                            <option value="">Select Bank</option>
+                                            <% if(typeof banks !== 'undefined'){ %>
+                                                <% banks.forEach(bank => { %>
+                                                    <option value="<%= bank.name %>" ><%= bank.name %> </option>
+                                                <% }) %>
+                                            <% } %>
                                                     </select>
                                                 </div>
                                 </div>

@@ -191,7 +191,7 @@ const roomOptions = rooms.map(room =>
     bookedRooms.push(bookedRoomsData);
 });
 
-  console.log(payload)
+
 
   fetch(`/bookings/${payload.formData.booking_id}`, {
     method: 'POST',
@@ -200,11 +200,11 @@ const roomOptions = rooms.map(room =>
     },
     body: JSON.stringify(payload)
   }).then(response => {
-    console.log(response)
+
     if (response.ok) {
     
       return response.json().then(data => {
-        console.log(data)
+
           toastr.options = {
           closeButton: false,
           progressBar: true,
@@ -221,17 +221,7 @@ const roomOptions = rooms.map(room =>
         }, 5000); // Redirects after 3 seconds
         
       })
-    //   alert('Booking successfully created with reference: ' + bookingReference);
-    //   toastr.options = {
-    //     closeButton: false,
-    //     progressBar: true,
-    //     timeOut: 6000,
-    //     extendedTimeOut: 1000,
-    // };
-    // toastr.success('Booking successfully created with reference: ' + bookingReference);
-    //   form.reset();
-    //   const roomDynamics = document.getElementsByClassName('room-dynamics');
-    //   roomDynamics.innerHTML = '';
+
     
     } else {
     

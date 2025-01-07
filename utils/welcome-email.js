@@ -9,7 +9,7 @@ module.exports = {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to King Dunamis Ministries</title>
+    <title>Welcome to New Eastern Hotels and Suites</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,21 +41,21 @@ module.exports = {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Welcome to King Dunamis Ministries</h1>
+            <h1>Welcome to New Eastern Hotels and Suites</h1>
         </div>
         <div class="content">
             <p>Dear ${data.username},</p>
-            <p>Welcome to King Dunamis Ministries! We're excited to have you join our community. Below are your account details:</p>
+            <p>Welcome to  New Eastern Hotels and Suites! We're excited to have you join our community. Below are your account details:</p>
             <ul>
                 <li><strong>Email:</strong> ${data.email}</li>
                 <li><strong>Default Password:</strong> ${data.password}</li>
             </ul>
             <p>For security reasons, you will be required to change your password upon your first login.</p>
             <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
-            <p>Blessings,<br>King Dunamis Ministries Team</p>
+            <p>Blessings,<br> New Eastern Hotels and Suites Management</p>
         </div>
         <div class="footer">
-            <p>&copy; 2024 King Dunamis Ministries. All rights reserved.</p>
+            <p>&copy; 2024  New Eastern Hotels and Suites. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -81,7 +81,7 @@ module.exports = {
               });
               await transporter.sendMail(
                   {
-                      from: `"King Dunamis Ministries Team" <${process.env.EMAIL_USER}>`,
+                      from: `"New Eastern Hoteel Team" <${process.env.EMAIL_USER}>`,
                       to: `${data.email}`,
                       subject: `${data.title}`,
                       html: output, // html body

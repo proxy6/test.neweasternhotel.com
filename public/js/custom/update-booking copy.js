@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bookedRooms,
       rooms: rooms
     };
-    console.log(payload)
+  
 
    
   }

@@ -20,10 +20,12 @@ const {signinPage,
     verifySignin,
     completeSignIn,
     getChangePasswordPage,
-    signOut} = require('../controllers/auth.controller')
+    signOut,
+    unauthorizedPage} = require('../controllers/auth.controller')
 // // const { isVendor } = require('../middleware/authorization')
 // // const {getAdminDash, getVendorPage, getStores} = require('../controller/dashboard.controller')
 
+router.get('/unauthorized', unauthorizedPage)
 router.get('/signin', signinPage )
 router.post('/signin', signIn)
 router.get('/password/reset', getForgetPasswordPage)

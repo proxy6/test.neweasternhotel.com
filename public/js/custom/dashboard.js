@@ -25,7 +25,7 @@
             try {
                 const response = await fetch('/quote');
                 const data = await response.json();
-                console.log(data)
+              
                 const quote = data[0].q;
                 const author = data[0].a;
                 // Display the advice in the paragraph

@@ -318,15 +318,24 @@ static async VerifyEmployee(request){
 
 static async getSingleEmployeeByEmail(email){
   const employee = await Employee.findOne({
-    where:{
+    where: {
       email: email
     },
-    include: {
-      model: Role,
-      as: 'Role',  // Ensure this matches your association alias
-    },
-  })
-  return employee
+    include: [
+      {
+        model: Role,
+        as: 'Role', // Ensure this matches the alias in associations
+        include: [
+          {
+            model: Permission, // Include permissions related to the role
+            through: { attributes: [] }, // Exclude intermediate table attributes
+          }
+        ]
+      }
+    ]
+  });
+  return employee;
+  
 }
 static async updateSingleEmployee(data){
   const employee = await Employee.update({
@@ -652,7 +661,7 @@ static async updateRoomStatus(data){
         }
       }
     })
-    console.log(booking)
+
     if(booking){
       return false
     }
@@ -734,8 +743,7 @@ static async getAllBookings(page, limit){
     
             {
               model: Customer,
-              // as: 'customer', // Assuming association alias is 'customer'
-              // attributes: ['id', 'name', 'phone'] // Include specific fields
+      
             },
             
           ],
@@ -745,17 +753,15 @@ static async getAllBookings(page, limit){
       include:[
         {
           model: Rooms,
-          // as: 'room', // Assuming association alias is 'room'
-          // attributes: ['id', 'number', 'price'] // Include specific fields
+        
       },
       {
         model: Booking,
-        // as: 'booking', // Assuming association alias is 'room'
-        // attributes: ['id', 'total_price'] // Include specific fields
+
       },
       ]
   })
-  // console.log(booking)
+
 
   return {bookingRooms, booking}
 }
@@ -855,7 +861,7 @@ static async addBooking(data){
       })
 
       if(roomData.status == false){
-        console.log('got here')
+  
         // if (transaction) await transaction.rollback();
         throw new Error('Room is unavailable!');
       }
@@ -892,7 +898,7 @@ static async addBooking(data){
 
     // Commit transaction
     await transaction.commit();
-    console.log(booking)
+
     return booking; // Return booking details
   } catch (error) {
     console.log(error)
@@ -931,7 +937,7 @@ static async updateBooking(data) {
     // 2. Update Booking details
     const booking = await Booking.findByPk(id, { transaction });
     if (!booking) throw new Error("Booking not found");
-    console.log(booking)
+
     await booking.update(
       {
         check_in_time: formData.booking_check_in_time,
@@ -981,8 +987,7 @@ static async updateBooking(data) {
       .filter(bookedRoom => bookedRoom.bookingRoom_status === 'checkedout') // Filter 'checkedout' status
       .map(bookedRoom => bookedRoom.bookingRoom_room_id); // Extract Room IDs
 
-      console.log(checkedOutBookingRoomIds); // Debugging: Check filtered IDs
-  
+   
       //update room status for checked out rooms
       await Rooms.update(
         { status: true },
@@ -1002,7 +1007,7 @@ static async updateBooking(data) {
           }
         })
 
-        console.log(roomData)
+    
         
         if(roomData.status == false){
         
@@ -1051,8 +1056,7 @@ static async updateBooking(data) {
 
     // Commit transaction
     await transaction.commit();
-    console.log('saved booking')
-    console.log(booking)
+
     return booking; // Return updated booking details
   } catch (error) {
     console.log(error)

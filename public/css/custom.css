@@ -27,7 +27,7 @@
     border: 1px solid #ccc; /* Thin border for buttons */
     border-radius: 4px; /* Rounded corners */
     text-decoration: none; /* Removes underline */
-    color: #43B9B2; /* Text color */
+    color: #055a40; /* Text color */
 }
 
 /* Hover effect */
@@ -37,9 +37,9 @@
 
 /* Active page styling */
 .dataTables_paginate a.current {
-    background-color: #43B9B2; /* Blue background for active */
+    background-color: #055a40; /* Blue background for active */
     color: white; /* White text for active */
-    border: 1px solid #43B9B2;
+    border: 1px solid #055a40;
 }
 
 /* Disabled button styling */

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         
         // Add your resend OTP logic here, e.g., make an AJAX request to the server
-        console.log('Resend OTP clicked');
+     
         var email = $(this).data('email');
         $.ajax({
             url: `/resend-otp`,

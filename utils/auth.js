@@ -35,8 +35,7 @@ module.exports = {
     validatePassword: async (data)=>{
         const {password, savedPassword} = data
         const validatePassword = bcrypt.compareSync(password, savedPassword)
-        console.log("validatePassword")
-        console.log(validatePassword)
+   
         if(!validatePassword) return false
         return true
     }

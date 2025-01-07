@@ -2,7 +2,7 @@ $(document).ready(function() {
     $('#country').change(function() {
         // var countryIso2 = $(this).val();
         var countryIso2 = $(this).find('option:selected').data('country-iso2'); // Get the selected country name
-        console.log(countryIso2)
+    
         $.ajax({
             url: '/states',
             method: 'POST',
@@ -13,7 +13,7 @@ $(document).ready(function() {
                 var stateSelect = $('#state');
                 stateSelect.empty().append('<option value="">Select an Option</option>'); // Clear previous options
                 $.each(states, function(index, state) {
-                    console.log(state)
+               
                     stateSelect.append($('<option>', {
                         value: state.name,
                         text: state.name
