@@ -32,7 +32,10 @@
                                         <img src="/images/avatar/4.jpg" alt="Ticket-star">
                                     </div>
                                     <div class="role-profile-details">
-                                        <h3>Welcome back John Deo!</h3>
+                                        <% if(typeof user !== 'undefined'){ %>
+                                          
+                                        <h3>Welcome back <%= user.first_name %>!</h3>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="blog-tags">
@@ -79,7 +82,7 @@
                                 </svg>
                             </div>
                             <p>Room</p>
-                            <a href="/rooms/active" class="btn btn-secondary">View Rooms</a>
+                            <a href="/rooms" class="btn btn-secondary">View Rooms</a>
                         </div>
                     </div>
                 </div>
@@ -148,14 +151,7 @@
                                                     </a>
 
                                               
-                                               
-                                                <!-- <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
-                                                
-                                                    <svg class="svg-menu">
-                                                        <use href="/icons/iconly-sprite.svg#Show"></use>
-                                                    </svg>
-                                        
-                                                </a> -->
+                                            
                                                 <!-- Remove File Confirmation-->
                                                 <div class="modal fade" id="deleteBooking" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -178,27 +174,7 @@
                                                     </div>
                                                 </div>
                                                 
-                                                    <!-- View Booking Details-->
-                                                    <div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h4 class="modal-title">Confirm delete</h4>
-                                                                    <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <h4 class="mb-3"> Are you sure want to delete ?</h4>
-                                                                    <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                    <form action="https://larathemes.pixelstrap.com/edmin/admin/tag/1" method="post">
-                                                                        <input type="hidden" name="_token" value="JcwTIw5DkUPPmAO0uPN35eJNyCiYl6XMOVRs9Yk6" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                  
                                                 
                                                 </div>
                                             </td>

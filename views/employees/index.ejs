@@ -126,15 +126,17 @@
                         <div class="user-table">
                             <div class="table-responsive p-3">
                                 
-                                <table class="table dataTable no-footer" id="user-table" role="grid" aria-describedby="user-table_info" style="width: 1013px;">
+                                <table  id="user-table" role="grid" aria-describedby="user-table_info" style="width: 1013px;">
                                     <thead>
                                         <tr role="row">
                                             <th>S/N</th>
-                                            <th title="Image" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Image" style="width: 67px;">Image</th>
-                                            <th title="Name" class="sorting sorting_desc" tabindex="0" aria-controls="user-table" rowspan="1" colspan="1" aria-sort="descending" aria-label="Name: activate to sort column ascending" style="width: 135px;">Name</th>
-                                            <th title="Email" class="sorting" tabindex="0" aria-controls="user-table" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending" style="width: 270px;">Email</th><th title="Role" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Role" style="width: 72px;">Role</th>
-                                            <th title="Created at" class="sorting" tabindex="0" aria-controls="user-table" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style="width: 123px;">Created at</th><th title="Status" class="sorting" tabindex="0" aria-controls="user-table" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 74px;">Status</th>
-                                            <th title="Action" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Action" style="width: 72px;">Action</th>
+                                            <th title="Image">Image</th>
+                                            <th title="Name" >Name</th>
+                                            <th title="Email">Email</th>
+                                            <th title="Role">Role</th>
+                                            <th title="Created at">Created At</th>
+                                            <th title="Status">Status</th>
+                                            <th title="Action">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -147,7 +149,7 @@
                                                             <img src="<%= employee.profile_pic %>" alt="Image" class="img-thumbnail img-fix"> 
                                                         </div>
                                                     </td>
-                                                    <td class="sorting_1"><%= employee.first_name %> <%= employee.middle_name %> <%= employee.last_name %></td>
+                                                    <td class=""><%= employee.first_name %> <%= employee.middle_name %> <%= employee.last_name %></td>
                                                     <td><%= employee.email %></td>
                                                     <td><%= employee.Role.name.charAt(0).toUpperCase() + employee.Role.name.slice(1) %></td>
                                                     <td><%= employee.createdAt.toLocaleDateString() %></td>

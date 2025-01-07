@@ -241,7 +241,7 @@ static async addEmployee(data){
 return employee;
 
 }
-static async updateEmployeestatus(data){
+static async updateEmployeeStatus(data){
   if(data.status == '1'){
     await Employee.update({
       status: true

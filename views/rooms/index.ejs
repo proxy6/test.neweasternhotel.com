@@ -28,7 +28,11 @@
                 <div class="card-body">
                     <div class="blog-card">
                         <div class="blog-card-content">
-                            <h4>Good day, John Deo</h4>
+                            <% if(typeof user !== 'undefined'){ %>
+                                <h4>Good day, <%= user.first_name %></h4>         
+                              
+                                <% } %>
+                           
                             <!-- <p>Welcome to the Edmin ! We are glad that you have visited our dashboard.</p> -->
                             <div class="d-flex">
                                 <div class="blog-tags m-0">
@@ -87,7 +91,7 @@
                             </svg>
                         </div>
                         <p>Addon</p>
-                        <a href="/addons/add" class="btn btn-secondary">Add Addon</a>
+                        <a href="/addons" class="btn btn-secondary">Add Addon</a>
                     </div>
                 </div>
             </div>
