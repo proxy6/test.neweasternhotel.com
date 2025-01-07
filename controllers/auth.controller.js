@@ -53,7 +53,7 @@ module.exports = {
             const redirectEndpoint = '/'
             console.log(req.session)
             // Clear the originalEndpoint from session
-            delete req.session.originalEndpoint;
+            // delete req.session.originalEndpoint;
 
     
              

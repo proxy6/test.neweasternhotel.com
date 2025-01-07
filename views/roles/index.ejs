@@ -27,10 +27,14 @@
                             <div class="blog-card-content">
                                 <div class="role-details">
                                     <div class="role-profile">
-                                        <img src="../images/avatar/3.jpg" alt="Ticket-star">
+                                        <img src="../images/profile.png" alt="Ticket-star">
                                     </div>
                                     <div class="role-profile-details">
-                                        <h3>Welcome back John Deo!</h3>
+                                        <% if(typeof user !== 'undefined'){ %>
+                                            <h3>Welcome back, <%= user.first_name %></h3>         
+                                          
+                                            <% } %>
+                                      
                                     </div>
                                 </div>
                                 <div class="blog-tags">
@@ -40,7 +44,7 @@
                                         </svg>
                                     </div>
                                     <div class="tag-details">
-                                        <h2 class="total-num counter">50</h2>
+                                        <h2 class="total-num counter"><%= roleCount %></h2>
                                         <p>Total Roles</p>
                                     </div>
                                 </div>

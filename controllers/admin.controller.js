@@ -36,7 +36,12 @@ getQuote: async(req, res, next)=>{
         const page = req.query.page || 1
         const bookings = await AdminService.getAllBookings(page, limit)
         const rooms = await AdminService.getAllRooms(page, limit)
-        res.render('index', {user: req.session.user, bookings, rooms})
+        const bookingCount = await AdminService.CountBookings()
+        const roomCount = await AdminService.countRooms()
+        const employeeCount = await AdminService.countEmployee()
+        res.render('index', {user: req.session.user, bookings, rooms, bookingCount,
+          roomCount, employeeCount
+        })
     },
     getRoleList: async(req, res)=>{
         const limit = 10
@@ -53,6 +58,7 @@ getQuote: async(req, res, next)=>{
             pages,
             totalPages,
             currentPage,
+            roleCount,
             user: req.session.user
           })
     },
@@ -125,6 +131,7 @@ getQuote: async(req, res, next)=>{
             employees,
             totalPages,
             currentPage,
+            employeeCount,
             user: req.session.user
           })
     },
@@ -350,6 +357,7 @@ getQuote: async(req, res, next)=>{
         const roomCount = await AdminService.countRooms()
         let totalPages = Math.ceil(roomCount / limit);
         let currentPage = page
+        let availableRoomCount = await AdminService.availableRoomCount()
         const rooms = await AdminService.getAllRooms(page, limit)
       
         res.render('rooms/index', 
@@ -357,6 +365,8 @@ getQuote: async(req, res, next)=>{
             rooms,
             currentPage,
             totalPages,
+            roomCount,
+            availableRoomCount,
             user: req.session.user
           })
     },
@@ -449,6 +459,7 @@ getQuote: async(req, res, next)=>{
           bookings,
           totalPages,
           currentPage,
+          bookingCount,
           user: req.session.user
         })
     },

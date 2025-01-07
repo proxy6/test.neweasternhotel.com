@@ -556,6 +556,17 @@ static async countRooms(){
   return roomCount
 
 }
+
+static async availableRoomCount(){
+  const roomCount = await Rooms.count({
+    where:{
+      status: true
+    }
+
+  })
+  return roomCount
+
+}
  
 static async getAllRooms(page){
   const room = await Rooms.findAll({
