@@ -22,7 +22,7 @@
     </div>
     <div class="container-fluid default-dashboard">
         <div class="row">
-            <div class="col-sm-6 col-xl-6">
+            <div class="col-sm-6 col-xl-12">
                 <div class="card profile-greeting card-hover">
                     <div class="card-body">
                         <div class="img-overlay">
@@ -33,77 +33,147 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6 col-xl-6">
-                <div class="card summary-card">
-                    <div class="card-header pb-0">
-                        <h4>Summary</h4>
-                     
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-8 custom-width-1">
-                                <div class="project-cost">
-                                    <h5 class="font-light">
-                                        <svg class="svg-w-20 stroke-light me-2">
-                                            <use href="/icons/iconly-sprite.svg#Chart">
+            <div class="col-md-6 col-xl-12">
+                <div class="row">
+                    <!-- Order Delivery-->
+                    <div class="col-md-4">
+                        <div class="card progress-items">
+                            <div class="card-header pb-3 bg-light-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Today Bookings</h5>
+                                       
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= todaybooking %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <svg class="svg-w-24 stroke-primary">
+                                            <use href="/icons/iconly-sprite.svg#Calendar">
                                             </use>
-                                        </svg>Estimated Total Count
-                                    </h5>
-                                    <ul class="d-flex">
-                                        <li class="card-hover">
-                                            <div class="d-flex bg-light-primary flex-column">
-                                                <div class="flex-shrink-0 border-primary">
-                                                    <svg class="svg-w-24 stroke-primary">
-                                                        <use href="/icons/iconly-sprite.svg#Calendar">
-                                                        </use>
-                                                    </svg>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="f-w-500">Bookings</h6>
-                                                    <h4 class="f-w-700"><%= bookingCount %></h4>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="card-hover">
-                                            <div class="d-flex bg-light-secondary flex-column">
-                                                <div class="flex-shrink-0 border-secondary">
-                                                    <svg class="svg-w-24 stroke-secondary">
-                                                        <use href="/icons/iconly-sprite.svg#Ticket-star">
-                                                        </use>
-                                                    </svg>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="f-w-500">Rooms</h6>
-                                                    <h4 class="f-w-700"><%= roomCount %></h4>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="card-hover">
-                                            <div class="d-flex bg-light-tertiary flex-column">
-                                                <div class="flex-shrink-0 border-tertiary">
-                                                    <svg class="svg-w-24 stroke-tertiary">
-                                                        <use href="/icons/iconly-sprite.svg#Profile">
-                                                        </use>
-                                                    </svg>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="f-w-500">Employees</h6>
-                                                    <h4 class="f-w-700"><%= employeeCount %></h4>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                            
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
-                       
+                        
                         </div>
                     </div>
+                    <div class="col-md-4 ">
+                        <div class="card progress-items ">
+                            <div class="card-header pb-3 bg-light-primary ">
+                                <div class="d-flex justify-content-between ">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Week Bookings</h5>
+                                       
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= weekbooking %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0 ">
+                                        <svg class="svg-w-24 stroke-primary">
+                                            <use href="/icons/iconly-sprite.svg#Calendar">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card progress-items">
+                            <div class="card-header pb-3 bg-light-tertiary">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Available Rooms</h5>
+                                        
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= availableRoom %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0 ">
+                                        <svg class="svg-w-24 stroke-secondary">
+                                            <use href="/icons/iconly-sprite.svg#Ticket-star">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card progress-items">
+                            <div class="card-header pb-3 bg-light-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Booked Rooms</h5>
+                                       
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= bookedRoom %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <svg class="svg-w-24 stroke-secondary">
+                                            <use href="/icons/iconly-sprite.svg#Ticket-star">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <div class="col-md-4 ">
+                        <div class="card progress-items ">
+                            <div class="card-header pb-3 bg-light-primary ">
+                                <div class="d-flex justify-content-between ">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Complaint Count</h5>
+                                       
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= complaintCount %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0 ">
+                                        <svg class="svg-w-30 fill-secondary">
+                                            <use href="/icons/iconly-sprite.svg#order-product"></use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                        </div>
+                    </div>
+                    <div class="col-md-4  ">
+                        <div class="card progress-items ">
+                            <div class="card-header pb-3 bg-light-primary ">
+                                <div class="d-flex justify-content-between ">
+                                    <div>
+                                        <div class="d-flex gap-2">
+                                            <h5 class="f-18 font-light">Employees Count</h5>
+                                       
+                                        </div>
+                                        <h3 class="f-26 f-w-600 mt-3"><%= employeeCount %></h3>
+                                    </div>
+                                    <div class="flex-shrink-0 ">
+                                        <svg class="svg-w-24 stroke-tertiary">
+                                            <use href="/icons/iconly-sprite.svg#Profile">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                         
+                        </div>
+                    </div>
+             
+                    
                 </div>
             </div>
+     
             
-            <div class="col-md-6 col-xl-8">
+            <div class="col-md-6 col-xl-12">
                 <!-- Bookings-->
                 <div class="card invoice-card">
                     <div class="card-header pb-0">
@@ -121,14 +191,17 @@
                         <div class="table-responsive" style="overflow-x: auto;">
                             <div class="datatable-wrapper datatable-loading no-footer searchable fixed-columns">
 
-                            <div class="datatable-container">
+                            <div style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table datatable-table" id="all-invoice" tabindex="2">
                                     <thead>
                                         <tr>
                                             <th>S/N</th>
                                             <th title="Name">Name</th>
                                             <th title="Total Price">Total Price</th>
-                                            <th title="Created At">Created At</th>
+                                            <th title="Created At">Checkin Date</th>
+                                            <th title="Created At">Checkout Date</th>
+                                            <th title="Created At">Rooms</th>
+
                                             <th title="Status">Status</th>
                                             <th title="Action">Action</th>
                                         </tr>
@@ -142,6 +215,8 @@
 
                                        
                                             <td>&#8358;<%= booking.total_price %></td>
+                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
                                             <td><%= booking.createdAt.toLocaleDateString() %></td>
                                             <% if(booking.status == 'checkedout'){ %>
                                                 <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
@@ -214,7 +289,7 @@
                     </div>
             </div>
 
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-6">
                 <!-- Bookings-->
                 <div class="card invoice-card">
                     <div class="card-header pb-0">
@@ -232,7 +307,7 @@
                         <div class="table-responsive" style="overflow-x: auto;">
                             <div class="datatable-wrapper datatable-loading no-footer searchable fixed-columns">
 
-                            <div class="datatable-container">
+                            <div style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table datatable-table" id="all-invoice" tabindex="2">
                                     <thead>
                                         <tr>
@@ -293,6 +368,142 @@
                                                                 </div>
                                                             </div>
                                                     
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                              
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="col-md-6 col-xl-6">
+                <!-- Bookings-->
+                <div class="card invoice-card">
+                    <div class="card-header pb-0">
+                        <h4>Latest Complaints</h4>
+                        <div class="dropdown icon-dropdown">
+                            <button class="btn dropdown-toggle" id="userdropdown4" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icon-more-alt"></i></button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown4">
+                                <a class="dropdown-item" href="/complaints">View All Complaints</a>
+                     
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body invoice-table checkbox-checked">
+                        <div class="table-responsive" style="overflow-x: auto;">
+                            <div class="datatable-wrapper datatable-loading no-footer searchable fixed-columns">
+
+                            <div style="overflow-x: auto; white-space: nowrap;" >
+                                <table class="table" tabindex="2">
+                                    <thead>
+                                        <tr>
+                                            <th title="Thumbnail">S/N</th>
+                                            <th title="Room Name/Number">Room Number</th>
+                                            <th title="Title">Title</th>
+                                            <th title="Created At">Created At</th>
+                                            <th title="Status">Status</th>
+                                            <th title="Action">Action</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if(typeof complaints !== 'undefined'){ %>
+                                            <% complaints.forEach((complaint, index) => { %>
+                                                <tr class="odd">
+                                                    <td><%= index + 1 %></td>
+                                                    <td><%= complaint.room_number %></td>
+                                                    <td><%= complaint.title %></td>
+                                                    <td><%= complaint.createdAt.toLocaleDateString() %></td>
+                                                    <% if(complaint.status == 'processing'){ %>
+                                                        <td><button class="btn btn-light-tertiary"><%= complaint.status %></button></td>
+                                                    <% }else if(complaint.status == 'resolved'){ %>
+                                                        <td><button class="btn btn-light-primary"><%= complaint.status %></button></td>
+                                                    <% }else if(complaint.status == 'pending'){ %>
+                                                        <td><button class="btn btn-light-warning"><%= complaint.status %></button></td>
+                                                    <% } %>
+                                                    <td>
+                                                        <div class="action-div mt-0">
+                                                            <a href="#viewComplaint<%=complaint.id%>" data-bs-toggle="modal" class="view-svg">
+                                                                <svg class="feather">
+                                                                    <use href="/icons/feather-sprite.svg#eye"></use>
+                                                                </svg>
+                                                             
+                                                            </a>
+                                                            <a href="/complaints/<%= complaint.id %>" class="edit-icon">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                                    
+                                                            </a>
+                                                            <a href="#deleteComplaint" data-bs-toggle="modal" class="delete-svg">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                            </a>
+                                                            <!-- Remove File Confirmation-->
+                                                            <div class="modal fade" id="deleteComplaint" tabindex="-1" role="dialog" aria-labelledby="deleteComplaint" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirm delete</h4>
+                                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                                            <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                            <form action="/complaints/<%= complaint.id %>/delete" method="post">
+                                                                                <input type="hidden" name="_token" value="rwnauSNjj4K7I1IG63q1vM18gBWLMOmxzdW7vteu" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+    
+                                                            <!-- View Complaint -->
+                                                            <div class="modal fade" id="viewComplaint<%=complaint.id%>" tabindex="-1" role="dialog" aria-labelledby="viewComplaint" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Complaint Details</h4>
+                                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                            <div class="col-4">
+                                                                                <label class="form-label" for="">Title</label>
+                                                                                <input class="form-control" type="text" value="<%=complaint.title %>"disabled>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <label class="form-label" for="">Room Number/Name</label>
+                                                                                <input class="form-control" type="text" value="<%=complaint.room_number %>" disabled>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <label class="form-label" for="">Status</label>
+                                                                                <input class="form-control" type="text" value="<%=complaint.status %>" disabled>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-12">
+                                                                                <label class="form-label" for="">Message</label>
+                                                                                <textarea name="message"  rows="15" class="form-control" disabled><%=complaint.message %></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                         
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                          
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                 </tr>

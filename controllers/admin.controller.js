@@ -35,12 +35,17 @@ getQuote: async(req, res, next)=>{
         const limit = 10
         const page = req.query.page || 1
         const bookings = await AdminService.getAllBookings(page, limit)
-        const rooms = await AdminService.getAllRooms(page, limit)
-        const bookingCount = await AdminService.CountBookings()
-        const roomCount = await AdminService.countRooms()
+        const rooms = await AdminService.getActivePaginatedRooms(page, limit)
+        const todaybooking = await AdminService.CountTodayBookings()
+        const weekbooking = await AdminService.CountThisWeeksBookings()
+        const availableRoom = await AdminService.availableRoomCount()
+        const bookedRoom = await AdminService.bookedRoomCount()
         const employeeCount = await AdminService.countEmployee()
-        res.render('index', {user: req.session.user, bookings, rooms, bookingCount,
-          roomCount, employeeCount
+        const complaintCount = await AdminService.countComplaints()
+        const complaints = await AdminService.getAllComplaints(page, limit)
+        
+        res.render('index', {user: req.session.user, bookings, rooms, todaybooking,
+          weekbooking, availableRoom, bookedRoom, employeeCount, complaintCount, complaints
         })
     },
     getRoleList: async(req, res)=>{
@@ -571,6 +576,83 @@ updateBookingById: async(req, res)=>{
 },
   
 
+
+//  COMPLAINT LOGIC
+
+
+getAllComplaints: async(req, res)=>{
+  const limit = 10
+  const page = req.query.page || 1
+  const totalComplaint = await AdminService.countComplaints()
+  const availableComplaints = await AdminService.countPendingComplaints()
+  let totalPages = Math.ceil(totalComplaint / limit);
+  let currentPage = page
+  const complaints = await AdminService.getAllComplaints(page, limit)
+
+  res.render('complaint/index', 
+    {
+      complaints,
+      currentPage,
+      totalPages,
+      totalComplaint,
+      availableComplaints,
+      user: req.session.user
+    })
+},
+getAddComplaintPage: async(req, res)=>{
+  const rooms = await AdminService.getAllUnpaginatedRooms()
+  res.render('complaint/add', {user: req.session.user, rooms})
+},
+
+addComplaint: async(req, res)=>{
+  try {
+   
+      const data = req.body
+      await AdminService.addComplaint(data);
+      res.redirect('/complaints')
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Something went wrong!' });
+    }
+},
+
+getComplaintEditPage: async(req, res)=>{
+   
+  const id = req.params.id;
+  const complaint = await AdminService.getSingleComplaint(id)
+
+  const rooms = await AdminService.getAllUnpaginatedRooms()
+  res.render('complaint/edit', {complaint, rooms, user: req.session.user})
+},
+
+    
+updateComplaintById: async(req, res)=>{
+  try {
+      const data = req.body
+      data.id = req.params.id;
+      console.log(data)
+      const complaint = await AdminService.updateSingleComplaint(data);
+     
+      res.redirect('/complaints')
+   
+      } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
+
+deleteComplaint: async(req, res)=>{
+
+  const complaintId = req.params.id;
+
+  try {
+    await AdminService.deleteComplaint(complaintId);
+    res.redirect('/complaints')
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
 }
 
 const uploadSingleFilesToCloudinary= async file => {

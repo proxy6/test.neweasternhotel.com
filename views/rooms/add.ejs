@@ -57,7 +57,7 @@
 
                     <div class="col-6">
                         <label class="form-label" for="">Price <span> *</span></label>
-                        <input class="form-control" type="number" value="" placeholder="Enter Price" name="price" required>
+                        <input class="form-control" type="number" value="" placeholder="Enter Price" name="price" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
                     </div>
                     <div class="col-6">
                         <label class="form-label" for="">Status <span> *</span></label>

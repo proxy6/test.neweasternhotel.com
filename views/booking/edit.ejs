@@ -271,14 +271,20 @@
                             <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
+                                    <label class="form-label">Room Discount <span>(* per night)</span></label>
+                                    <input class="form-control" name="'bookingRoom_discount_discount_<%= bookingRoom.id%>" placeholder="Discount for Room" disabled type="number">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
                                     <label class="form-label">Number of Persons</label>
-                                    <input class="form-control" name="bookingRoom_no_persons_<%= bookingRoom.id%>" value="<%= bookingRoom.no_persons %>" type="number">
+                                    <input class="form-control" name="bookingRoom_no_persons_<%= bookingRoom.id%>" value="<%= bookingRoom.no_persons %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label class="form-label">Number of Days Booked</label>
-                                        <input class="form-control" name="bookingRoom_no_days_booked_<%= bookingRoom.id%>" value="<%= bookingRoom.booked_days_no %>" type="number">
+                                        <input class="form-control" name="bookingRoom_no_days_booked_<%= bookingRoom.id%>" value="<%= bookingRoom.booked_days_no %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
                             </div>

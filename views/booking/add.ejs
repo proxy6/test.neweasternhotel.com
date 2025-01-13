@@ -149,7 +149,7 @@
                         <h4>Room Details Info</h4>
                         <div class="product-group">
                             <div class="row"> 
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Room Number/Name <span>*</span></label>
                              
@@ -166,38 +166,53 @@
                             </select>
                                 </div>
                             </div>
-                            </div>
-                            <div class="row"> 
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Check In Date <span>*</span></label>
                                 <input class="form-control" name="check_in_date_0" type="date" required>
                                 </div>
                             </div>
+                            </div>
+                            <div class="row"> 
+                     
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                <label class="form-label">Check In Date Time <span>*</span></label>
+                                <label class="form-label">Check In Time <span>*</span></label>
                                 <input class="form-control" name="check_in_time_0" type="time" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Check Out Date <span>*</span></label>
+                                <input class="form-control" name="check_out_date_0" type="date" required>
                                 </div>
                             </div>
                             </div>
                             <div class="row"> 
+                          
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Discount <span>(* per night)</span></label>
+                                    <input class="form-control" name="discount_0" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    </div>
+                                </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Number of Persons</label>
-                                    <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required>
+                                    <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Number of Days Booked</label>
-                                        <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number">
-                                    </div>
-                                </div>
+                          
                                 </div>
                                 <div class="row"> 
-                            
-                                    <div class="col-sm-12">
+                               
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Number of Days Booked</label>
+                                            <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Status<span>*</span></label>
                                             <select required name="status_0" class="form-select" required> 
@@ -210,6 +225,7 @@
                                         </div>
                                     </div>
                                     </div>
+                                  
                         </div>
                         
                 

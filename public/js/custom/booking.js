@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="#" class="remove-room" onclick="removeRoomSection(this)">Remove</a>
         </div>
         <div class="row"> 
-          <div class="col-sm-12">
+          <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Room Number/Name <span>*</span></label>
               <select name="room_id_${roomCount}" class="form-select" required> 
@@ -40,37 +40,53 @@ document.addEventListener('DOMContentLoaded', () => {
               </select>
             </div>
           </div>
-        </div>
-        <div class="row"> 
-          <div class="col-sm-6">
+             <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Check In Date <span>*</span></label>
               <input class="form-control" name="check_in_date_${roomCount}" type="date" required>
             </div>
           </div>
+        </div>
+        <div class="row"> 
+       
           <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Check In Time <span>*</span></label>
               <input class="form-control" name="check_in_time_${roomCount}" type="time" required>
             </div>
           </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+                <label class="form-label">Check Out Date <span>*</span></label>
+                <input class="form-control" name="check_out_date_${roomCount}" type="date" required>
+            </div>
+          </div>
         </div>
         <div class="row"> 
+      
           <div class="col-sm-6">
+            <div class="mb-3">
+            <label class="form-label">Discount</label>
+            <input class="form-control" name="discount_${roomCount}" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+            </div>
+          </div>
+           <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Number of Persons</label>
-              <input class="form-control" name="no_persons_${roomCount}" type="number" required>
+              <input class="form-control" name="no_persons_${roomCount}" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
             </div>
           </div>
-          <div class="col-sm-6">
-            <div class="mb-3">
-              <label class="form-label">Number of Days Booked</label>
-              <input class="form-control" name="booked_days_no_${roomCount}" type="number">
-            </div>
-          </div>
+    
         </div>
         <div class= "row">
-            <div class="col-sm-12">
+       
+            <div class="col-sm-6">
+            <div class="mb-3">
+              <label class="form-label">Number of Days Booked</label>
+              <input class="form-control" name="booked_days_no_${roomCount}" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+            </div>
+            </div>
+            <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Status<span>*</span></label>
               <select required name="status_${roomCount}" class="form-select" required> 
@@ -122,12 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const roomId = section.querySelector(`[name='room_id_${roomIndex}']`);
             const checkInDate = section.querySelector(`[name='check_in_date_${roomIndex}']`);
             const checkInTime = section.querySelector(`[name='check_in_time_${roomIndex}']`);
+            const checkOutDate = section.querySelector(`[name='check_out_date_${roomIndex}']`);
             const noPersons = section.querySelector(`[name='no_persons_${roomIndex}']`);
             const status = section.querySelector(`[name='status_${roomIndex}']`);
             
       
           // Validate each required field in the room section
-          [roomId, checkInDate, checkInTime, noPersons, status].forEach((input) => {
+          [roomId, checkInDate, checkInTime, checkOutDate, noPersons, status].forEach((input) => {
             if (!input || !input.value.trim()) { // Invalid input
                 isValid = false;
                 input.classList.add('is-invalid'); // No error, input is an element.
@@ -155,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   room_id: section.querySelector(`[name='room_id_${roomIndex}']`)?.value || '',
                   check_in_date: section.querySelector(`[name='check_in_date_${roomIndex}']`)?.value || '',
                   check_in_time: section.querySelector(`[name='check_in_time_${roomIndex}']`)?.value || '',
+                  check_out_date: section.querySelector(`[name='check_out_date_${roomIndex}']`)?.value || '',
+                  discount: section.querySelector(`[name='discount_${roomIndex}']`)?.value || '',
                   no_persons: section.querySelector(`[name='no_persons_${roomIndex}']`)?.value || '',
                   booked_days_no: section.querySelector(`[name='booked_days_no_${roomIndex}']`)?.value || '',
                   status: section.querySelector(`[name='status_${roomIndex}']`)?.value || ''

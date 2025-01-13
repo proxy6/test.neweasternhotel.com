@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="col-9 ps-0">
                                                 <input class="form-control" type="number" name="phone"
-                                                    value="" placeholder="Enter Phone" required>
+                                                    value="" placeholder="Enter Phone" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                                                 </div>
                                         </div>
                                     </div>
@@ -206,7 +206,7 @@
                                 <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label>Address</label>
-                                        <input class="form-control" type="number" name="address"
+                                        <input class="form-control" type="text" name="address"
                                             value=""
                                             placeholder="Address">
                                                 </div>
@@ -258,15 +258,15 @@
                                         <label>Referee Phone</label>
                                         <input class="form-control" type="number" name="referee_phone"
                                             value=""
-                                            placeholder="Address">
+                                            placeholder="Referee Phone Number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                                 </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label>Referee Address</label>
-                                        <input class="form-control" type="number" name="referee_address"
+                                        <input class="form-control" type="text" name="referee_address"
                                             value=""
-                                            placeholder="Address">
+                                            placeholder="Referee Address">
                                                 </div>
                                 </div>
                             </div>

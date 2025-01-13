@@ -165,7 +165,7 @@
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="">Price</label>
-                            <input class="form-control" value="<%= addon.price %>"  type="number" name="price">
+                            <input class="form-control" value="<%= addon.price %>"  type="number" name="price" min="1" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                         </div>
                     <div class="col-6">
                         <label class="form-label" for="">Parent Addon</label>

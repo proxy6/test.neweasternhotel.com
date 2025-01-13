@@ -52,21 +52,28 @@ const roomOptions = rooms.map(room =>
         </div>
       </div>
       <div class="row"> 
-        <div class="col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">Number of Persons</label>
-            <input class="form-control" name="no_persons_${roomCount}" type="text" required>
+           <div class="col-sm-6">
+            <div class="mb-3">
+                <label class="form-label">Check Out Date <span>*</span></label>
+                <input class="form-control" name="check_out_date_${roomCount}" type="date" required>
+            </div>
           </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="mb-3">
-            <label class="form-label">Number of Days Booked</label>
-            <input class="form-control" name="booked_days_no_${roomCount}" type="text">
+          <div class="col-sm-6">
+            <div class="mb-3">
+            <label class="form-label">Discount</label>
+            <input class="form-control" name="discount_${roomCount}" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+            </div>
           </div>
-        </div>
+     
       </div>
          <div class= "row">
-            <div class="col-sm-12">
+             <div class="col-sm-6">
+          <div class="mb-3">
+            <label class="form-label">Number of Days Booked</label>
+            <input class="form-control" name="booked_days_no_${roomCount}" type="text" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+          </div>
+        </div>
+            <div class="col-sm-6">
             <div class="mb-3">
               <label class="form-label">Status<span>*</span></label>
               <select required name="status_${roomCount}" class="form-select" required> 
@@ -122,11 +129,12 @@ const roomOptions = rooms.map(room =>
             const roomId = section.querySelector(`[name='room_id_${roomIndex}']`);
             const checkInDate = section.querySelector(`[name='check_in_date_${roomIndex}']`);
             const checkInTime = section.querySelector(`[name='check_in_time_${roomIndex}']`);
+            const checkOutDate = section.querySelector(`[name='check_out_date_${roomIndex}']`);
             const noPersons = section.querySelector(`[name='no_persons_${roomIndex}']`);
             const status = section.querySelector(`[name='status_${roomIndex}']`);
             
             // Validate each required field in the room section
-            [roomId, checkInDate, checkInTime, noPersons, status].forEach((input) => {
+            [roomId, checkInDate, checkInTime, checkOutDate, noPersons, status].forEach((input) => {
                 if (!input || !input.value.trim()) { // Invalid input
                     isValid = false;
                     input.classList.add('is-invalid'); // Mark input as invalid
@@ -157,6 +165,8 @@ const roomOptions = rooms.map(room =>
                 room_id: section.querySelector(`[name='room_id_${roomIndex}']`)?.value || '',
                 check_in_date: section.querySelector(`[name='check_in_date_${roomIndex}']`)?.value || '',
                 check_in_time: section.querySelector(`[name='check_in_time_${roomIndex}']`)?.value || '',
+                check_out_date: section.querySelector(`[name='check_out_date_${roomIndex}']`)?.value || '',
+                discount: section.querySelector(`[name='discount_${roomIndex}']`)?.value || '',
                 no_persons: section.querySelector(`[name='no_persons_${roomIndex}']`)?.value || '',
                 booked_days_no: section.querySelector(`[name='booked_days_no_${roomIndex}']`)?.value || '',
                 status: section.querySelector(`[name='status_${roomIndex}']`)?.value || ''
@@ -183,6 +193,7 @@ const roomOptions = rooms.map(room =>
       bookingRoom_room_id: section.querySelector(`[name='bookingRoom_room_id_${bookingRoom_id}']`)?.value || '',
       bookingRoom_check_out_date: section.querySelector(`[name='bookingRoom_check_out_date_${bookingRoom_id}']`)?.value || '',
       bookingRoom_check_in_time: section.querySelector(`[name='bookingRoom_check_in_time_${bookingRoom_id}']`)?.value || '',
+      bookingRoom_discount: section.querySelector(`[name='bookingRoom_discount_${bookingRoom_id}']`)?.value || '',
       bookingRoom_no_persons: section.querySelector(`[name='bookingRoom_no_persons_${bookingRoom_id}']`)?.value || '',
       bookingRoom_no_days_booked: section.querySelector(`[name='bookingRoom_no_days_booked_${bookingRoom_id}']`)?.value || '',
       bookingRoom_status: section.querySelector(`[name='bookingRoom_status_${bookingRoom_id}']`)?.value || ''

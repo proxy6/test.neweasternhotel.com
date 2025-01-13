@@ -11,6 +11,7 @@ const Role = require('./roles')(sequelize);
 const Permission = require('./permission')(sequelize);
 const RoomType = require('./rommType')(sequelize);
 const Pages = require('./pages')(sequelize);
+const Complaints = require('./complaint')(sequelize);
 const Sessions = require('./session')(sequelize);
 
 // Define Associations
@@ -86,5 +87,6 @@ module.exports = {
   BookingAddon,
   RoomType,
   Pages,
+  Complaints,
   Sessions
 };

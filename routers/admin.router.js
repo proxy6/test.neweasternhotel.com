@@ -20,7 +20,13 @@ getQuote,
 getSingleBooking,
 deleteBooking,
 getEditBooking,
-updateBookingById} = require('../controllers/admin.controller')
+updateBookingById,
+getAllComplaints,
+getAddComplaintPage,
+addComplaint,
+getComplaintEditPage,
+updateComplaintById,
+deleteComplaint} = require('../controllers/admin.controller')
 const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
@@ -132,10 +138,21 @@ router.get('/bookings/add', isAuthorized, getAddBookingPage)
 router.post('/bookings/add', isAuthorized, addBooking)
 router.get('/bookings/:id', isAuthorized, getSingleBooking)
 router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
-// router.put('/rooms/:id/update-status', updateRoomStatus)
-// router.get('/rooms/:id', getRoomEditPage)
 router.post('/bookings/:id', isAuthorized, updateBookingById);
 router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
 
 
+
+
+
+router.get('/complaints', isAuthorized, getAllComplaints)
+router.get('/complaints/add', isAuthorized, getAddComplaintPage)
+router.post('/complaints', isAuthorized, addComplaint)
+router.get('/complaints/:id', isAuthorized, getComplaintEditPage)
+router.post('/complaints/:id', isAuthorized, updateComplaintById);
+router.post('/complaints/:id/delete', isAuthorized, deleteComplaint)
+// router.put('/rooms/:id/update-status', isAuthorized, updateRoomStatus)
+// router.get('/rooms/:id', isAuthorized, getRoomEditPage)
+// router.post('/rooms/:id', isAuthorized, updateRoomById);
+// router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 module.exports = router

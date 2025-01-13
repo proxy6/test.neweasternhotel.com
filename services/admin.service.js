@@ -1,5 +1,5 @@
 const { DATE } = require('sequelize');
-const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages } = require('../models');
+const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints } = require('../models');
 // const Booking = require('../models/booking');
 const { sequelize } = require('../models'); // Database connection
 const { Op } = require('sequelize'); // Import Sequelize operators
@@ -579,7 +579,7 @@ if(type == 'addon'){
 // ROOMS LOGIC
 static async countRooms(){
   const roomCount = await Rooms.count({
-
+    
   })
   return roomCount
 
@@ -593,6 +593,20 @@ static async availableRoomCount(){
 
   })
   return roomCount
+
+}
+
+static async bookedRoomCount(){
+  const roomCount = await BookingRooms.count({
+    distinct: true, // Enable distinct counting
+    col: 'room_id', // Specify the column to count distinct values
+    where: {
+      status: {
+        [Op.in]: ['pending', 'checkedin'], // Check for multiple statuses
+      },
+    },
+  });
+  return roomCount;
 
 }
  
@@ -622,12 +636,37 @@ static async getAllRooms(page, limit){
   });
   return room
 }
+static async getActivePaginatedRooms(page, limit){
+  let offset = 0;
+  if(page == null){
+       page = 1; 
+  }
+   // page number
+  offset = limit * (page - 1);
+  const room = await Rooms.findAll({
+    offset,
+    limit,
+    where:{
+      status: true
+    },
+    order: [['createdAt', 'DESC']] // Order by most recent
+  });
+  return room
+}
 static async getAllActiveRooms(){
   const room = await Rooms.findAll({
     where:{
       status: true
     }
 
+  });
+  return room
+}
+
+static async getAllUnpaginatedRooms(){
+
+  const room = await Rooms.findAll({
+  
   });
   return room
 }
@@ -716,18 +755,50 @@ static async deleteRoom(roomId){
 
  //BOOKING LOGIC
  static async CountBookings(){
-  const bookingCount = await Booking.count({
-    include: [
-    
-      {
-        model: Customer
-      },
-      
-    ],
-  })
-  return bookingCount
+ const booking = await Booking.count()
+ return booking
+}
+
+ static async CountTodayBookings(){
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0)); // Start of the day
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999)); // End of the day
+ // Count bookings for today
+    const bookingCount = await Booking.count({
+      where: {
+        createdAt: {
+          [Op.between]: [startOfDay, endOfDay], // Filter by today's date
+        },
+      }
+    });
+
+    return bookingCount; // Return the count
 
 }
+
+static async CountThisWeeksBookings(){
+  const today = new Date();
+
+    // Get the start and end of the current week
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Start of the week (Sunday)
+    startOfWeek.setHours(0, 0, 0, 0); // Reset to midnight
+
+    const endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6)); // End of the week (Saturday)
+    endOfWeek.setHours(23, 59, 59, 999); // End of the day
+
+    // Count bookings for today
+    const bookingCount = await Booking.count({
+      where: {
+        createdAt: {
+          [Op.between]: [startOfWeek, endOfWeek], // Filter by this week's date range
+        },
+      }
+    });
+
+    return bookingCount; // Return the count
+
+}
+ 
  
 static async getAllBookings(page, limit){
         let offset = 0;
@@ -799,6 +870,7 @@ static async getBookingRoom(bookingId){
 }
 static async addBooking(data){
   const { booking_reference, formData, rooms } = data;
+
   const transaction = await sequelize.transaction(); // Start transaction
 
   try {
@@ -860,12 +932,45 @@ static async addBooking(data){
         transaction
       })
 
-      if(roomData.status == false){
+      //check if the room is already booked
+      let bookingRoomData = await BookingRooms.findOne({
+        where: {
+          [Op.and]: [
+            { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+            {
+              [Op.or]: [
+                {
+                  check_in_date: {
+                    [Op.lte]: room.check_in_date, // Existing booking starts before or on the new check-in date
+                  },
+                  check_out_date: {
+                    [Op.gte]: room.check_in_date, // Existing booking ends after or on the new check-in date
+                  }
+                },
+                {
+                  check_in_date: {
+                    [Op.lte]: room.check_out_date, // Existing booking starts before or on the new check-out date
+                  },
+                  check_out_date: {
+                    [Op.gte]: room.check_out_date, // Existing booking ends after or on the new check-out date
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        transaction
+      });
+      
+
+      if(roomData.status == false || bookingRoomData){
   
-        // if (transaction) await transaction.rollback();
-        throw new Error('Room is unavailable!');
+        if (transaction) await transaction.rollback();
+        return (`Room ${roomData.name} is already booked for the selected dates`);
       }
-      const pricePerDay = roomData.price;
+
+      //check for discount and subtract from room price
+      const pricePerDay = room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
 
       const roomPrice = pricePerDay * parseInt(room.booked_days_no); // Calculate room price
 
@@ -875,9 +980,11 @@ static async addBooking(data){
           room_id: room.room_id,
           check_in_date: room.check_in_date,
           check_in_time: room.check_in_time,
+          check_out_date: room.check_out_date,
           booked_days_no: room.booked_days_no,
           no_persons: room.no_persons,
           price: roomPrice,
+          discount: room.discount,
           status: room.status,
         },
         { transaction }
@@ -1008,13 +1115,45 @@ static async updateBooking(data) {
         })
 
     
-        
-        if(roomData.status == false){
-        
-          if (transaction) await transaction.rollback();
-          return ('Room is unavailable!');
-        }
-        const pricePerDay = roomData.price;
+      //check if the room is already booked
+      let bookingRoomData = await BookingRooms.findOne({
+        where: {
+          [Op.and]: [
+            { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+            {
+              [Op.or]: [
+                {
+                  check_in_date: {
+                    [Op.lte]: room.check_in_date, // Existing booking starts before or on the new check-in date
+                  },
+                  check_out_date: {
+                    [Op.gte]: room.check_in_date, // Existing booking ends after or on the new check-in date
+                  }
+                },
+                {
+                  check_in_date: {
+                    [Op.lte]: room.check_out_date, // Existing booking starts before or on the new check-out date
+                  },
+                  check_out_date: {
+                    [Op.gte]: room.check_out_date, // Existing booking ends after or on the new check-out date
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        transaction
+      });
+      
+
+      if(roomData.status == false || bookingRoomData){
+  
+        if (transaction) await transaction.rollback();
+        return (`Room ${roomData.name} is already booked for the selected dates`);
+      }
+      
+        //check for discount and subtract from room price
+        const pricePerDay = room.discount != null && room.discount < roomData.price ? roomData.price - discount : roomData.price ;
 
         const roomPrice = pricePerDay * parseInt(room.booked_days_no); // Calculate room price
 
@@ -1120,8 +1259,82 @@ static async deleteBooking(bookingId) {
   }
 }
 
+// COMPLAINT LOGIC
+static async countComplaints(){
+  const complaintCount = await Complaints.count({
+  
+  })
+  return complaintCount
+}
 
+static async countPendingComplaints(){
+  const complaintCount = await Complaints.count({
+    where:{
+      status: {
+        [Op.in]: ['pending', 'processing'], // Check for multiple statuses
+      }
+    }
+  })
+  return complaintCount
+}
 
-        
+static async getAllComplaints(page, limit){
+  let offset = 0;
+  if(page == null){
+       page = 1; 
+  }
+   // page number
+  offset = limit * (page - 1);
+  const complaint = await Complaints.findAll({
+    offset,
+    limit,
+    order: [['createdAt', 'DESC']] // Order by most recent
+  });
+  return complaint
+}
+
+static async addComplaint(data){
+  const complaint = await Complaints.create({ 
+    room_number: data.room_number,
+    room_id: data.room_id,
+    title: data.title,
+    message: data.message,
+    status: "pending",
+    
+  });
+return complaint;
+
+}
+static async getSingleComplaint(complaintId){
+  const complaint = await Complaints.findOne({
+    where:{
+      id: complaintId
+    }
+  });
+  return complaint
+}
+
+static async updateSingleComplaint(data){
+  const complaint = await Complaints.update({
+    room_number: data.room_number,
+    room_id: data.room_id,
+    title: data.title,
+    message: data.message,
+    status: data.status,
+  
+  },{
+    where:{
+      id: data.id
+    }
+  })
+}
+
+static async deleteComplaint(complaintId){
+  await Complaints.destroy({
+    where:{
+      id: complaintId
+    }
+  });
+ }
 }
 module.exports = AdminService
