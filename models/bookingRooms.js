@@ -23,6 +23,10 @@ return sequelize.define("BookingRooms", {
     type: DataTypes.STRING, 
     allowNull: true, 
   },
+  check_out_time: { 
+    type: DataTypes.TIME, 
+    allowNull: true, 
+  },
   booked_days_no: { 
     type: DataTypes.INTEGER, 
     allowNull: true, 

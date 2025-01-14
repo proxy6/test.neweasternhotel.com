@@ -193,6 +193,7 @@ const roomOptions = rooms.map(room =>
       bookingRoom_room_id: section.querySelector(`[name='bookingRoom_room_id_${bookingRoom_id}']`)?.value || '',
       bookingRoom_check_out_date: section.querySelector(`[name='bookingRoom_check_out_date_${bookingRoom_id}']`)?.value || '',
       bookingRoom_check_in_time: section.querySelector(`[name='bookingRoom_check_in_time_${bookingRoom_id}']`)?.value || '',
+      bookingRoom_check_out_time: section.querySelector(`[name='bookingRoom_check_out_time_${bookingRoom_id}']`)?.value || '',
       bookingRoom_discount: section.querySelector(`[name='bookingRoom_discount_${bookingRoom_id}']`)?.value || '',
       bookingRoom_no_persons: section.querySelector(`[name='bookingRoom_no_persons_${bookingRoom_id}']`)?.value || '',
       bookingRoom_no_days_booked: section.querySelector(`[name='bookingRoom_no_days_booked_${bookingRoom_id}']`)?.value || '',

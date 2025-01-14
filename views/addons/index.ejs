@@ -44,7 +44,7 @@
                         <div class="dd3-content"><%= addon.name %>
                            
                               
-                                <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                <a href="#deleteItem<%= addon.id %>" data-bs-toggle="modal" class="delete-svg">
                                     <svg>
                                         <use href="/icons/iconly-sprite.svg#delete-icon"></use>
                                     </svg>
@@ -56,7 +56,7 @@
                                     </svg>
                                 </a>
 
-                                <div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
+                                <div class="modal fade" id="deleteItem<%= addon.id %>" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">

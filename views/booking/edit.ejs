@@ -221,6 +221,13 @@
                             <% bookingRooms.forEach((bookingRoom, index) => { %>
                         <div class="product-group book-room-section">
                             <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Type <span>*</span></label>
+                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.type %>" disabled>
+                                 
+                                    </div>
+                                </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
@@ -232,13 +239,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                <label class="form-label">Room Type <span>*</span></label>
-                                <input class="form-control" type="text" value="<%= bookingRoom.Room.type %>" disabled>
-                             
-                                </div>
-                            </div>
+                          
                             </div>
                             <div class="row"> 
                                 <div class="col-sm-6">
@@ -249,12 +250,19 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
+                                    <label class="form-label">Room Discount <span>(* per night)</span></label>
+                                    <input class="form-control" value="<%= bookingRoom.discount %>" name="'bookingRoom_discount_discount_<%= bookingRoom.id%>" disabled type="number">
+                                    </div>
+                                </div>
+                           
+                                </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
                                     <label class="form-label">Check In Date <span>*</span></label>
                                     <input class="form-control" value="<%= new Date( bookingRoom.check_in_date).toISOString().split('T')[0] %>" type="date" disabled>
                                     </div>
                                 </div>
-                                </div>
-                            <div class="row">
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Time <span>*</span></label>
@@ -267,14 +275,15 @@
                                     <input class="form-control" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_out_date).toISOString().split('T')[0] %>" type="date">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
-                                    <label class="form-label">Room Discount <span>(* per night)</span></label>
-                                    <input class="form-control" name="'bookingRoom_discount_discount_<%= bookingRoom.id%>" placeholder="Discount for Room" disabled type="number">
+                                    <label class="form-label">Check Out Time <span>*</span></label>
+                                    <input class="form-control" name="bookingRoom_check_out_time_<%= bookingRoom.id%>" value="<%= bookingRoom.check_out_time %>" type="time">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row"> 
+                             
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Number of Persons</label>

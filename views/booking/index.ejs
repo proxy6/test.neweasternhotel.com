@@ -102,6 +102,7 @@
                                         <th title="Ref">Booking Ref</th>
                                         <th title="Total Price">Total Price</th>
                                         <th title="Created At">Created At</th>
+                                        <th title="Booked By">Booked By</th>
                                         <th title="Status">Status</th>
                                         <th title="Action">Action</th>
                                     </tr>
@@ -115,6 +116,7 @@
                                             <td><%= booking.booking_reference %></td>
                                             <td>&#8358;<%= booking.total_price %></td>
                                             <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            <td><%= booking.booked_by %></td>
                                             <% if(booking.status == 'checkedout'){ %>
                                                 <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
                                             <% }else if(booking.status == 'checkedin'){ %>
@@ -143,7 +145,7 @@
                                                         </svg>
                                                
                                                     </a> -->
-                                                    <a href="#deleteBooking" data-bs-toggle="modal" class="delete-svg">
+                                                    <a href="#deleteBooking<%=booking.id %>" data-bs-toggle="modal" class="delete-svg">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation">
                                                         <polyline points="3 6 5 6 21 6"></polyline>
                                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -153,7 +155,7 @@
                                               
                                             
                                                 <!-- Remove File Confirmation-->
-                                                <div class="modal fade" id="deleteBooking" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">

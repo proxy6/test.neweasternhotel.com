@@ -27,6 +27,10 @@ return sequelize.define("Booking", {
     type: DataTypes.STRING, 
     allowNull: false, 
   },
+  booked_by: { 
+    type: DataTypes.STRING, 
+    allowNull: false, 
+  },
   status: { 
     type: DataTypes.STRING(20), 
     defaultValue: 'pending' 

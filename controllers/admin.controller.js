@@ -161,7 +161,7 @@ getQuote: async(req, res, next)=>{
          
             const data = req.body
             const file = req.file;
-
+            const plainPassword = data.password
             if(file){
                 var imageUrl = await uploadSingleFilesToCloudinary(file);
                 data['profile_pic'] = imageUrl;
@@ -174,11 +174,12 @@ getQuote: async(req, res, next)=>{
              
 
             const employee = await AdminService.addEmployee(data);
+            console.log(plainPassword)
             if(employee){
               let emaildata = {
                   username: employee.dataValues.first_name,
                   email: employee.dataValues.email,
-                  password: data.password,
+                  password: plainPassword,
                   title: "Welcome to the New Eastern Comfort Hotel"
                 }
                 welcomeEmailNotification(emaildata, (err, resp)=>{
@@ -259,6 +260,12 @@ getQuote: async(req, res, next)=>{
 
         const employeeId = req.params.id;
       
+          //delete existing file
+          const employee = await AdminService.getSingleEmployee(employeeId);
+          if(employee && employee.profile_pic){
+              await deleteSingleFileInCloudinary(employee.profile_pic)
+          }
+          
         try {
           const role = await AdminService.deleteEmployee(employeeId);
           res.redirect('/employees')
@@ -486,7 +493,7 @@ getQuote: async(req, res, next)=>{
         try {
          
             const data = req.body
-      
+            data.user = req.session.user
             const booking = await AdminService.addBooking(data);
        
             if (typeof booking === 'string') {
@@ -508,7 +515,6 @@ getQuote: async(req, res, next)=>{
     
       const booking = await AdminService.getSingleBooking(bookingId)
       const bookingRooms = await AdminService.getBookingRoom(bookingId)
-     
 
       res.render('booking/view', {
         booking,
@@ -547,7 +553,7 @@ updateBookingById: async(req, res)=>{
   try {
       const data = req.body
       data.id = req.params.id;
-      
+      data.user = req.session.user
       const booking = await AdminService.updateBooking(data);
   
       if (typeof booking === 'string') {
@@ -630,7 +636,7 @@ updateComplaintById: async(req, res)=>{
   try {
       const data = req.body
       data.id = req.params.id;
-      console.log(data)
+  
       const complaint = await AdminService.updateSingleComplaint(data);
      
       res.redirect('/complaints')

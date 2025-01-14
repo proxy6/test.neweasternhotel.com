@@ -388,12 +388,14 @@ static async updateEmployeePassword(data){
 }
 static async deleteEmployee(employeeId){
   // Find the Employee by ID
+  console.log(employeeId)
   const employee = await Employee.findByPk(employeeId);
   if (!employee) throw new Error('Employee not found');
  
- 
+ console.log(employee)
   // Delete the Employee
-  await Employee.destroy();
+  await employee.destroy();
+  // await employee.destroy();
  }
 
 
@@ -869,7 +871,7 @@ static async getBookingRoom(bookingId){
   return booking
 }
 static async addBooking(data){
-  const { booking_reference, formData, rooms } = data;
+  const { booking_reference, formData, rooms, user } = data;
 
   const transaction = await sequelize.transaction(); // Start transaction
 
@@ -904,6 +906,7 @@ static async addBooking(data){
       {
         customer_id: customer.id,
         booking_reference: booking_reference,
+        booked_by: `${user.first_name} ${user.last_name}`,
         check_in_date: rooms[0].check_in_date,
         check_in_time: rooms[0].check_in_time,
         status: hasCheckedInRoom ? 'checkedin' : 'pending', // Update status dynamically
@@ -984,7 +987,7 @@ static async addBooking(data){
           booked_days_no: room.booked_days_no,
           no_persons: room.no_persons,
           price: roomPrice,
-          discount: room.discount,
+          discount: room.discount == '' ? 0  : room.discount,
           status: room.status,
         },
         { transaction }
@@ -1016,7 +1019,7 @@ static async addBooking(data){
 }
 
 static async updateBooking(data) {
-  const { formData, rooms, bookedRooms, id } = data;
+  const { formData, rooms, bookedRooms, id, user } = data;
   const transaction = await sequelize.transaction(); // Start transaction
 
   try {
@@ -1045,10 +1048,18 @@ static async updateBooking(data) {
     const booking = await Booking.findByPk(id, { transaction });
     if (!booking) throw new Error("Booking not found");
 
+    // Check if any room or bookingRoom has a status of 'checkedin'
+    const hasCheckedInRoom = rooms.some(room => room.status === 'checkedin') || 
+    bookedRooms.some(bookedRoom => bookedRoom. bookingRoom_status === 'checkedin'); // Check both rooms and bookingRooms
+
+    // Dynamically set the booking status based on room or bookingRoom status
+    const bookingStatus = hasCheckedInRoom ? 'checkedin' : formData.booking_status; // 'checkedin' if any has the status
+
     await booking.update(
       {
         check_in_time: formData.booking_check_in_time,
-        status: formData.booking_status, // Update status if provided
+        booked_by: `${user.first_name} ${user.last_name}`,
+        status: bookingStatus, // Update status if provided
       },
       { transaction }
     );
@@ -1074,11 +1085,13 @@ static async updateBooking(data) {
     // 4. Update Existing Booking Rooms
     if (bookedRooms && bookedRooms.length > 0) {
       for (const bookedRoom of bookedRooms) {
+   
        await BookingRooms.update(
             {
       
-              check_in_date:bookedRoom.bookingRoom_check_out_date,
               check_in_time:bookedRoom.bookingRoom_check_in_time,
+              check_out_date:bookedRoom.bookingRoom_check_out_date, 
+              check_out_time:bookedRoom.bookingRoom_check_out_time,
               booked_days_no: bookedRoom.bookingRoom_no_days_booked,
               no_persons: bookedRoom.bookingRoom_no_persons,
               

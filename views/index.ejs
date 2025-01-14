@@ -241,7 +241,7 @@
                                                             </svg>
                                               
                                                         </a>
-                                                        <a href="#deleteBooking" data-bs-toggle="modal" class="delete-svg">
+                                                        <a href="#deleteBooking<%=booking.id %>" data-bs-toggle="modal" class="delete-svg">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation">
                                                             <polyline points="3 6 5 6 21 6"></polyline>
                                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -252,7 +252,7 @@
                                                
                                           
                                                 <!-- Remove File Confirmation-->
-                                                <div class="modal fade" id="deleteBooking" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -343,11 +343,11 @@
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
                                                     
                                                             </a>
-                                                            <a href="#confirmationModal30" data-bs-toggle="modal" class="delete-svg">
+                                                            <a href="#deleteRoom<%= room.id %>" data-bs-toggle="modal" class="delete-svg">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                                             </a>
                                                             <!-- Remove File Confirmation-->
-                                                            <div class="modal fade" id="confirmationModal30" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel30" aria-hidden="true">
+                                                            <div class="modal fade" id="deleteRoom<%= room.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteRoom" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
@@ -441,11 +441,11 @@
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
                                                     
                                                             </a>
-                                                            <a href="#deleteComplaint" data-bs-toggle="modal" class="delete-svg">
+                                                            <a href="#deleteComplaint<%= complaint.id %>" data-bs-toggle="modal" class="delete-svg">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                                             </a>
                                                             <!-- Remove File Confirmation-->
-                                                            <div class="modal fade" id="deleteComplaint" tabindex="-1" role="dialog" aria-labelledby="deleteComplaint" aria-hidden="true">
+                                                            <div class="modal fade" id="deleteComplaint<%= complaint.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteComplaint" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">

@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                <label class="form-label">Check In Date Time <span>*</span></label>
+                                <label class="form-label">Check In Time <span>*</span></label>
                                 <input class="form-control" value="<%= booking.check_in_time %>" disabled type="time">
                                 </div>
                             </div>
@@ -205,18 +205,19 @@
                                 <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
-                                    <label class="form-label">Room Number/Name <span>*</span></label>
-                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.number %>" disabled>
-                                 
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="mb-3">
                                     <label class="form-label">Room Type <span>*</span></label>
                                     <input class="form-control" type="text" value="<%= bookingRoom.Room.type %>" disabled>
                                  
                                     </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Number/Name <span>*</span></label>
+                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.number %>" disabled>
+                                 
+                                    </div>
+                                </div>
+                                
                                 </div>   
                                 <div class="row"> 
                                     <div class="col-sm-6">
@@ -260,20 +261,27 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                        <label class="form-label">Number of Persons</label>
-                                        <input class="form-control" value="<%= bookingRoom.no_persons %>" type="text" disabled>
+                                        <label class="form-label">Check Out Time <span>*</span></label>
+                                        <input class="form-control" value="<%= bookingRoom.check_out_time %>" type="time" disabled>
                                         </div>
                                     </div>
                                
+                               
                                     </div>
                                     <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="mb-3">
+                                            <label class="form-label">Number of Persons</label>
+                                            <input class="form-control" value="<%= bookingRoom.no_persons %>" type="text" disabled>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Number of Days Booked</label>
                                                 <input class="form-control" value="<%= bookingRoom.booked_days_no %>" disabled type="text">
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Status</label>
                                                 <input class="form-control" value="<%= bookingRoom.status %>" disabled type="text">
