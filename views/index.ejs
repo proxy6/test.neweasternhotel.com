@@ -200,8 +200,8 @@
                                             <th title="Total Price">Total Price</th>
                                             <th title="Created At">Checkin Date</th>
                                             <th title="Created At">Checkout Date</th>
-                                            <th title="Created At">Rooms</th>
-
+                                            <!-- <th title="Created At">Rooms</th> -->
+                                            <th title="Booked By">Booked By</th>
                                             <th title="Status">Status</th>
                                             <th title="Action">Action</th>
                                         </tr>
@@ -217,7 +217,7 @@
                                             <td>&#8358;<%= booking.total_price %></td>
                                             <td><%= booking.createdAt.toLocaleDateString() %></td>
                                             <td><%= booking.createdAt.toLocaleDateString() %></td>
-                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            <td><%= booking.booked_by %></td>
                                             <% if(booking.status == 'checkedout'){ %>
                                                 <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
                                             <% }else if(booking.status == 'checkedin'){ %>
