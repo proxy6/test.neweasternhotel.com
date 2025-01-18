@@ -183,7 +183,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                <label class="form-label">Check In Date Time <span>*</span></label>
+                                <label class="form-label">Check In Time <span>*</span></label>
                                 <input class="form-control" name="booking_check_in_time" value="<%= booking.check_in_time %>"  type="time">
                                 </div>
                             </div>
@@ -215,11 +215,11 @@
 
             <div class="card"> 
                 <div class="card-body">
-                    <div class="product-info room-section" data-index="0" id="room-container">
+                    <div class="product-info room-section" data-index="0" id="room-container_0">
                         <h4>Room Details Info</h4>
                         <% if (typeof bookingRooms !== 'undefined') { %>
                             <% bookingRooms.forEach((bookingRoom, index) => { %>
-                        <div class="product-group book-room-section">
+                        <div class="product-group book-room-section" data-index="<%= index %>" id="bookedRoomContainer_<%=index %>">
                             <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
@@ -233,7 +233,7 @@
                                     <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
                                     <label class="form-label">Room Number/Name <span>*</span></label>
                               
-                                    <select required name="bookingRoom_room_id_<%= bookingRoom.id%>" class="form-select" disabled> 
+                                    <select required id="bookedRoomNumber_<%=index%>" name="bookingRoom_room_id_<%= bookingRoom.id%>" class="form-select" disabled> 
                                         <option value="<%= bookingRoom.Room.id %>"><%= bookingRoom.Room.number %></option>   
                 
                                     </select>
@@ -251,7 +251,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Discount <span>(* per night)</span></label>
-                                    <input class="form-control" value="<%= bookingRoom.discount %>" name="'bookingRoom_discount_discount_<%= bookingRoom.id%>" disabled type="number">
+                                    <input class="form-control" value="<%= bookingRoom.discount %>" name="'bookingRoom_discount_<%= bookingRoom.id%>" disabled type="number">
                                     </div>
                                 </div>
                            
@@ -260,7 +260,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Date <span>*</span></label>
-                                    <input class="form-control" value="<%= new Date( bookingRoom.check_in_date).toISOString().split('T')[0] %>" type="date" disabled>
+                                    <input class="form-control" id="bookedCheckInDate_<%=index%>" name="bookingRoom_check_in_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_in_date).toISOString().split('T')[0] %>" type="date" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -272,7 +272,8 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check Out Date <span>*</span></label>
-                                    <input class="form-control" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_out_date).toISOString().split('T')[0] %>" type="date">
+                                    <input class="form-control" id="bookedCheckOutDate_<%=index %>" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_out_date).toISOString().split('T')[0] %>" type="date">
+                                    <span class="" role="alert"> <strong></strong></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -323,7 +324,7 @@
                     <div class="row"> 
                     <div class="col-sm-12 text-end">
                         <a class="btn btn-primary" id="add-room-btn">Add Room </a>
-                        <a class="btn btn-secondary" id="update-btn">Save Changes</a>
+                        <a class="btn btn-secondary" id="update-btn">Save</a>
                         <a class="btn btn-danger" href="/bookings">Cancel</a></div>
                     </div>
                 </div>
@@ -351,6 +352,7 @@
         <script>
           // Pass rooms data to JavaScript
           const rooms = <%- JSON.stringify(rooms) %>;
+          const roomTypes = <%- JSON.stringify(roomTypes) %>;
         </script>
       <% } %>
       

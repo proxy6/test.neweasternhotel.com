@@ -145,71 +145,77 @@
             <div class="col-xl-6">
             <div class="card"> 
                 <div class="card-body">
-                    <div class="product-info room-section" data-index="0" id="room-container">
+                    <div class="product-info room-section" data-index="0" id="room-container_0">
                         <h4>Room Details Info</h4>
                         <div class="product-group">
-                            <div class="row"> 
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                <label class="form-label">Room Number/Name <span>*</span></label>
-                             
-                                <select required name="room_id_0" class="form-select"> 
-                                    <option value="">Select..</option>   
-                                    <% if(typeof rooms !== 'undefined'){ %>
-                                        <% rooms.forEach(room => { %>
-
-                                    <option value="<%= room.id %>"><%= room.number.charAt(0).toUpperCase() + room.number.slice(1) %> - &#8358;<%= room.price%> </option>
-                                   
-                          
-                                <% }) %>
-                                <% }%>
-                            </select>
+                            <div class="row">
+                                <!-- Room Type -->
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Type <span>*</span></label>
+                                        <select required id="roomType_0" class="form-select">
+                                            <option value="">Select..</option>
+                                            <% if(typeof roomTypes !== 'undefined'){ %>
+                                                <% roomTypes.forEach(roomType => { %>
+                                                    <option value="<%= roomType.type %>">
+                                                        <%= roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1) %>
+                                                    </option>
+                                                <% }) %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                            
+                                <!-- Room Number/Name -->
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Number/Name <span>*</span></label>
+                                        <select name="room_id_0" required id="roomNumber_0" class="form-select" disabled>
+                                            <option value="">Select..</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            
+                            <div class="row"> 
+                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Check In Date <span>*</span></label>
-                                <input class="form-control" name="check_in_date_0" type="date" required>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="row"> 
-                     
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                <label class="form-label">Check In Time <span>*</span></label>
-                                <input class="form-control" name="check_in_time_0" type="time" required>
+                                <input class="form-control" name="check_in_date_0" id="checkInDate_0" type="date" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Check Out Date <span>*</span></label>
-                                <input class="form-control" name="check_out_date_0" type="date" required>
+                                <input class="form-control" name="check_out_date_0" id="checkOutDate_0" type="date" required>
+                                <span class="" role="alert"> <strong></strong></span>
+                               
                                 </div>
                             </div>
+                     
+                      
                             </div>
                             <div class="row"> 
-                          
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Check In Time <span>*</span></label>
+                                    <input class="form-control" name="check_in_time_0" type="time" required>
+                                    </div>
+                                </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Discount <span>(* per night)</span></label>
                                     <input class="form-control" name="discount_0" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="mb-3">
-                                    <label class="form-label">Number of Persons</label>
-                                    <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                    </div>
-                                </div>
+                           
                           
                                 </div>
                                 <div class="row"> 
-                               
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Number of Days Booked</label>
-                                            <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                        <label class="form-label">Number of Persons</label>
+                                        <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -224,7 +230,15 @@
                                         </select>
                                         </div>
                                     </div>
+                                    <!-- <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Number of Days Booked</label>
+                                            <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                        </div>
+                                    </div> -->
+                            
                                     </div>
+                                  
                                   
                         </div>
                         
@@ -234,7 +248,7 @@
                     <div class="row"> 
                     <div class="col-sm-12 text-end">
                         <a class="btn btn-primary" id="add-room-btn">Add Room </a>
-                        <a class="btn btn-secondary" id="submit-btn">Submit</a>
+                        <button class="btn btn-secondary" id="submit-btn" disabled="true">Submit</button>
                         <a class="btn btn-danger" href="/bookings">Cancel</a></div>
                     </div>
                 </div>
@@ -261,6 +275,7 @@
         <script>
           // Pass rooms data to JavaScript
           const rooms = <%- JSON.stringify(rooms) %>;
+          const roomTypes = <%- JSON.stringify(roomTypes) %>;
         </script>
       <% } %>
       

@@ -374,11 +374,18 @@ getQuote: async(req, res, next)=>{
     getAllRooms: async(req, res)=>{
         const limit = 10
         const page = req.query.page || 1
+        const type = req.query.type
+  
         const roomCount = await AdminService.countRooms()
         let totalPages = Math.ceil(roomCount / limit);
         let currentPage = page
+        if(type){
+          let rooms = await AdminService.getAllRoomsByType(type)
+      
+          return res.status(200).json({message: "Rooms Fetched Successfully", rooms})
+        }
         let availableRoomCount = await AdminService.availableRoomCount()
-        const rooms = await AdminService.getAllRooms(page, limit)
+        let rooms = await AdminService.getAllRooms(page, limit)
       
         res.render('rooms/index', 
           {
@@ -390,7 +397,34 @@ getQuote: async(req, res, next)=>{
             user: req.session.user
           })
     },
-    getAddRoomPage: async(req, res)=>{
+    checkRoomAvailability: async(req, res)=>{
+    try {
+      console.log("ROOM AVAILABILITY")
+      console.log(req.body)
+
+      const { roomId, checkIn, checkOut } = req.body;
+
+      if (!roomId || !checkIn || !checkOut) {
+        let i =1
+          console.log(i+=1)
+          return res.status(400).json({ error: 'All fields are required.' });
+      }
+  
+      let overlappingBookings  = await AdminService.availableRoom(roomId, checkIn, checkOut)
+      console.log(overlappingBookings)
+      if (overlappingBookings.length > 0) {
+        return res.json({ available: false });
+      }
+
+      return res.json({ available: true });
+    
+    } catch (error) {
+      console.error('Error checking room availability:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+  }
+  },
+   
+  getAddRoomPage: async(req, res)=>{
         //fetch room types
         const roomTypes = await AdminService.getRoomTypes()
         res.render('rooms/add', {roomTypes, user: req.session.user})
@@ -485,14 +519,17 @@ getQuote: async(req, res, next)=>{
     },
     getAddBookingPage: async(req, res)=>{
         const rooms = await AdminService.getAllActiveRooms()
+        //fetch room types
+        const roomTypes = await AdminService.getRoomTypes()
         const countries = await getCountries();
-        res.render('booking/add', {rooms, countries, user: req.session.user})
+        res.render('booking/add', {rooms, roomTypes, countries, user: req.session.user})
     },
 
     addBooking: async(req, res)=>{
         try {
          
             const data = req.body
+         
             data.user = req.session.user
             const booking = await AdminService.addBooking(data);
        
@@ -534,11 +571,12 @@ getQuote: async(req, res, next)=>{
     const booking = await AdminService.getSingleBooking(bookingId)
     const bookingRooms = await AdminService.getBookingRoom(bookingId)
     const rooms = await AdminService.getAllActiveRooms()
-
+    const roomTypes = await AdminService.getRoomTypes()
     const countries = await getCountries();
     res.render('booking/edit', {
       booking,
       bookingRooms,
+      roomTypes,
       rooms,
       countries,
       user: req.session.user
@@ -579,6 +617,15 @@ updateBookingById: async(req, res)=>{
       console.error(error);
       res.status(500).json({ error: 'Something went wrong!' });
     }
+},
+
+getReceipt: async(req, res)=>{
+  // const rooms = await AdminService.getAllActiveRooms()
+  // //fetch room types
+  const bookingId = req.params.id
+  const booking = await AdminService.getSingleBooking(bookingId)
+  const bookingRooms = await AdminService.getBookingRoom(bookingId)
+  res.render('booking/receipt', { booking, bookingRooms, user: req.session.user})
 },
   
 

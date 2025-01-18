@@ -26,7 +26,9 @@ getAddComplaintPage,
 addComplaint,
 getComplaintEditPage,
 updateComplaintById,
-deleteComplaint} = require('../controllers/admin.controller')
+deleteComplaint,
+checkRoomAvailability,
+getReceipt} = require('../controllers/admin.controller')
 const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
@@ -127,6 +129,7 @@ router.post('/addons/:id/delete', isAuthorized, deleteAddon)
 router.get('/rooms', isAuthorized, getAllRooms)
 router.get('/rooms/add', isAuthorized, getAddRoomPage)
 router.post('/rooms', isAuthorized, upload, addRoom)
+router.post('/rooms/check-availability', isAuthorized, checkRoomAvailability)
 router.put('/rooms/:id/update-status', isAuthorized, updateRoomStatus)
 router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
@@ -140,6 +143,7 @@ router.get('/bookings/:id', isAuthorized, getSingleBooking)
 router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
 router.post('/bookings/:id', isAuthorized, updateBookingById);
 router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
+router.get('/bookings/:id/receipt', getReceipt)
 
 
 
