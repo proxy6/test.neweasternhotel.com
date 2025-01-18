@@ -114,7 +114,7 @@
                             <div class="col-sm-6"> 
                                 <div class="mb-3">
                                 <label class="form-label">ID Expring Date</label>
-                                <input class="form-control" name="id_exp_date" value="<%= new Date(booking.Customer.id_exp_date).toISOString().split('T')[0] %>" type="date">
+                                <input class="form-control" name="id_exp_date" value="<%= booking.Customer.id_exp_date ? new Date(booking.Customer.id_exp_date).toISOString().split('T')[0] : booking.Customer.id_exp_date %>" type="date">
                                 </div>
                             </div>
                         </div>
@@ -136,7 +136,7 @@
                         <div class="col-sm-12">  
                             <div class="mb-3">
                             <label class="form-label">Date of Last Entry to Nigeria</label>
-                            <input class="form-control" value="<%= new Date(booking.Customer.last_country_entry_date).toISOString().split('T')[0] %>" name="last_country_entry_date" type="date">
+                            <input class="form-control" value="<%= booking.Customer.last_country_entry_date ? new Date(booking.Customer.last_country_entry_date).toISOString().split('T')[0] : booking.Customer.last_country_entry_date%>" name="last_country_entry_date" type="date">
                             </div>
                         </div>
                         </div>
@@ -178,7 +178,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Check In Date </label>
-                                <input class="form-control" name="booking_check_in_date" value="<%= booking.check_in_date %>"  type="date" disabled>
+                                <input class="form-control" name="booking_check_in_date" value="<%= booking.check_in_date ? new Date( booking.check_in_date).toISOString().split('T')[0] : booking.check_in_date %>"  type="date" disabled>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -198,7 +198,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label class="form-label">Check Out Date</label>
-                                        <input class="form-control" name="booking_check_out_date" value="<%= new Date( booking.check_out_date).toISOString().split('T')[0] %>" disabled type="date">
+                                        <input class="form-control" name="booking_check_out_date" value="<%= booking.check_out_date ? new Date( booking.check_out_date).toISOString().split('T')[0] : booking.check_out_date%>" disabled type="date">
                                     </div>
                                 </div>
                                 </div>
@@ -260,7 +260,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Date <span>*</span></label>
-                                    <input class="form-control" id="bookedCheckInDate_<%=index%>" name="bookingRoom_check_in_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_in_date).toISOString().split('T')[0] %>" type="date" disabled>
+                                    <input class="form-control" id="bookedCheckInDate_<%=index%>" name="bookingRoom_check_in_date_<%= bookingRoom.id%>" value="<%= bookingRoom.check_in_date ? new Date( bookingRoom.check_in_date).toISOString().split('T')[0] : bookingRoom.check_in_date%>" type="date" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -272,7 +272,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check Out Date <span>*</span></label>
-                                    <input class="form-control" id="bookedCheckOutDate_<%=index %>" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= new Date( bookingRoom.check_out_date).toISOString().split('T')[0] %>" type="date">
+                                    <input class="form-control" id="bookedCheckOutDate_<%=index %>" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= bookingRoom.check_out_date ? new Date( bookingRoom.check_out_date).toISOString().split('T')[0] : bookingRoom.check_out_date %>" type="date">
                                     <span class="" role="alert"> <strong></strong></span>
                                     </div>
                                 </div>
