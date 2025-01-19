@@ -16,8 +16,13 @@
                                 style="opacity: 0.8;display:block;margin-top: 10px;">The New Eastern Comfort Hotel</span>
                                 <span
                                 style="opacity: 0.8;display:block">134/136 Aba Road Umuahia</span>
-                            </td>
-                    
+                                <span></span>
+                                <span style="opacity: 0.8;display:block">
+                                    <% if (typeof booking !== 'undefined') { %>
+                                        Booked By: <%= booking.booked_by %> 
+                                    <% } %>
+                                </span>
+                       
                      
                         </tr>
                      
@@ -45,7 +50,15 @@
                                     </thead>
                                     <tbody>
                                         <% if (typeof bookingRooms !== 'undefined') { %>
+                                            <% let subTotal = 0 %>
+                                            <% let totalDiscount = 0 %>
                                             <% bookingRooms.forEach(bookingRoom => { %>
+                                            
+                                            <% 
+                                            const total = bookingRoom.Room.price * bookingRoom.booked_days_no; 
+                                            subTotal += total; 
+                                            totalDiscount += bookingRoom.discount
+                                            %>
                                         <tr
                                             style="box-shadow: 0px 10.9412px 10.9412px rgba(82, 77, 141, 0.04), 0px 9.51387px 7.6111px rgba(82, 77, 141, 0.06), 0px 5.05275px 4.0422px rgba(82, 77, 141, 0.0484671);border-radius: 5.47059px;">
                                             <td style="padding: 18px 15px;display:flex;align-items: center;gap: 10px;"><span
@@ -57,28 +70,38 @@
                                             <td style="padding: 18px 15px;text-align: right"><span>&#8358;<%= bookingRoom.price %></span></td>
                                         </tr>
                                       <% }) %>
-                                      <% } %>
+
                                 
                                             <td> </td>
                                             <td> </td>
+                                            <td></td>
                                             <td style="padding: 5px 0; padding-top: 15px;"> <span>Subtotal</span></td>
                                             <td style="padding: 5px 0;text-align: right;padding-top: 15px;">
-                                                <span>&#8358;70,000.00</span></td>
+                                                <span>&#8358;<%= subTotal %></span></td>
                                         </tr>
                                         <tr>
                                             <td> </td>
                                             <td> </td>
+                                            <td> </td>
+                                            <% if (typeof totalDiscount > 0 ) { %>
                                             <td style="padding: 5px 0;padding-top: 0;"> <span>Discount</span></td>
+                                           
                                             <td style="padding: 5px 0;text-align: right;padding-top: 0;">
-                                                <span>-</span></td>
+                                                <span><%= totalDiscount %></span></td>
+                                            <% } %>
                                         </tr>
+
                                         <tr>
                                             <td> </td>
                                             <td> </td>
+                                            <td></td>
+                                            <% if (typeof booking !== 'undefined') { %>
                                             <td style="padding: 10px 0;"> <span style="font-weight: 600;">Total Amount </span></td>
                                             <td style="padding: 10px 0;text-align: right"><span
-                                                    style="font-weight: 600;">&#8358;70,000.00</span></td>
+                                                    style="font-weight: 600;">&#8358;<%= booking.total_price %></span></td>
+                                            <% } %>
                                         </tr>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </td>
