@@ -7,22 +7,22 @@
       padding: 0;
     }
     .receipt {
-      width: 80mm;
+      width: 85mm;
       margin: 0 auto;
       padding: 10px;
       border: 1px solid #ddd;
       margin-bottom: 20px;
     }
     .details{
-        font-size: 8px;
-        margin-top: 5px;
+        font-size: 10px;
+        margin-top: 12px;
     }
     .header {
       text-align: center;
-      font-size: 12px;
+      font-size: 14px;
     }
     .header strong {
-      font-size: 14px;
+      font-size: 18px;
     }
     .divider {
       border-top: 1px dashed #000;
@@ -43,9 +43,9 @@
     .summary {
       text-align: right;
     }
-    .footer {
+    .foot {
       text-align: center;
-      margin-top: 10px;
+      /* margin-top: 10px; */
       font-size: 12px;
     }
 
@@ -81,6 +81,7 @@
             Check in Date: <%= bookingRoom.check_in_date %><br>
             Check Out Date: <%= bookingRoom.check_out_date %><br>
             Booking ID: <%= booking.booking_reference %><br>
+            Room Type: <%= bookingRoom.Room.type %>
             
            
            
@@ -91,7 +92,6 @@
               <thead>
                 <tr>
                   <th>Room</th>
-                  <th>Type</th>
                   <th>Rate</th>
                   <th>Days</th>
                   <th>Amount</th>
@@ -101,10 +101,9 @@
            
                   <tr>
                     <td><%= bookingRoom.Room.number %></td>
-                    <td><%= bookingRoom.Room.type %></td>
-                    <td><%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format( bookingRoom.Room.price) %></td>
+                    <td>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format( bookingRoom.Room.price) %></td>
                     <td><%= bookingRoom.booked_days_no %></td>
-                    <td><%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format((bookingRoom.Room.price * bookingRoom.booked_days_no)) %></td>
+                    <td>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format((bookingRoom.Room.price * bookingRoom.booked_days_no)) %></td>
                   </tr>
            
               </tbody>
@@ -112,11 +111,12 @@
           </div>
           <div class="divider"></div>
           <div class="summary">
-            <strong>Subtotal: <%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.Room.price * bookingRoom.booked_days_no) %></strong><br>
-            <strong>Discount: <%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.discount) %></strong><br>
-            <strong>Total: <%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.price) %></strong>
+            <strong>Subtotal: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.Room.price * bookingRoom.booked_days_no) %></strong><br>
+            <strong>Discount: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.discount) %></strong><br>
+            <strong>Total: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.price) %></strong>
           </div>
-          <div class="footer">
+          <div class="divider"></div>
+          <div class="foot">
             THANK YOU FOR YOUR PATRONAGE<br>
             Terms and Conditions: <br>
             No refund of money after payment <br>
