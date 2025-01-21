@@ -599,26 +599,27 @@ static async availableRoomCount(){
 }
 
 static async availableRoom(roomId, checkIn, checkOut){
-  const overlappingBookings  =  await BookingRooms.findAll({
+  const overlappingBookings = await BookingRooms.findAll({
     where: {
-        room_id: roomId,
-        status: { [Op.in]: ['checkedin', 'pending'] },
-        [Op.or]: [
-            {
-                check_in_date: { [Op.between]: [checkIn, checkOut] }
-            },
-            {
-                check_out_date: { [Op.between]: [checkIn, checkOut] }
-            },
-            {
-                [Op.and]: [
-                    { check_in_date: { [Op.lte]: checkIn } },
-                    { check_out_date: { [Op.gte]: checkOut } }
-                ]
-            }
-        ]
+      room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+      status: { [Op.in]: ['checkedin', 'pending'] },
+      [Op.or]: [
+        {
+          check_in_date: { [Op.between]: [checkIn, checkOut] }
+        },
+        {
+          check_out_date: { [Op.between]: [checkIn, checkOut] }
+        },
+        {
+          [Op.and]: [
+            { check_in_date: { [Op.lte]: checkIn } },
+            { check_out_date: { [Op.gte]: checkOut } }
+          ]
+        }
+      ]
     }
-});
+  });
+  
  return overlappingBookings 
 
 }
@@ -1008,6 +1009,7 @@ static async addBooking(data){
       let bookingRoomData = await BookingRooms.findOne({
         where: {
           [Op.and]: [
+            { room_id: room.room_id }, // Ensure it checks the same room
             { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
             {
               [Op.or]: [
@@ -1016,15 +1018,15 @@ static async addBooking(data){
                     [Op.lt]: room.check_in_date, // Existing booking starts before the new check-in date
                   },
                   check_out_date: {
-                    [Op.gt]: room.check_in_date, // Existing booking ends after  the new check-in date
+                    [Op.gt]: room.check_in_date, // Existing booking ends after the new check-in date
                   }
                 },
                 {
                   check_in_date: {
-                    [Op.lt]: room.check_out_date, // Existing booking starts before or on the new check-out date
+                    [Op.lt]: room.check_out_date, // Existing booking starts before the new check-out date
                   },
                   check_out_date: {
-                    [Op.gt]: room.check_out_date, // Existing booking ends after or on the new check-out date
+                    [Op.gt]: room.check_out_date, // Existing booking ends after the new check-out date
                   }
                 }
               ]
@@ -1033,6 +1035,7 @@ static async addBooking(data){
         },
         transaction
       });
+      
       
       console.log('room data')
       console.log(bookingRoomData)
@@ -1044,7 +1047,7 @@ static async addBooking(data){
       }
 
       //check for discount and subtract from room price
-      const pricePerDay = room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
+      // const pricePerDay = room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
        // Calculate the difference in days
       // let booked_days_no = new Date(room.check_out_date).setHours(0,0,0,0) - new Date(room.check_in_date).setHours(0,0,0,0) / 86400000
       // console.log("booked_days_no")
@@ -1067,7 +1070,11 @@ static async addBooking(data){
             console.log(room.booked_days_no)
         }
       }
-      const roomPrice = pricePerDay * parseInt(room.booked_days_no); // Calculate room price
+      const roomPrice = room.discount && room.discount < roomData.price * room.booked_days_no
+      ? (roomData.price * room.booked_days_no)  - room.discount
+      : roomData.price * room.booked_days_no;
+
+      // const roomPrice = pricePerDay * parseInt(room.booked_days_no); // Calculate room price
       await BookingRooms.create(
         {
           booking_id: booking.id,
@@ -1194,7 +1201,7 @@ static async updateBooking(data) {
 
         if (overlappingRooms.length > 0) {
           await transaction.rollback();
-          return `Room is not available for the selected dates`;
+          return `Selected dates overlaps for the selected room`;
         }
       }
 
@@ -1208,14 +1215,20 @@ static async updateBooking(data) {
     // Update existing booked rooms
     console.log(bookedRooms)
     console.log("BOOKED ROOMS")
+    let totalPrice = 0;
+    let latestCheckOutDate = null;
+    //update existing rooms
     if (bookedRooms && bookedRooms.length > 0) {
       for (const bookedRoom of bookedRooms) {
         let roomInfo = await Rooms.findOne({
           where:{
-            id: bookedRoom.bookingRoom_id
+            id: bookedRoom.bookingRoom_room_id
           },
           transaction
         })
+
+        console.log('this is a room info')
+        console.log(roomInfo)
         const checkInDate = new Date(
           bookedRoom.bookingRoom_check_in_date
         ).setHours(0, 0, 0, 0);
@@ -1223,18 +1236,21 @@ static async updateBooking(data) {
           bookedRoom.bookingRoom_check_out_date
         ).setHours(0, 0, 0, 0);
         const bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
-        const pricePerDay = bookedRoom.bookingRoom_discount != null && bookedRoom.bookingRoom_discount < roomInfo.price ? roomInfo.price - bookedRoom.bookingRoom_discount : roomInfo.price ;
+        const pricePerRoom = bookedRoom.bookingRoom_discount != null && bookedRoom.bookingRoom_discount < roomInfo.price * bookedDaysNo
+         ? ((roomInfo.price * bookedDaysNo) - bookedRoom.bookingRoom_discount) : roomInfo.price * bookedDaysNo ;
         // Calculate the difference in days
+        totalPrice += pricePerRoom
         await BookingRooms.update(
           {
             check_in_time: bookedRoom.bookingRoom_check_in_time,
             check_out_date: bookedRoom.bookingRoom_check_out_date,
             check_out_time:
-              bookedRoom.bookingRoom_check_out_time || null,
+            bookedRoom.bookingRoom_check_out_time || null,
             booked_days_no: bookedDaysNo,
             no_persons: bookedRoom.bookingRoom_no_persons,
             status: bookedRoom.bookingRoom_status,
-            price: pricePerDay * bookedDaysNo
+            price: pricePerRoom,
+            discount: bookedRoom.bookingRoom_discount == '' ? 0  : bookedRoom.bookingRoom_discount
             
           },
           { where: { id: bookedRoom.bookingRoom_id }, transaction }
@@ -1255,61 +1271,60 @@ static async updateBooking(data) {
     }
 
     // Add new booking rooms and calculate total price
-    let totalPrice = booking.total_price || 0;
-    let latestCheckOutDate = null;
-
     if (rooms && rooms.length > 0) {
       for (const room of rooms) {
+        console.log(room)
         const roomData = await Rooms.findOne({
           where: { id: room.room_id },
           transaction,
         });
 
-        // Validate room availability
-        const bookingRoomData = await BookingRooms.findOne({
-          where: {
-            [Op.and]: [
-              { status: { [Op.ne]: "checkedout" } },
-              {
-                [Op.or]: [
-                  {
-                    check_in_date: {
-                      [Op.lt]: room.check_in_date,
-                    },
-                    check_out_date: {
-                      [Op.gt]: room.check_in_date,
-                    },
+      // Validate room availability
+      const bookingRoomData = await BookingRooms.findOne({
+        where: {
+          [Op.and]: [
+            { room_id: room.room_id }, // Ensure the check is for the specific room
+            { status: { [Op.ne]: "checkedout" } }, // Exclude 'checkedout' status
+            {
+              [Op.or]: [
+                {
+                  check_in_date: {
+                    [Op.lt]: room.check_in_date, // Existing booking starts before the new check-in date
                   },
-                  {
-                    check_in_date: {
-                      [Op.lt]: room.check_out_date,
-                    },
-                    check_out_date: {
-                      [Op.gt]: room.check_out_date,
-                    },
+                  check_out_date: {
+                    [Op.gt]: room.check_in_date, // Existing booking ends after the new check-in date
                   },
-                ],
-              },
-            ],
-          },
-          transaction,
-        });
+                },
+                {
+                  check_in_date: {
+                    [Op.lt]: room.check_out_date, // Existing booking starts before or on the new check-out date
+                  },
+                  check_out_date: {
+                    [Op.gt]: room.check_out_date, // Existing booking ends after or on the new check-out date
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        transaction,
+      });
+
 
         if (bookingRoomData) {
           await transaction.rollback();
-          return `Room ${roomData.name} is already booked for the selected dates`;
+          return `Room ${roomData.number} is already booked for the selected dates`;
         }
 
-        const pricePerDay =
-          room.discount && room.discount < roomData.price
-            ? roomData.price - room.discount
-            : roomData.price;
+      
 
         const checkInDate = new Date(room.check_in_date).setHours(0, 0, 0, 0);
         const checkOutDate = new Date(room.check_out_date).setHours(0, 0, 0, 0);
         const bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
-        const roomPrice = pricePerDay * bookedDaysNo;
-
+        const roomPrice = room.discount && room.discount < roomData.price * bookedDaysNo
+        ? (roomData.price * bookedDaysNo)  - room.discount
+        : roomData.price * bookedDaysNo;
+        totalPrice += roomPrice
         await BookingRooms.create(
           {
             booking_id: id,
@@ -1320,11 +1335,11 @@ static async updateBooking(data) {
             no_persons: room.no_persons,
             price: roomPrice,
             status: room.status,
+            discount: room.discount == '' ? 0  : room.discount,
           },
           { transaction }
         );
-
-        totalPrice += roomPrice;
+        
         latestCheckOutDate =
           !latestCheckOutDate || checkOutDate > latestCheckOutDate
             ? checkOutDate

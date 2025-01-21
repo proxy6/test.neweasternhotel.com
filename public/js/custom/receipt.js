@@ -1,38 +1,50 @@
 // Function to print the receipt
 function printReceipt() {
-    // Add CSS styles to match the receipt printer size
-    const style = `
-        <style>
-            @page {
-                size: 80mm 80mm; /* Set the receipt paper size */
-                margin: 0; /* Remove default margins */
-            }
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                width: 80mm; /* Ensure the content fits the paper width */
-            }
-            #receipt {
-                width: 100%;
-            }
-        </style>
-    `;
+    // Save original page styles
+    const originalStyles = document.body.innerHTML;
 
-    // Get the receipt content
-    const element = document.getElementById("receipt");
-
-    // Temporarily add the style to the document
-    const printStyles = document.createElement("style");
-    printStyles.innerHTML = style;
-    document.head.appendChild(printStyles);
-
-    // Print the page
-    window.print();
-
-    // Remove the temporary styles after printing
-    document.head.removeChild(printStyles);
+    // Clone the receipt content and apply styles
+    const receiptContent = document.getElementById("receipt").outerHTML;
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Receipt</title>
+            <style>
+                @page {
+                    size: auto;
+                    margin: 20mm; /* Customize margins */
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                }
+                th {
+                    background-color: #43B9B2;
+                    color: white;
+                }
+            </style>
+        </head>
+        <body>
+            ${receiptContent}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
 }
+
 
 // Event listener for the Print Receipt button
 document.getElementById('printReceipt').addEventListener('click', function () {
