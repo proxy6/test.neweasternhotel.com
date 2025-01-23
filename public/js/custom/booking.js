@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.querySelectorAll('input[required], select[required]').forEach((input) => {
             if (input && input.value && input.value.trim()) { // Valid input
                 input.classList.remove('is-invalid');
+            
               } else { // Invalid or missing input
                 if (input && input.classList) input.classList.add('is-invalid'); // Only add class if input exists.
               }
