@@ -599,6 +599,7 @@ static async availableRoomCount(){
 }
 
 static async availableRoom(roomId, checkIn, checkOut){
+  
   const overlappingBookings = await BookingRooms.findAll({
     where: {
       room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
@@ -619,6 +620,8 @@ static async availableRoom(roomId, checkIn, checkOut){
       ]
     }
   });
+  console.log(roomId)
+  console.error(overlappingBookings)
   
  return overlappingBookings 
 

@@ -99,13 +99,16 @@
                                         <tr>
                                             <th>S/N</th>
                                             <th title="Name">Name</th>
-                                            <th title="Phone">Phone</th>
-                                            <th title="Ref">Booking Ref</th>
+                                       
+                                            <!-- <th title="Ref">Booking Ref</th> -->
                                             <th title="Room">Room</th>
                                             <th title="Room Type">Room Type</th>
                                             <th title="Total Price">Total Price</th>
-                                            <th title="Created At">Created At</th>
+                                           
+                                            <th title="Payment Mode">Payment Mode</th>
+                                            <th title="Phone">Phone</th>
                                             <th title="Booked By">Booked By</th>
+                                            <th title="Created At">Created At</th>
                                             <th title="Status">Status</th>
                                             <th title="Action">Action</th>
                                         </tr>
@@ -115,16 +118,20 @@
                                             <tr class="odd">
                                                 <td><%= index + 1 %></td>
                                                 <td class="sorting_1"><%= booking.Customer.name %></td>
-                                                <td><%= booking.Customer.phone %></td>
-                                                <td><%= booking.booking_reference %></td>
+                                                
+                                                <!-- <td><%= booking.booking_reference %></td> -->
                                                 <!-- Assuming bookingRooms is an array that is related to the current booking -->
                                                 <!-- Assuming bookingRooms is an array that is related to the current booking -->
                                                 <% let bookingRoom = bookings.bookingRooms.find(room => room.booking_id === booking.id); %>
                                                 <td><%= bookingRoom ? bookingRoom.Room.number : 'N/A' %></td>
                                                 <td><%= bookingRoom ? bookingRoom.Room.type : 'N/A' %></td>
                                                 <td>&#8358;<%= booking.total_price %></td>
-                                                <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            
+
+                                                <td><%= booking.payment_mode %></td>
+                                                <td><%= booking.Customer.phone %></td>
                                                 <td><%= booking.booked_by %></td>
+                                                <td><%= booking.createdAt.toLocaleDateString() %></td>
                                                 <% if(booking.status == 'checkedout'){ %>
                                                     <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
                                                 <% }else if(booking.status == 'checkedin'){ %>
