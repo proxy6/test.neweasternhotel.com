@@ -620,7 +620,7 @@ static async availableRoom(roomId, checkIn, checkOut){
       ]
     }
   });
-  console.log(roomId)
+  console.error(roomId)
   console.error(overlappingBookings)
   
  return overlappingBookings 
