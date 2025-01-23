@@ -27,7 +27,7 @@ return sequelize.define("Customer", {
     allowNull: true, 
   },
   id_exp_date: { 
-    type: DataTypes.DATE, 
+    type: DataTypes.STRING, 
     allowNull: true, 
   },
   id_issue_country: { 
@@ -43,7 +43,7 @@ return sequelize.define("Customer", {
     allowNull: true, 
   },
   last_country_entry_date: { 
-    type: DataTypes.DATE, 
+    type: DataTypes.STRING, 
     allowNull: true, 
   },
   car_no: { 

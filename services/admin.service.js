@@ -989,8 +989,7 @@ static async addBooking(data){
         }
       });
       if (overlappingRooms.length > 0) {
-        console.log(overlappingRooms)
-        console.log('here')
+       
         if (transaction) await transaction.rollback(); // Rollback transaction if already started
         // ${[...new Set(duplicateRooms)].join(', ')}
         return (`Room is not available for the selected dates`);
@@ -1037,9 +1036,6 @@ static async addBooking(data){
       });
       
       
-      console.log('room data')
-      console.log(bookingRoomData)
-      console.log(roomData)
       if(bookingRoomData){
         
         if (transaction) await transaction.rollback();
@@ -1062,12 +1058,13 @@ static async addBooking(data){
         const checkOutDate = new Date(room.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
       
         // Calculate the difference in days
-        const booked_days_no = (checkOutDate - checkInDate) / 86400000;
-        console.log("booked_days_no")
-        console.log(booked_days_no)
-        if (booked_days_no >= 0) {
+        let booked_days_no = (checkOutDate - checkInDate) / 86400000;
+      
+        if (booked_days_no > 0) {
           room.booked_days_no = booked_days_no
-            console.log(room.booked_days_no)
+            
+        }else{
+          room.booked_days_no = 1
         }
       }
       const roomPrice = room.discount && room.discount < roomData.price * room.booked_days_no
@@ -1213,8 +1210,7 @@ static async updateBooking(data) {
     }
 
     // Update existing booked rooms
-    console.log(bookedRooms)
-    console.log("BOOKED ROOMS")
+    
     let totalPrice = 0;
     let latestCheckOutDate = null;
     //update existing rooms
@@ -1227,15 +1223,16 @@ static async updateBooking(data) {
           transaction
         })
 
-        console.log('this is a room info')
-        console.log(roomInfo)
         const checkInDate = new Date(
           bookedRoom.bookingRoom_check_in_date
         ).setHours(0, 0, 0, 0);
         const checkOutDate = new Date(
           bookedRoom.bookingRoom_check_out_date
         ).setHours(0, 0, 0, 0);
-        const bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
+        let bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
+        if(bookedDaysNo <= 0){
+          bookedDaysNo = 1;
+        }
         const pricePerRoom = bookedRoom.bookingRoom_discount != null && bookedRoom.bookingRoom_discount < roomInfo.price * bookedDaysNo
          ? ((roomInfo.price * bookedDaysNo) - bookedRoom.bookingRoom_discount) : roomInfo.price * bookedDaysNo ;
         // Calculate the difference in days
@@ -1320,7 +1317,10 @@ static async updateBooking(data) {
 
         const checkInDate = new Date(room.check_in_date).setHours(0, 0, 0, 0);
         const checkOutDate = new Date(room.check_out_date).setHours(0, 0, 0, 0);
-        const bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
+        let bookedDaysNo = (checkOutDate - checkInDate) / 86400000;
+        if(bookedDaysNo <= 0){
+          bookedDaysNo = 1;
+        }
         const roomPrice = room.discount && room.discount < roomData.price * bookedDaysNo
         ? (roomData.price * bookedDaysNo)  - room.discount
         : roomData.price * bookedDaysNo;

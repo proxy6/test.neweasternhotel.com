@@ -100,6 +100,8 @@
                                         <th title="Name">Name</th>
                                         <th title="Phone">Phone</th>
                                         <th title="Ref">Booking Ref</th>
+                                        <!-- <th title="Room">Room</th>
+                                        <th title="Room Type">Room Type</th> -->
                                         <th title="Total Price">Total Price</th>
                                         <th title="Created At">Created At</th>
                                         <th title="Booked By">Booked By</th>
@@ -114,6 +116,8 @@
                                             <td class="sorting_1"><%= booking.Customer.name %></td>
                                             <td><%= booking.Customer.phone %></td>
                                             <td><%= booking.booking_reference %></td>
+                                            <!-- <td></td>
+                                            <td></td> -->
                                             <td>&#8358;<%= booking.total_price %></td>
                                             <td><%= booking.createdAt.toLocaleDateString() %></td>
                                             <td><%= booking.booked_by %></td>

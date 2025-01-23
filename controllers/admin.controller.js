@@ -508,7 +508,7 @@ getQuote: async(req, res, next)=>{
         let totalPages = Math.ceil(bookingCount / limit);
         let currentPage = page
         const bookings = await AdminService.getAllBookings(page, limit)
-       
+       console.log(bookings)
         res.render('booking/index', {
           bookings,
           totalPages,
