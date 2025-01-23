@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ roomId, checkIn, checkOut })
         });
-  
+        console.log(response)
         const result = await response.json();
         console.log(result)
         if (result.available === true) {
