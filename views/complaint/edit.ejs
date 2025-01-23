@@ -43,7 +43,7 @@
                         <div class="col-4">
                             <label class="form-label" for="">Room Number/Name</label>
                             
-                            <select required name="room_number" id="roomSelector" class="form-select">
+                            <select name="room_number" id="roomSelector" class="form-select">
                                 <option value="<%=complaint.room_number %>"><%=complaint.room_number %></option>
                                 <% if (typeof rooms !== 'undefined') { %>
                                     <% rooms.forEach(room => { %>
