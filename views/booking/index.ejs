@@ -93,108 +93,113 @@
                 <div class="card-block row">
                     <div class="role-table">
                         <div class="table-responsive p-3">
-                            <table class="table" id="tag-table">
-                                <thead>
-                                    <tr>
-                                        <th>S/N</th>
-                                        <th title="Name">Name</th>
-                                        <th title="Phone">Phone</th>
-                                        <th title="Ref">Booking Ref</th>
-                                        <!-- <th title="Room">Room</th>
-                                        <th title="Room Type">Room Type</th> -->
-                                        <th title="Total Price">Total Price</th>
-                                        <th title="Created At">Created At</th>
-                                        <th title="Booked By">Booked By</th>
-                                        <th title="Status">Status</th>
-                                        <th title="Action">Action</th>
-                                    </tr>
-                                    <tbody>
-                                        <% if (typeof bookings !== 'undefined') { %>
-                                            <% bookings.booking.forEach((booking, index) => { %>
-                                        <tr class="odd">
-                                            <td><%= index + 1 %></td>
-                                            <td class="sorting_1"><%= booking.Customer.name %></td>
-                                            <td><%= booking.Customer.phone %></td>
-                                            <td><%= booking.booking_reference %></td>
-                                            <!-- <td></td>
-                                            <td></td> -->
-                                            <td>&#8358;<%= booking.total_price %></td>
-                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
-                                            <td><%= booking.booked_by %></td>
-                                            <% if(booking.status == 'checkedout'){ %>
-                                                <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
-                                            <% }else if(booking.status == 'checkedin'){ %>
-                                                <td><button class="btn btn-light-primary"><%= booking.status %></button></td>
-                                            <% }else if(booking.status == 'pending'){ %>
-                                                <td><button class="btn btn-light-warning"><%= booking.status %></button></td>
-                                            <% } %>
-                                            <td>
-                                              
-                                                <div class="action-div mt-0">
-                                                    <% if(booking.status != 'checkedout'){ %>
-                                                        <a href="/bookings/<%= booking.id %>/edit" class="edit-icon">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-                                                        
-                                                        </a>
-                                                    <% } %>
-                                                    <a href="/bookings/<%=booking.id %>">
-                                                        <svg class="feather">
-                                                            <use href="/icons/feather-sprite.svg#eye"></use>
-                                                        </svg>
-                                          
-                                                    </a>
-                                                    <!-- <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
-                                                        <svg class="feather">
-                                                            <use href="/icons/feather-sprite.svg#check-circle"></use>
-                                                        </svg>
-                                               
-                                                    </a> -->
-                                                    <a href="#deleteBooking<%=booking.id %>" data-bs-toggle="modal" class="delete-svg">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation">
-                                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                        <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                    </a>
-                                                    <a href="/bookings/<%=booking.id %>/receipt">
-                                                        <svg class="feather">
-                                                            <use href="/icons/feather-sprite.svg#printer"></use>
-                                                        </svg>
-                                          
-                                                    </a>
-                                              
+                            <div style="overflow-x: auto; white-space: nowrap;">
+                                <table class="table" id="tag-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S/N</th>
+                                            <th title="Name">Name</th>
+                                            <th title="Phone">Phone</th>
+                                            <th title="Ref">Booking Ref</th>
+                                            <th title="Room">Room</th>
+                                            <th title="Room Type">Room Type</th>
+                                            <th title="Total Price">Total Price</th>
+                                            <th title="Created At">Created At</th>
+                                            <th title="Booked By">Booked By</th>
+                                            <th title="Status">Status</th>
+                                            <th title="Action">Action</th>
+                                        </tr>
+                                        <tbody>
+                                            <% if (typeof bookings !== 'undefined') { %>
+                                                <% bookings.booking.forEach((booking, index) => { %>
+                                            <tr class="odd">
+                                                <td><%= index + 1 %></td>
+                                                <td class="sorting_1"><%= booking.Customer.name %></td>
+                                                <td><%= booking.Customer.phone %></td>
+                                                <td><%= booking.booking_reference %></td>
+                                                <!-- Assuming bookingRooms is an array that is related to the current booking -->
+                                                <!-- Assuming bookingRooms is an array that is related to the current booking -->
+                                                <% let bookingRoom = bookings.bookingRooms.find(room => room.booking_id === booking.id); %>
+                                                <td><%= bookingRoom ? bookingRoom.Room.number : 'N/A' %></td>
+                                                <td><%= bookingRoom ? bookingRoom.Room.type : 'N/A' %></td>
+                                                <td>&#8358;<%= booking.total_price %></td>
+                                                <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                                <td><%= booking.booked_by %></td>
+                                                <% if(booking.status == 'checkedout'){ %>
+                                                    <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
+                                                <% }else if(booking.status == 'checkedin'){ %>
+                                                    <td><button class="btn btn-light-primary"><%= booking.status %></button></td>
+                                                <% }else if(booking.status == 'pending'){ %>
+                                                    <td><button class="btn btn-light-warning"><%= booking.status %></button></td>
+                                                <% } %>
+                                                <td>
+                                                
+                                                    <div class="action-div mt-0">
+                                                        <% if(booking.status != 'checkedout'){ %>
+                                                            <a href="/bookings/<%= booking.id %>/edit" class="edit-icon">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                                            
+                                                            </a>
+                                                        <% } %>
+                                                        <a href="/bookings/<%=booking.id %>">
+                                                            <svg class="feather">
+                                                                <use href="/icons/feather-sprite.svg#eye"></use>
+                                                            </svg>
                                             
-                                                <!-- Remove File Confirmation-->
-                                                <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h4 class="modal-title">Confirm delete</h4>
-                                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <h4 class="mb-3"> Are you sure want to delete ?</h4>
-                                                                <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                <form action="/bookings/<%= booking.id %>/delete" method="post">
-                                                                    <input type="hidden" name="_token" value="JcwTIw5DkUPPmAO0uPN35eJNyCiYl6XMOVRs9Yk6" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
-                                                                </form>
+                                                        </a>
+                                                        <!-- <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
+                                                            <svg class="feather">
+                                                                <use href="/icons/feather-sprite.svg#check-circle"></use>
+                                                            </svg>
+                                                
+                                                        </a> -->
+                                                        <a href="#deleteBooking<%=booking.id %>" data-bs-toggle="modal" class="delete-svg">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                            <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                        </a>
+                                                        <a href="/bookings/<%=booking.id %>/receipt">
+                                                            <svg class="feather">
+                                                                <use href="/icons/feather-sprite.svg#printer"></use>
+                                                            </svg>
+                                            
+                                                        </a>
+                                                
+                                                
+                                                    <!-- Remove File Confirmation-->
+                                                    <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">Confirm delete</h4>
+                                                                    <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                                    <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                    <form action="/bookings/<%= booking.id %>/delete" method="post">
+                                                                        <input type="hidden" name="_token" value="JcwTIw5DkUPPmAO0uPN35eJNyCiYl6XMOVRs9Yk6" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                                                    </form>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                
-                                                  
-                                                
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                        <% } %>
-                                    </tbody>
-                                </thead>
-                            </table>
+                                                    
+                                                    
+                                                    
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                            <% } %>
+                                        </tbody>
+                                    </thead>
+                                </table>
+                            </div>
                             <div class="table-container">
                                 <%
                                 <!-- Calculate starting and ending page numbers to display -->

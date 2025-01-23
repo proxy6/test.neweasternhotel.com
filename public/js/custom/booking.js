@@ -344,10 +344,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorMessage = 'Please select valid check-in and check-out dates';
         if (alertSpan) alertSpan.textContent = errorMessage; // Display the error message
         submitBtn.setAttribute('disabled', 'true'); // Disable the submit button
+        console.log("Invalid Dates")
         return; // Stop further execution if dates are invalid
       }else{
         if (alertSpan) alertSpan.textContent = ""; // Display the error message
         submitBtn.setAttribute('disabled', 'false'); // Disable the submit button
+        console.log("Valid  Dates")
       }
   
       try {
@@ -358,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         const result = await response.json();
-  
+        console.log(result)
         if (result.available === true) {
           submitBtn.removeAttribute('disabled');
           if (alertSpan) alertSpan.textContent = '';
