@@ -1,5 +1,5 @@
 const { DATE } = require('sequelize');
-const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints } = require('../models');
+const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints, PaymentMode } = require('../models');
 // const Booking = require('../models/booking');
 const { sequelize } = require('../models'); // Database connection
 const { Op } = require('sequelize'); // Import Sequelize operators
@@ -659,6 +659,13 @@ static async getRoomTypes(page){
   return roomType
 }
 
+static async getPaymentMode(){
+  const paymentMode = await PaymentMode.findAll({
+
+  });
+  return paymentMode
+}
+
 static async getAllRooms(page, limit){
   let offset = 0;
   if(page == null){
@@ -943,6 +950,7 @@ static async addBooking(data){
         customer_id: customer.id,
         booking_reference: booking_reference,
         booked_by: `${user.first_name} ${user.last_name}`,
+        payment_mode: formData.payment_mode,
         check_in_date: rooms[0].check_in_date,
         check_in_time: rooms[0].check_in_time,
         status: hasCheckedInRoom ? 'checkedin' : 'pending', // Update status dynamically
@@ -1157,6 +1165,7 @@ static async updateBooking(data) {
        // check_in_time: formData.booking_check_in_time,
         booked_by: `${user.first_name} ${user.last_name}`,
         status: bookingStatus,
+        payment_mode: formData.payment_mode,
       },
       { transaction }
     );

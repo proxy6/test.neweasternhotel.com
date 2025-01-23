@@ -13,6 +13,7 @@ const RoomType = require('./rommType')(sequelize);
 const Pages = require('./pages')(sequelize);
 const Complaints = require('./complaint')(sequelize);
 const Sessions = require('./session')(sequelize);
+const PaymentMode = require('./paymentMode')(sequelize);
 
 // Define Associations
 Role.belongsToMany(Permission, {
@@ -88,5 +89,6 @@ module.exports = {
   RoomType,
   Pages,
   Complaints,
-  Sessions
+  Sessions,
+  PaymentMode
 };

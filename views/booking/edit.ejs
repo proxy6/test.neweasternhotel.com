@@ -71,6 +71,23 @@
                                     <input class="form-control" name="nationality" value="<%= booking.Customer.nationality %>" type="text">
                                 </div>
                             </div>
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Mode<span>*</span></label>
+                                    <select required name="payment_mode" class="form-select" required> 
+                                        <option value="">Select an Option</option> 
+                                        <% if(typeof paymentModes !== 'undefined'){ %>
+                                            <% paymentModes.forEach(paymentMode => { %>
+                                                <option value="<%= paymentMode.mode %>">
+                                                    <%= paymentMode.mode.charAt(0).toUpperCase() + paymentMode.mode.slice(1) %>
+                                                </option>
+                                            <% }) %>
+                                        <% } %>
+                                 
+     
+                                </select>
+                                </div>
+                            </div>
                             </div>
                     </div>
                

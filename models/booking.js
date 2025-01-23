@@ -31,6 +31,10 @@ return sequelize.define("Booking", {
     type: DataTypes.STRING, 
     allowNull: false, 
   },
+  payment_mode: { 
+    type: DataTypes.STRING, 
+    allowNull: false, 
+  },
   status: { 
     type: DataTypes.STRING(20), 
     defaultValue: 'pending' 

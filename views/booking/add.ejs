@@ -58,7 +58,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Address</label>
-                                <input class="form-control" name="address" placeholder="Enter Customer Address" type="text" required>
+                                <input class="form-control" name="address" placeholder="Enter Customer Address" type="text">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -67,8 +67,26 @@
                                     <input class="form-control" name="nationality" placeholder="Enter Customer Nationality" type="text">
                                 </div>
                             </div>
+                            <div class="col-sm-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Mode<span>*</span></label>
+                                    <select required name="payment_mode" class="form-select" required> 
+                                        <option value="">Select an Option</option> 
+                                        <% if(typeof paymentModes !== 'undefined'){ %>
+                                            <% paymentModes.forEach(paymentMode => { %>
+                                                <option value="<%= paymentMode.mode %>">
+                                                    <%= paymentMode.mode.charAt(0).toUpperCase() + paymentMode.mode.slice(1) %>
+                                                </option>
+                                            <% }) %>
+                                        <% } %>
+                                 
+     
+                                </select>
+                                </div>
                             </div>
+                        </div>
                     </div>
+                 
                
                     <h4 class="mt-4">Customer Profile</h4>
                     <div class="product-group">
@@ -230,14 +248,8 @@
                                         </select>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Number of Days Booked</label>
-                                            <input class="form-control" name="booked_days_no_0" placeholder="Enter Number of Days Booked" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                        </div>
-                                    </div> -->
                             
-                                    </div>
+                               
                                   
                                   
                         </div>

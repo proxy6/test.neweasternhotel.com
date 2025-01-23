@@ -521,8 +521,10 @@ getQuote: async(req, res, next)=>{
         const rooms = await AdminService.getAllActiveRooms()
         //fetch room types
         const roomTypes = await AdminService.getRoomTypes()
+        const paymentModes = await AdminService.getPaymentMode()
+        
         const countries = await getCountries();
-        res.render('booking/add', {rooms, roomTypes, countries, user: req.session.user})
+        res.render('booking/add', {rooms, roomTypes, countries, user: req.session.user, paymentModes})
     },
 
     addBooking: async(req, res)=>{
@@ -572,6 +574,7 @@ getQuote: async(req, res, next)=>{
     const bookingRooms = await AdminService.getBookingRoom(bookingId)
     const rooms = await AdminService.getAllActiveRooms()
     const roomTypes = await AdminService.getRoomTypes()
+    const paymentModes = await AdminService.getPaymentMode()
     const countries = await getCountries();
     res.render('booking/edit', {
       booking,
@@ -579,6 +582,7 @@ getQuote: async(req, res, next)=>{
       roomTypes,
       rooms,
       countries,
+      paymentModes,
       user: req.session.user
     })
   } catch (error) {
