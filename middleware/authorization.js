@@ -59,7 +59,7 @@ isAuthorized: async (req, res, next) => {
     }
 
     // Allow access to specific routes without permissions
-    if (['/', '/edit-profile'].includes(endpoint)) {
+    if (['/', '/edit-profile', '/rooms/check-availability'].includes(endpoint)) {
       return next(); // Skip permission checks for these routes
     }
 
