@@ -73,6 +73,8 @@ isAuthorized: async (req, res, next) => {
       if (subResource === 'add' && method === 'get') action = 'create'; // GET /bookings/add
       else if (!isNaN(subResource) && method === 'get') action = 'read'; // GET /bookings/3
       else if (!isNaN(subResource) && method === 'post') action = 'update'; // POST /bookings/3
+      else if (typeof subResource === 'string' && method === 'post') action = 'create'; // POST /bookings/{string-subResource}
+      else if (typeof subResource === 'string' && method === 'get') action = 'read'; // POST /bookings/{string-subResource}
     } else if (parts.length === 3) {
       const operation = parts[2]; // e.g., 'edit', 'delete', or 'update-status'
       if (operation === 'edit' && method === 'get') action = 'update'; // GET /bookings/3/edit

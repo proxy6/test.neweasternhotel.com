@@ -169,7 +169,8 @@
                                                                     <div class="modal-footer">
                                                                         <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
                                                                         <form action="/rooms/<%= room.id %>/delete" method="post">
-                                                                            <input type="hidden" name="_token" value="rwnauSNjj4K7I1IG63q1vM18gBWLMOmxzdW7vteu" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                                                          <input type="hidden" name="_method" value="delete">       
+                                                                          <button class="btn btn-danger" type="submit">Delete</button>
                                                                         </form>
                                                                     </div>
                                                                 </div>

@@ -162,7 +162,7 @@ module.exports = {
         console.log(updateUser)
         if(!updateUser) return res.render('auth/change-password', { error: 'Change Password Failed. Please try again'})
         const access_token = await GenerateSignature({email: user.email, role: user.Role.name})
-        console.log(access_token)
+
         const omitdata = _.omit(user.toJSON(), 
         ['id', 'password', 'otp', 'createdAt', 'updatedAt', 'status', 'country', 'state', 'city', 'address', 'account_name',
           'account_no', 'bank_name', 'referee_name', 'referee_phone', 'referee_address', 'confirm_email', 'role_id',

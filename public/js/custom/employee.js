@@ -35,7 +35,7 @@ $(document).ready(function() {
             url: url,
             data: {
                 status: status,
-                _token: '6Fu0mPnkf8AM2Gh7CQVlLI7TTaEuhxtdWXs9IhLp',
+              
             },
             success: function(data) {
                 clickedToggle.prop('checked', status);

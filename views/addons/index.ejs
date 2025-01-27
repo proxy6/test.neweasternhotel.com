@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <form method="POST" action="/addons/<%= addon.id %>/delete?type=addon">
-                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off"> 
+
                                                     <input type="hidden" name="type" value="addon">                                                   
                                                                                  
                                                     <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
@@ -91,8 +91,7 @@
                                             <use href="/icons/iconly-sprite.svg#arrow-four"></use>
                                         </svg>Drag</div>
                                         <div class="dd3-content"><%= subAddon.name %>
-                                           
-                                                <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">
+                                                                         <input type="hidden" name="_method" value="DELETE">
                                                 <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
                                                     <svg>
                                                         <use href="/icons/iconly-sprite.svg#delete-icon"></use>
@@ -118,7 +117,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <form method="POST" action="/addons/<%= subAddon.id %>/delete?type=subaddon">
-                                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">       
+   
                                                                     <input type="hidden" name="type" value="subaddon">
                                                                     <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
                                                                     <button class="btn btn-danger delete spinner-btn" type="submit">Delete</button>
@@ -152,7 +151,9 @@
                 </div>
                 <div class="card-body">
                     <form class="row g-3 custom-input" id="categoryForm" action="/addons" method="POST">
-                        <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">                        <div class="col-12">
+         
+                                      <div class="col-12">
+
     <label class="form-label" for="">Name<span> *</span></label>
     <input class="form-control" type="text" value="" placeholder="Enter Category Name" name="name">
     </div>

@@ -197,7 +197,9 @@
                                                                 <div class="modal-footer">
                                                                     <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
                                                                     <form action="/bookings/<%= booking.id %>/delete" method="post">
-                                                                        <input type="hidden" name="_token" value="JcwTIw5DkUPPmAO0uPN35eJNyCiYl6XMOVRs9Yk6" autocomplete="off">                                        <input type="hidden" name="_method" value="delete">                                        <button class="btn btn-danger" type="submit">Delete</button>
+
+                                                                        <input type="hidden" name="_method" value="delete">                                       
+                                                                         <button class="btn btn-danger" type="submit">Delete</button>
                                                                     </form>
                                                                 </div>
                                                             </div>

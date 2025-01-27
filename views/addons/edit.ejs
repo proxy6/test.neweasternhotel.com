@@ -43,7 +43,8 @@
                         </svg>Drag</div>
                         <div class="dd3-content"><%= addon.name %>
                            
-                                <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_method" value="DELETE">
+
                                 <a href="#confirmationModal1" data-bs-toggle="modal" class="delete-svg">
                                     <svg>
                                         <use href="/icons/iconly-sprite.svg#delete-icon"></use>
@@ -69,7 +70,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <form method="POST" action="/addons/<%= addon.id %>/delete?type=addon">
-                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off"> 
+
+
                                                     <input type="hidden" name="type" value="addon">                                                   
                                                                                  
                                                     <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
@@ -117,7 +119,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <form method="POST" action="/addons/<%= subAddon.id %>/delete?type=subaddon">
-                                                                    <input type="hidden" name="_token" value="1NPDVVvf5XZ04O8cuDH1qCn9YSOMXTvrpUMp6N4i" autocomplete="off">       
+      
                                                                     <input type="hidden" name="type" value="subaddon">
                                                                     <button class="btn btn-primary" data-bs-dismiss="modal" type="button">Close</button>
                                                                     <button class="btn btn-danger delete spinner-btn" type="submit">Delete</button>
@@ -152,7 +154,8 @@
                 <div class="card-body">
                     <% if(typeof addon !== 'undefined'){ %>
                     <form class="row g-3 custom-input" id="categoryForm" action="/addons/<%= addon.id %>" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">  
+
+
                         <input type="hidden" name="type" value="<%= type %>">  
                         <div class="col-12">
                             <label class="form-label" for="">Name<span> *</span></label>
@@ -226,134 +229,7 @@
                   
           <%- include('../partials/script') %>
     
-  
-<script>
-    $(document).ready(function() {
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-      function updateToDatabase() {
-        idString = $('.dd').nestable('toArray', {
-          attribute: 'data-id'
-        });
-        var orderIndex = [];
-        $('#nestable3 li').each(function(index) {
-          if ($(this).attr('data-id')) {
-            orderIndex.push({
-              id: $(this).attr('data-id'),
-              order: index
-            })
-          }
-        });
-        var mergedArray = Object.values(Object.groupBy([...orderIndex, ...idString],
-          ({
-            id
-          }) => id)).map(e => e.reduce((acc, cur) => ({
-          ...acc,
-          ...cur
-        })));
-  
-        $.ajax({
-          url: 'https://larathemes.pixelstrap.com/edmin/admin/category/update-orders',
-          method: 'POST',
-          data: {
-            categories: mergedArray
-          },
-          success: function() {
-            //
-          }
-        });
-      }
-  
-      $('.dd').nestable({
-        maxDepth: 12
-      }).on('change', updateToDatabase);
-    })
-</script>
 
-
-
-
-
-<script>
-    $(document).ready(function() {
-        $(document).on('change', '.toggle-status', function() {
-
-            let status = $(this).prop('checked') ? 1 : 0;
-            let url = $(this).data('route');
-            let clickedToggle = $(this);
-            $.ajax({
-                type: "PUT",
-                url: url,
-                data: {
-                    status: status,
-                    _token: 'LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI',
-                },
-                success: function(data) {
-                    clickedToggle.prop('checked', status);
-                    toastr.success("Status Updated Successfully");
-                },
-                error: function(xhr, status, error) {
-                    console.log(error)
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#country_code').select2({
-            templateResult: function(data) {
-                if (!data.id) {
-                    return data.text;
-                }
-                var $result = $('<span><img src="' + $(data.element).data('image') +
-                    '" class="flag-img" /> +' + data.text.trim() + '</span>');
-                return $result;
-            },
-            templateSelection: function(selection) {
-                if (selection.text == ' ') {
-                    return selection.text;
-                }
-                return ' + ' + selection.text;
-            }
-        });
-    });
-</script>
-    <script>
-    $(document).ready(function() {
-        $('.toastr-message').each(function() {
-            var messageType = $(this).data('type');
-            var messageText = $(this).text();
-            toastr.options = {
-                "closeButton": false,
-                "progressBar": true,
-                "extendedTimeOut": 0,
-                "timeOut": 0,
-            };
-
-            switch (messageType) {
-                case 'success':
-                    toastr.success(messageText);
-                    break;
-                case 'error':
-                    toastr.error(messageText);
-                    break;
-                case 'info':
-                    toastr.info(messageText);
-                    break;
-                case 'warning':
-                    toastr.warning(messageText);
-                    break;
-                default:
-                    toastr.info(messageText);
-            }
-        });
-    });
-</script>
     
 
 </body>
