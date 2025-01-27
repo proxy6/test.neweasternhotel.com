@@ -2,15 +2,15 @@
   "development": {
     "username": "cobbantg_neweastern_user",
     "password": "cSw-BZ=!f@fd",
-    "database": "cobbantg_neweastern",
+    "database": "cobbantg_test_neweastern",
     "host": "127.0.0.1",
     "port": "3306",
     "dialect": "mysql"
   },
   "test": {
-    "username": "cobbantg_neweastern_user",
-    "password": "cSw-BZ=!f@fd",
-    "database": "cobbantg_neweastern",
+    "username": "root",
+    "password": null,
+    "database": "neweastern",
     "host": "127.0.0.1",
     "port": "3306",
     "dialect": "mysql"
@@ -18,7 +18,15 @@
   "production": {
     "username": "cobbantg_neweastern_user",
     "password": "cSw-BZ=!f@fd",
-    "database": "cobbantg_neweastern",
+    "database": "cobbantg_test_neweastern",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql"
+  },
+  "staging": {
+    "username": "cobbantg_neweastern_user",
+    "password": "cSw-BZ=!f@fd",
+    "database": "cobbantg_test_neweastern",
     "host": "127.0.0.1",
     "port": "3306",
     "dialect": "mysql"
