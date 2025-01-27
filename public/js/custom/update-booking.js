@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const roomContainer = document.getElementById('room-container_0');
   const form = document.getElementById('bookingForm');
   const updateBtn = document.getElementById('update-btn');
+
+  const saveAddon = document.getElementById('save-addon');
   // const form = document.querySelector('form');
   let roomCount = 1;
 
@@ -262,7 +264,7 @@ const roomTypeOptions = roomTypes.map(roomType =>
         roomDynamics.innerHTML = '';
       
         setTimeout(() => {
-          window.location.href = `/bookings/${data.booking.id}`;
+          window.location.href = `/bookings`;
         }, 5000); // Redirects after 3 seconds
         
       })
@@ -289,6 +291,75 @@ const roomTypeOptions = roomTypes.map(roomType =>
 }
 });
 
+
+
+//SAVE ADDON
+saveAddon.addEventListener('click', (e) => {
+  e.preventDefault(); // Prevent form submission if validation fails.
+
+  let isValid = true; // Assume form is valid initially.
+
+
+
+
+
+  const formData = new FormData(form);
+
+  console.log(formData)
+
+  const payload = {
+  formData: Object.fromEntries(formData),
+};
+
+
+
+
+fetch(`/bookings/${payload.formData.bookingRoom_id}/addon`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(payload)
+}).then(response => {
+
+  if (response.ok) {
+  
+    return response.json().then(data => {
+
+        toastr.options = {
+        closeButton: false,
+        progressBar: true,
+        timeOut: 6000,
+        extendedTimeOut: 1000,
+    };
+    toastr.success('Booking Addon successfully added ');
+    
+      setTimeout(() => {
+        window.location.href = `/bookings/${payload.formData.booking_id}`;
+      }, 2000); // Redirects after 3 seconds
+      
+    })
+
+  
+  } else {
+  
+    return response.json().then(err => {
+
+      errorMessage = err.message || 'Something went wrong!';
+      toastr.options = {
+        closeButton: false,
+        progressBar: true,
+        // timeOut: 5000,
+        extendedTimeOut: 1000,
+    };
+    toastr.error(errorMessage);
+    });
+
+  //   alert('Failed to create booking.');
+  }
+});
+
+});
 
 
      // Listen for changes on Room Type
@@ -331,6 +402,53 @@ const roomTypeOptions = roomTypes.map(roomType =>
           console.error('Error fetching rooms:', error);
           roomNumberSelect.disabled = true;
           roomNumberSelect.innerHTML = '<option value="">Error loading rooms</option>';
+        }
+      }
+    });
+
+    
+    // Listen for changes on Addon Type
+    document.addEventListener('change', async (event) => {
+      const target = event.target;
+
+      // Check if the changed element is a Room Type dropdown
+      if (target.matches('[id^="addonType_"]')) {
+        const addonTypeSelect = target;
+        const bookingRoomCount = addonTypeSelect.id.split('_')[1]; // Extract room index from ID
+        console.log(bookingRoomCount)
+        const addonNameSelect = document.querySelector(`#addonName_${bookingRoomCount}`);
+
+        const selectedRoomType = addonTypeSelect.value;
+        console.log(roomCount)
+        console.log(selectedRoomType)
+        // Disable Room Number/Name if no Room Type is selected
+        if (!selectedRoomType) {
+          console.log("GOT HERE !")
+          addonNameSelect.disabled = true;
+          addonNameSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
+          return;
+        }
+
+        // Fetch and populate Room Number/Name options based on selected Room Type
+        try {
+          const response = await fetch(`/addons/type?type=${selectedRoomType}`);
+          const addons = await response.json();
+          console.log(addons)
+          // Populate Room Number/Name dropdown
+          addonNameSelect.innerHTML = '<option value="">Select..</option>';
+          addons.data.forEach(addon => {
+            const option = document.createElement('option');
+            option.value = addon.id;
+            option.textContent = `${addon.name.charAt(0).toUpperCase() + addon.name.slice(1)}`;
+            addonNameSelect.appendChild(option);
+          });
+
+          // Enable the Room Number/Name dropdown
+          addonNameSelect.disabled = false;
+        } catch (error) {
+          console.error('Error fetching rooms:', error);
+          addonNameSelect.disabled = true;
+          addonNameSelect.innerHTML = '<option value="">Error loading rooms</option>';
         }
       }
     });
@@ -379,7 +497,8 @@ const roomTypeOptions = roomTypes.map(roomType =>
       }
   
       try {
-        const response = await fetch('/rooms/check-availability', {
+        console.log("GOT HERE")
+        const response = await fetch('/rooms/edit-check-availability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ roomId, checkIn, checkOut })
@@ -446,8 +565,9 @@ const roomTypeOptions = roomTypes.map(roomType =>
           console.log(checkOut)
           // Validate dates
           if (
-            checkOutDateObj < checkInDateObj ||
-            checkInDateObj < today ||
+            //removed this condition so as not to pick check in date for edit booking
+            // checkOutDateObj < checkInDateObj ||
+            // checkInDateObj < today ||
             checkOutDateObj < today
           ) {
             console.log("got here")
@@ -461,7 +581,7 @@ const roomTypeOptions = roomTypes.map(roomType =>
           }
       
           try {
-            const response = await fetch('/rooms/check-availability', {
+            const response = await fetch('/rooms/edit-check-availability', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ roomId, checkIn, checkOut })

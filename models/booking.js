@@ -23,6 +23,10 @@ return sequelize.define("Booking", {
     type: DataTypes.DECIMAL(10,2), 
     allowNull: false, 
   },
+  amount_paid: { 
+    type: DataTypes.DECIMAL(10,2), 
+    allowNull: true, 
+  },
   booking_reference: { 
     type: DataTypes.STRING, 
     allowNull: false, 
@@ -32,6 +36,10 @@ return sequelize.define("Booking", {
     allowNull: false, 
   },
   payment_mode: { 
+    type: DataTypes.STRING, 
+    allowNull: false, 
+  },
+  payment_status: { 
     type: DataTypes.STRING, 
     allowNull: false, 
   },

@@ -174,7 +174,7 @@ getQuote: async(req, res, next)=>{
              
 
             const employee = await AdminService.addEmployee(data);
-            console.log(plainPassword)
+         
             if(employee){
               let emaildata = {
                   username: employee.dataValues.first_name,
@@ -285,27 +285,31 @@ getQuote: async(req, res, next)=>{
         let totalPages = Math.ceil(addonCount / limit);
         let currentPage = page
         const addons = await AdminService.getAllAddons(page, limit)
-      
+        const addonTypes = await AdminService.getAddonTypes()
         res.render('addons/index', 
           {
             addons,
+            addonTypes,
             totalPages,
             currentPage,
             user: req.session.user
           })
     },
 
+    getAddonByType: async(req, res)=>{
+  
+      const type = req.query.type
+      const addons = await AdminService.getAllAddonsByType(type)
+
+      return res.status(200).json({data: addons})
+  },
+
+
     addAddons: async(req, res)=>{
         try {
          
             const data = req.body
-            const file = req.file;
-
-            if(file){
-                var imageUrl = await uploadSingleFilesToCloudinary(file);
-                data['image'] = imageUrl;
-            }
-           
+          
             await AdminService.addAddon(data);
             res.redirect('/addons')
           } catch (error) {
@@ -318,33 +322,22 @@ getQuote: async(req, res, next)=>{
     getAddonEditPage: async(req, res)=>{
         let data = {};
         data.id = req.params.id;
-        data.type = req.query.type;
         const limit = 10
         const page = req.query.page || 1
      
         const addons = await AdminService.getAllAddons(page)
         const addon = await AdminService.getSingleAddon(data)
-        res.render('addons/edit', {addons, addon, type: data.type, user: req.session.user})
+        const addonTypes = await AdminService.getAddonTypes()
+        res.render('addons/edit', {addons, addon, addonTypes, user: req.session.user})
     },
     
     updateAddonById: async(req, res)=>{
         try {
             const data = req.body
             data.id = req.params.id;
-            const file = req.file;
-
-                if(file){
-                    //delete existing file
-                    const addon = await AdminService.getSingleAddon(data);
-                    if(addon && employee.image){
-                        await deleteSingleFileInCloudinary(addon.image)
-                    }
-                    
-                    var imageUrl = await uploadSingleFilesToCloudinary(file);
-                    data['image'] = imageUrl;
-                }
+      
             
-            const employee = await AdminService.updateSingleAddon(data);
+            await AdminService.updateSingleAddon(data);
            
             res.redirect('/addons')
          
@@ -357,9 +350,8 @@ getQuote: async(req, res, next)=>{
     deleteAddon: async(req, res)=>{
 
         const addonId = req.params.id;
-        const type = req.query.type;
         try {
-          await AdminService.deleteAddon(addonId, type);
+          await AdminService.deleteAddon(addonId);
           res.redirect('/addons')
         } catch (error) {
           console.error(error);
@@ -371,7 +363,7 @@ getQuote: async(req, res, next)=>{
 
     //ROOM LOGIC
 
-    getAllRooms: async(req, res)=>{
+  getAllRooms: async(req, res)=>{
         const limit = 10
         const page = req.query.page || 1
         const type = req.query.type
@@ -396,22 +388,46 @@ getQuote: async(req, res, next)=>{
             availableRoomCount,
             user: req.session.user
           })
-    },
-    checkRoomAvailability: async(req, res)=>{
+  },
+
+  checkRoomAvailability: async(req, res)=>{
     try {
-      console.log("ROOM AVAILABILITY")
-      console.log(req.body)
+
 
       const { roomId, checkIn, checkOut } = req.body;
 
       if (!roomId || !checkIn || !checkOut) {
-        let i =1
-          console.log(i+=1)
+       
           return res.status(400).json({ error: 'All fields are required.' });
       }
   
       let overlappingBookings  = await AdminService.availableRoom(roomId, checkIn, checkOut)
       console.log(overlappingBookings)
+      if (overlappingBookings.length > 0) {
+        return res.json({ available: false });
+      }
+
+      return res.json({ available: true });
+    
+    } catch (error) {
+      console.error('Error checking room availability:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+  }
+  },
+
+  checkAvailabilityForEdit: async(req, res)=>{
+    try {
+      console.log("GOT HERE")
+
+      const { roomId, checkIn, checkOut } = req.body;
+
+      if (!roomId || !checkIn || !checkOut) {
+       
+          return res.status(400).json({ error: 'All fields are required.' });
+      }
+  
+      let overlappingBookings  = await AdminService.availableRoomForEditBooking(roomId, checkIn, checkOut)
+      // console.log(overlappingBookings)
       if (overlappingBookings.length > 0) {
         return res.json({ available: false });
       }
@@ -505,15 +521,17 @@ getQuote: async(req, res, next)=>{
         const limit = 10
         const page = req.query.page || 1
         const bookingCount = await AdminService.CountBookings()
+        const paymentModes = await AdminService.getPaymentMode()
         let totalPages = Math.ceil(bookingCount / limit);
         let currentPage = page
         const bookings = await AdminService.getAllBookings(page, limit)
-       console.log(bookings)
+      
         res.render('booking/index', {
           bookings,
           totalPages,
           currentPage,
           bookingCount,
+          paymentModes,
           user: req.session.user
         })
     },
@@ -522,10 +540,17 @@ getQuote: async(req, res, next)=>{
         //fetch room types
         const roomTypes = await AdminService.getRoomTypes()
         const paymentModes = await AdminService.getPaymentMode()
-        
+       
         const countries = await getCountries();
         res.render('booking/add', {rooms, roomTypes, countries, user: req.session.user, paymentModes})
     },
+    getPaymentMode: async(req, res)=>{
+    
+      const paymentModes = await AdminService.getPaymentMode()
+      console.log(paymentModes)
+      res.status(200).json({data: paymentModes})
+     
+  },
 
     addBooking: async(req, res)=>{
         try {
@@ -533,6 +558,7 @@ getQuote: async(req, res, next)=>{
             const data = req.body
          
             data.user = req.session.user
+            console.log(data)
             const booking = await AdminService.addBooking(data);
        
             if (typeof booking === 'string') {
@@ -541,12 +567,28 @@ getQuote: async(req, res, next)=>{
             else{
               res.status(200).json({ message: 'Successful!', booking });
             }
-            // res.redirect('/rooms')
+            
           } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Something went wrong!' });
           }
     },
+    completeBookingPayment: async(req, res)=>{
+      try {
+       
+          const data = req.body
+       
+          data.user = req.session.user
+          console.log(data)
+          const booking = await AdminService.completeBookingPayment(data);
+     
+          res.redirect('/bookings')
+          
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Something went wrong!' });
+        }
+  },
     getSingleBooking: async(req, res)=>{
       try {
          
@@ -554,7 +596,7 @@ getQuote: async(req, res, next)=>{
     
       const booking = await AdminService.getSingleBooking(bookingId)
       const bookingRooms = await AdminService.getBookingRoom(bookingId)
-
+      console.log(bookingRooms)
       res.render('booking/view', {
         booking,
         bookingRooms,
@@ -572,14 +614,17 @@ getQuote: async(req, res, next)=>{
     const bookingId = req.params.id
     const booking = await AdminService.getSingleBooking(bookingId)
     const bookingRooms = await AdminService.getBookingRoom(bookingId)
+    console.log(bookingRooms)
     const rooms = await AdminService.getAllActiveRooms()
     const roomTypes = await AdminService.getRoomTypes()
     const paymentModes = await AdminService.getPaymentMode()
+    const addonTypes = await AdminService.getAddonTypes()
     const countries = await getCountries();
     res.render('booking/edit', {
       booking,
       bookingRooms,
       roomTypes,
+      addonTypes,
       rooms,
       countries,
       paymentModes,
@@ -610,6 +655,21 @@ updateBookingById: async(req, res)=>{
     res.status(500).json({ error: 'Something went wrong!' });
   }
 },
+
+addBookingAddon: async(req, res)=>{
+  try {
+      const data = req.body
+      data.id = req.params.id;
+      data.user = req.session.user
+
+      await AdminService.addBookingAddon(data);
+      res.status(200).json({message: 'successful'})
+   
+      } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
   deleteBooking: async(req, res)=>{
 
     const bookingId = req.params.id;
@@ -630,6 +690,15 @@ getReceipt: async(req, res)=>{
   const booking = await AdminService.getSingleBooking(bookingId)
   const bookingRooms = await AdminService.getBookingRoom(bookingId)
   res.render('booking/receipt', { booking, bookingRooms, user: req.session.user})
+},
+
+getGuestReceipt: async(req, res)=>{
+  // const rooms = await AdminService.getAllActiveRooms()
+  // //fetch room types
+  const bookingId = req.params.id
+  const booking = await AdminService.getSingleBooking(bookingId)
+  const bookingRooms = await AdminService.getBookingRoom(bookingId)
+  res.render('booking/guestreceipt', { booking, bookingRooms, user: req.session.user})
 },
   
 

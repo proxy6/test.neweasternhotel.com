@@ -112,7 +112,9 @@
           <div class="summary">
             <strong>Subtotal: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.Room.price * bookingRoom.booked_days_no) %></strong><br>
             <strong>Discount: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.discount) %></strong><br>
-            <strong>Total: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.price) %></strong>
+            <strong>Total: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(bookingRoom.price) %></strong> <br>
+            <strong>Amount Paid: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.amount_paid) %></strong> <br>
+            <strong>Balance: &#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.total_price - booking.amount_paid) %></strong><br>  
           </div>
           <div class="divider"></div>
           <div class="foot">

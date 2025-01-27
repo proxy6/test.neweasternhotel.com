@@ -48870,7 +48870,12 @@ input:checked + .switch-state {
 input:checked + .switch-state:before {
     transform: translateX(14px); /* Adjust for smaller size */
 }
-
+.booking-btn{
+    font-size: 15px;
+    font-weight: 400;
+    padding: 3px 6px;
+    letter-spacing: .3px;
+}
 
 #notfound {
     position: relative;

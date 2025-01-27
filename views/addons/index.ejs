@@ -151,27 +151,20 @@
                     <h4>Add Category</h4>
                 </div>
                 <div class="card-body">
-                    <form class="row g-3 custom-input" id="categoryForm" action="/addons" method="POST" enctype="multipart/form-data">
+                    <form class="row g-3 custom-input" id="categoryForm" action="/addons" method="POST">
                         <input type="hidden" name="_token" value="LXYGkB2o5j9EyX2VdhuGXNdEF39415ynnSMHPyNI" autocomplete="off">                        <div class="col-12">
     <label class="form-label" for="">Name<span> *</span></label>
     <input class="form-control" type="text" value="" placeholder="Enter Category Name" name="name">
     </div>
+
+    
 <div class="col-12">
-    <label class="form-label" for="">Description</label>
-    <textarea class="form-control" name="desc" placeholder="Enter Description"></textarea>
-    </div>
-    <div class="col-6">
-    <label class="form-label" for="">Price</label>
-    <input class="form-control"  type="number" name="price" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-        </div>
-<div class="col-6">
-    <label class="form-label" for="">Parent Addon</label>
-    <select class="form-select js-example-basic-single" name="parent_id">
-        <option value="" disabled hidden selected>Select Parent</option>
-        <option class="option" value="">This is a Parent Addon</option>
-        <% if(typeof addons !== 'undefined'){ %>
-            <% addons.forEach((addon) => { %>
-                <option class="option" value="<%= addon.id %> "><%= addon.name %></option>
+    <label class="form-label" for="">Type</label>
+    <select class="form-select js-example-basic-single" name="type">
+        <option value="">Select Type</option>
+        <% if(typeof addonTypes !== 'undefined'){ %>
+            <% addonTypes.forEach((addonType) => { %>
+                <option class="option" value="<%= addonType.type %> "><%= addonType.type %></option>
             <% }) %>
         <% } %>
 
@@ -179,11 +172,8 @@
     </select>
 </div>
 
-<div class="col-6">
-    <label class="form-label" for="">Image</label>
-    <input class="form-control"  type="file" name="image">
-        </div>
-<div class="col-6">
+
+<div class="col-12">
     <label class="form-label" for="">Status</label>
     <select class="form-select js-example-basic-single" name="status">
         <option value="1"  selected>Active</option>

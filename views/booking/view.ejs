@@ -294,6 +294,29 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- <hr>
+                                    <h4>Room Addons</h4>
+                                    <hr> -->
+                                    <% bookingRoom.BookingAddons.forEach((bookingAddon, index) => { %>
+                                    <div class="row"> 
+                                        <div class="col-sm-6">
+                                            <div class="mb-3">
+                                            <label class="form-label">Addon Name <span>*</span></label>
+                                            <input class="form-control" type="text" value="<%= bookingAddon.Addon.name %>" disabled>
+                                         
+                                            </div>
+                                        </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
+                                            <label class="form-label">Addon Price <span>*</span></label>
+                                      
+                                            <input class="form-control" type="text" value="<%= bookingAddon.price %>" disabled>
+                                        </div>
+                                    </div>
+                                  
+                                    </div>
+                                    <% }) %>
                             </div>
                             
                     

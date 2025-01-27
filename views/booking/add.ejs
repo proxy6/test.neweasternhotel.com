@@ -67,21 +67,35 @@
                                     <input class="form-control" name="nationality" placeholder="Enter Customer Nationality" type="text">
                                 </div>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Payment Mode<span>*</span></label>
-                                    <select required name="payment_mode" class="form-select" required> 
+                                    <label class="form-label">Payment Status<span>*</span></label>
+                                    <select required name="payment_status" class="form-select" id="paymentStatus" required> 
                                         <option value="">Select an Option</option> 
-                                        <% if(typeof paymentModes !== 'undefined'){ %>
-                                            <% paymentModes.forEach(paymentMode => { %>
-                                                <option value="<%= paymentMode.mode %>">
-                                                    <%= paymentMode.mode.charAt(0).toUpperCase() + paymentMode.mode.slice(1) %>
-                                                </option>
-                                            <% }) %>
-                                        <% } %>
+                                        <option value="Part Payment"> Part Payment </option>
+                                        <option value="Full Payment"> Full Payment </option>
+                                        <option value="Credit"> Credit </option>
+
+                                      
                                  
      
                                 </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Mode<span>*</span></label>
+                                    <select required id="paymentMode" name="payment_mode" class="form-select" required disabled> 
+                                        <option value="">Select..</option>
+                                 
+     
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" id="partPaymentInput" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Part Payment Amount<span>*</span></label>
+                                    <input class="form-control" name="part_payment_amount" required type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                 </div>
                             </div>
                         </div>
@@ -122,7 +136,7 @@
                                                     <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>" ><%= country.name %> </option>
                                                 <% }) %>
                                             <% } %>
-                                        </select>
+                                </select>
                                 </div>
                             </div>
                             <div class="col-sm-6"> 
@@ -222,7 +236,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
-                                    <label class="form-label">Room Discount <span>(* per night)</span></label>
+                                    <label class="form-label">Room Discount </label>
                                     <input class="form-control" name="discount_0" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
@@ -259,7 +273,7 @@
                 <div class="mt-4">
                     <div class="row"> 
                     <div class="col-sm-12 text-end">
-                        <a class="btn btn-primary" id="add-room-btn">Add Room </a>
+                        <a class="btn btn-primary" id="add-room-btn" style="display: none;">Add Room </a>
                         <button class="btn btn-secondary" id="submit-btn" disabled="true">Submit</button>
                         <a class="btn btn-danger" href="/bookings">Cancel</a></div>
                     </div>

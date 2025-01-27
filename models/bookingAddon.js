@@ -10,13 +10,17 @@ return sequelize.define("BookingAddon", {
   //   type: DataTypes.INTEGER,
   //   allowNull: false
   // },
-  quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
-  total_price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
- 
-  status: { 
-    type: DataTypes.STRING(20), 
-    defaultValue: 'pending' 
+  price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
+  
+  added_by: { 
+    type: DataTypes.STRING, 
+    allowNull: false
   },
+  payment_mode: { 
+    type: DataTypes.STRING, 
+    allowNull: true
+  },
+
 
 }, {
   timestamps: true,

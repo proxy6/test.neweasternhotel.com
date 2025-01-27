@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             roomDynamics.innerHTML = '';
           
             setTimeout(() => {
-              window.location.href = `/bookings/${data.booking.id}`;
+              window.location.href = `/bookings`;
             }, 5000); // Redirects after 3 seconds
             
           })
@@ -308,6 +308,70 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+
+    const paymentStatusChange = document.getElementById('paymentStatus');
+      // Listen for payment status change
+      paymentStatusChange.addEventListener('change', async (event) => {
+        // const target = event.target;
+  
+        // Check if the changed element is a Room Type dropdown
+        // if (target.matches('[id^="paymentStatus"]')) {
+          const paymentStatusSelected = paymentStatusChange.value;
+          // const paymentStatusSelect = paymentStatusChange.value;
+          // const roomCount = paymentStatusSelect.id.split('_')[1]; // Extract room index from ID
+          // console.log(roomCount)
+          // const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
+          const paymentModeSelect = document.querySelector(`#paymentMode`);
+         
+          const partPaymentInput = document.querySelector(`#partPaymentInput`);
+          // Disable Room Number/Name if no Room Type is selected
+          if (!paymentStatusSelected) {
+            paymentModeSelect.disabled = true;
+            paymentModeSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
+            return;
+          }
+          console.log(paymentStatusSelected)
+   
+          if (paymentStatusSelected == "Part Payment") {
+            
+            partPaymentInput.style.display = "block";
+          }else{
+            partPaymentInput.style.display = "none";
+          }
+          if (paymentStatusSelected == "Credit") {
+            paymentModeSelect.disabled = true;
+            paymentModeSelect.innerHTML = ''
+            const option = document.createElement('option');
+            option.value = 'None';
+            option.textContent = 'None';
+            paymentModeSelect.appendChild(option);
+            return;
+          }
+          // Fetch and populate Room Number/Name options based on selected Room Type
+          try {
+            const response = await fetch(`/bookings/paymentmodes`);
+            const paymentModes = await response.json();
+            console.log(paymentModes)
+            // Populate Room Number/Name dropdown
+            paymentModeSelect.innerHTML = '<option value="">Select..</option>';
+
+            paymentModes.data.forEach(paymentMode => {
+              const option = document.createElement('option');
+              option.value = paymentMode.mode;
+              option.textContent = paymentMode.mode;
+              paymentModeSelect.appendChild(option);
+            });
+  
+            // Enable the Room Number/Name dropdown
+            paymentModeSelect.disabled = false;
+          } catch (error) {
+            console.error('Error fetching rooms:', error);
+            paymentModeSelect.disabled = true;
+            paymentModeSelect.innerHTML = '<option value="">Error loading payment modes</option>';
+          }
+     
+      });
+  
 
   //check selected room availability
   async function checkRoomAvailability(event) {

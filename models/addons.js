@@ -7,17 +7,9 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
-    desc: {
+    type: {
       type: DataTypes.STRING,
-      allowNull: true
-    },
-    price: {
-      type: DataTypes.DECIMAL(10,2),
-      allowNull: true
-    },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
     },
     status: {
       type: DataTypes.BOOLEAN,

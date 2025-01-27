@@ -331,18 +331,123 @@
                                     </div>
                                 </div>
                             </div>
+                            <% if (typeof bookingRoom.BookingAddons.length > 0) { %>
+                            <hr>
+                            <h4>Room Addons</h4>
+                            <hr>
+                            <% bookingRoom.BookingAddons.forEach((bookingAddon, index) => { %>
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Addon Name <span>*</span></label>
+                                    <input class="form-control" type="text" value="<%= bookingAddon.Addon.name %>" disabled>
+                                 
+                                    </div>
+                                </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
+                                    <label class="form-label">Addon Price <span>*</span></label>
+                              
+                                    <input class="form-control" type="text" value="<%= bookingAddon.price %>" disabled>
+                                </div>
+                            </div>
+                          
+                            </div>
+                            <% }) %>
+                            <% } %>
                         </div>
+
+                                  <!-- Add Addon-->
+                                  <div class="modal fade" id="addAddon" tabindex="-1" role="dialog" aria-labelledby="addAddonModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Add Addon</h4>
+                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                           
+                                            <div class="modal-body">
+                                                <div class="row"> 
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                        <label class="form-label">Addon Type</label>
+                                                        <select required name="addon_type" class="form-select" id="addonType_<%=bookingRoom.id %>"> 
+                                                            <option value="">Select..</option> 
+                                                            <% addonTypes.forEach((addonType) => { %>
+                                                                <option value="<%= addonType.type %>"><%= addonType.type %></option>
+                                                            <% }) %>
+                                        
+                         
+                                                    </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Addon Name</label>
+                                                      
+                                                            <select name="addon_id" required id="addonName_<%= bookingRoom.id %>" class="form-select" disabled>
+                                                                <option value="">Select..</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="mb-3">
+                                                        <label class="form-label">Booked Room</label>
+                                                        <select required name="bookingRoom_id" class="form-select"> 
+                                                            <option value="">Select..</option> 
+                                                            <% bookingRooms.forEach((bookingRoom) => { %>
+                                                                <option value="<%= bookingRoom.id %>"><%= bookingRoom.Room.number %> - <%= bookingRoom.Room.type %></option>
+                                                            <% }) %>
+                                        
+                         
+                                                    </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="mb-3">
+                                                        <label class="form-label">Price</label>
+                                                        <input class="form-control" name="addon_price" type="number" >
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="mb-3">
+                                                        <label class="form-label">Payment Mode</label>
+                                                        <select required name="addon_payment_mode" class="form-select"> 
+                                                            <option value="">Select..</option> 
+                                                            <% paymentModes.forEach((paymentMode) => { %>
+                                                                <option value="<%= bookingRoom.id %>"><%= paymentMode.mode %></option>
+                                                            <% }) %>
+                         
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                  
+                                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                          
+                                                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>                
+                                                    <button class="btn btn-danger" id="save-addon">Save</button>
+                                             
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         <% }) %>
                         <% } %>
                 
                     </div>
-                  
+               
+                
                 <div class="mt-4">
                     <div class="row"> 
                     <div class="col-sm-12 text-end">
-                        <a class="btn btn-primary" id="add-room-btn">Add Room </a>
-                        <a class="btn btn-secondary" id="update-btn">Save</a>
-                        <a class="btn btn-danger" href="/bookings">Cancel</a></div>
+                        <!-- <a class="btn btn-primary booking-btn mb-2" data-bs-toggle="modal" href="#addAddon">Extend Booking </a> -->
+                        <a class="btn btn-primary booking-btn mb-2" data-bs-toggle="modal" href="#addAddon">Add Addon </a>
+                        <a class="btn btn-primary booking-btn mb-2" id="add-room-btn" style="display: none;">Add Room </a>
+                        <a class="btn btn-secondary booking-btn mb-2" id="update-btn">Save</a>
+                        <a class="btn btn-danger booking-btn mb-2" href="/bookings">Cancel</a></div>
                     </div>
                 </div>
                 </div>

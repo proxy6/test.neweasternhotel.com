@@ -1,5 +1,5 @@
 const { DATE } = require('sequelize');
-const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints, PaymentMode } = require('../models');
+const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints, PaymentMode, AddonType, BookingTransactions } = require('../models');
 // const Booking = require('../models/booking');
 const { sequelize } = require('../models'); // Database connection
 const { Op } = require('sequelize'); // Import Sequelize operators
@@ -402,13 +402,16 @@ static async deleteEmployee(employeeId){
 //  ADDON LOGIC
 static async countAddon(){
   const addonCount = await Addons.count({
-    include: {
-      model: SubAddon,
-      as: 'SubAddon' // Match the alias defined in the association
-    },
   })
   return addonCount
 
+}
+
+static async getAddonTypes(page){
+  const addonTypes = await AddonType.findAll({
+
+  });
+  return addonTypes
 }
 static async getAllAddons(page, limit){
   let offset = 0;
@@ -420,134 +423,43 @@ static async getAllAddons(page, limit){
   const addon = await Addons.findAll({
     offset,
     limit,
-    include: {
-      model: SubAddon,
-      as: 'SubAddon' // Match the alias defined in the association
-    },
   });
   return addon
 }
 
+static async getAllAddonsByType(type){
+
+  const addon = await Addons.findAll({
+    where:{
+      type: type
+    },
+  });
+  return addon
+}
 static async addAddon(data){
 
-  if(data.parent_id != ''){
-   
-    const parentAddon = await Addons.findOne({
-      where:{
-        id: data.parent_id
-      },
-      include: {
-        model: SubAddon,
-        as: 'SubAddon', // Use the alias defined in association
-      },
-    })
-    const subaddon = await SubAddon.create({ 
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      status: data.status,
-      image:  data['image'], 
-      addon_id: parentAddon.id
-    });
-   
-
-    return parentAddon
-  }
   const addon = await Addons.create({ 
     name: data.name,
-    desc: data.desc,
-    price: data.price,
-    status: data.status,
-    image:  data['image'], 
-    
+    type: data.type,
+    status: data.status
   });
 return addon;
 
 }
 static async getSingleAddon(data){
-  if (data.type === 'addon') {
     const addon = await Addons.findOne({
       where:{
         id: data.id
-      },
-      include: {
-        model: SubAddon,
-        as: 'SubAddon',  // Ensure this matches your association alias
-      },
+      }
     })
     return addon
-  }else if(data.type === 'subaddon') {
-    const subaddon = await SubAddon.findOne({
-      where:{
-        id: data.id
-      }
-    });
-    return subaddon
-  }
+  
 }
 static async updateSingleAddon(data){
-  //this is a subaddon that is still a subaddon
-  if(data.type == 'subaddon' && data.parent_id != ''){
-   
-
-    await SubAddon.update({ 
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      status: data.status,
-      image:  data['image'], 
-      addon_id: data.parent_id
-    },
-    {
-      where:{
-        id: data.id
-      }
-    }
-  );
-   
-  }else if(data.type == 'subaddon' && data.parent_id == ''){ //this is a subaddon that switched to an addon
-    //add addon
-    const addon = await Addons.create({ 
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      status: data.status,
-      image:  data['image'], 
-      
-    });
-    //delete subaddon
-    let sub = await SubAddon.destroy({
-      where:{
-        id: data.id
-      }
-    })
-
-    
-  }else if(data.type == 'addon' && data.parent_id != ''){   //this is a addon that switched to a subaddon
-    if(data.parent_id != data.id){ // you can't switch an addon to be its own subaddon
-    //create a subaddon
-    await SubAddon.create({
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      status: data.status,
-      image:  data['image'],
-      addon_id: data.parent_id
-    })
-    //delete current addon 
-    await Addons.destroy({
-      where:{
-        id: data.id
-      }
-    })
-  }
-  }else{ //update addon that is still an addon
-  const addon = await Addons.update({ 
+    const addon = await Addons.update({ 
     name: data.name,
-    desc: data.desc,
-    price: data.price,
+    type: data.type,
     status: data.status,
-    image:  data['image'], 
     
   },
   {
@@ -556,24 +468,15 @@ static async updateSingleAddon(data){
     }
   });
   
-}
 
 }
-static async deleteAddon(addonId, type){
+static async deleteAddon(addonId){
 //delete addon
-if(type == 'addon'){
   await Addons.destroy({
     where:{
       id: addonId
     }
   })
-}else if(type == 'subaddon'){
-  await SubAddon.destroy({
-    where:{
-      id: addonId
-    }
-  });
- }
 }
 
 
@@ -627,6 +530,38 @@ static async availableRoom(roomId, checkIn, checkOut){
  return overlappingBookings 
 
 }
+
+
+static async availableRoomForEditBooking(roomId, checkIn, checkOut){
+  
+
+  const overlappingBookings = await BookingRooms.findAll({
+    where: {
+      room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+      // room_id:  roomId , // Exclude the room with the specified roomId
+      status: { [Op.in]: ['checkedin', 'pending'] },
+      [Op.or]: [
+        {
+          check_in_date: { [Op.between]: [checkIn, checkOut] }
+        },
+        {
+          check_out_date: { [Op.between]: [checkIn, checkOut] }
+        },
+        {
+          [Op.and]: [
+            { check_in_date: { [Op.lte]: checkIn } },
+            { check_out_date: { [Op.gte]: checkOut } }
+          ]
+        }
+      ]
+    }
+  });
+
+  
+ return overlappingBookings 
+
+}
+
 
 static async bookedRoomCount(){
   const roomCount = await BookingRooms.count({
@@ -898,28 +833,76 @@ static async getSingleBooking(bookingId){
   return booking
 }
 
-static async getBookingRoom(bookingId){
-  const booking = await BookingRooms.findAll({
-    include:[
+static async getBookingRoom(bookingId) {
+  const bookingRooms = await BookingRooms.findAll({
+    include: [
       {
-        model: Rooms,
-        // as: 'room', // Assuming association alias is 'room'
-        // attributes: ['id', 'number', 'price'] // Include specific fields
-    },
-  ],
-  
-    where:{
+        model: Rooms, // Include the Room details
+        
+      },
+      {
+        model: BookingAddon, // Include the BookingAddons for each room
+        include: [
+          {
+            model: Addons, // Include the Addons details
+      
+          }
+        ],
+       
+      }
+    ],
+    where: {
       booking_id: bookingId
-    },
-    
+    }
   });
-  return booking
+
+  return bookingRooms;
 }
+static async completeBookingPayment(data){
+  const { user } = data;
+  let description = '';
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0];  
+  const booking = await Booking.findByPk(data.booking_id);
+
+  if (!booking) throw new Error("Booking not found");
+  let amount_paid = parseFloat(booking.amount_paid) + parseFloat(data.amount)
+  if(parseFloat(booking.total_price) > (parseFloat(booking.amount_paid) + parseFloat(data.amount))){
+    description = "Booking Part Payment"
+  }else{
+     description = "Booking Complete Payment"
+     booking.payment_status = "Full Payment"
+  }
+    await BookingTransactions.create(
+      {
+        booking_id: booking.id,
+        description: description,
+        payment_mode: data.payment_mode,
+        amount: data.amount,
+        date: formattedDate,
+        employee_id: `${user.first_name} ${user.last_name}`,
+      
+    });
+
+  await booking.update(
+    {
+     // check_in_time: formData.booking_check_in_time,
+      amount_paid: amount_paid,
+    }
+  );
+  
+  await booking.save();
+  console.log(new Date(new Date().setHours(0, 0, 0, 0)),)
+  try {
+  } catch (error) {
+    console.log(error)
+    throw error; // Propagate error
+  }
+}
+
 static async addBooking(data){
   const { booking_reference, formData, rooms, user } = data;
-  console.log(formData)
-  console.log(rooms)
-  console.log("CHECKING")
+ 
   const transaction = await sequelize.transaction(); // Start transaction
 
   try {
@@ -955,6 +938,7 @@ static async addBooking(data){
         booking_reference: booking_reference,
         booked_by: `${user.first_name} ${user.last_name}`,
         payment_mode: formData.payment_mode,
+        payment_status: formData.payment_status,
         check_in_date: rooms[0].check_in_date,
         check_in_time: rooms[0].check_in_time,
         status: hasCheckedInRoom ? 'checkedin' : 'pending', // Update status dynamically
@@ -1110,6 +1094,28 @@ static async addBooking(data){
     );
 
     // 4. Update Booking with total price
+    if(formData.payment_status == 'Part Payment'){
+      booking.amount_paid = formData.part_payment_amount;
+      //create  a booking transaction table 
+      console.log("BOOKING TRANSACTIONS")
+      const todaysDate = new Date();
+      const formattedDate = todaysDate.toISOString().split('T')[0];
+      await BookingTransactions.create(
+        {
+          booking_id: booking.id,
+          description: "Booking Part Payment",
+          payment_mode: formData.payment_mode,
+          amount: formData.part_payment_amount,
+          date: formattedDate,
+          employee_id: `${user.first_name} ${user.last_name}`,
+         
+        },
+        { transaction }
+      );
+
+    }else if(formData.payment_status == 'Full Payment'){
+      booking.amount_paid = totalPrice;
+    }
     booking.total_price = totalPrice;
     await booking.save({ transaction });
 
@@ -1278,6 +1284,11 @@ static async updateBooking(data) {
         { status: true },
         { where: { id: checkedOutBookingRoomIds }, transaction }
       );
+      
+      await Booking.update(
+        { status: "checkedout" }, // Updating the booking's status to "checkedout"
+        { where: { id: booking.id }, transaction }
+      );
     }
 
     // Add new booking rooms and calculate total price
@@ -1369,6 +1380,7 @@ static async updateBooking(data) {
       ...bookedRoomCheckOutDates
     );
     booking.check_out_date = new Date(latestCheckOut).toISOString().split("T")[0];
+    
 
     // Update booking with the total price
     booking.total_price = totalPrice;
@@ -1384,6 +1396,22 @@ static async updateBooking(data) {
   }
 }
 
+static async addBookingAddon(data) {
+    // add booking addon details 
+      const bookingAddon =  await BookingAddon.create(
+          {
+            booking_room_id: data.formData.bookingRoom_id,
+            addon_id: data.formData.addon_id,
+            price: data.formData.addon_price,
+            added_by: `${data.user.first_name} ${data.user.last_name}`,
+            payment_mode: data.formData.addon_payment_mode
+          },
+
+        );
+           
+    return bookingAddon;
+
+}
 
 static async deleteBooking(bookingId) {
   // Start transaction for atomic operations
