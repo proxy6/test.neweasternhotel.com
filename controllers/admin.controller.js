@@ -39,6 +39,7 @@ getQuote: async(req, res, next)=>{
         const todaybooking = await AdminService.CountTodayBookings()
         const weekbooking = await AdminService.CountThisWeeksBookings()
         const availableRoom = await AdminService.availableRoomCount()
+
         const bookedRoom = await AdminService.bookedRoomCount()
         const employeeCount = await AdminService.countEmployee()
         const complaintCount = await AdminService.countComplaints()

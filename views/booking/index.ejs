@@ -105,8 +105,9 @@
                                             <th title="Room Type">Room Type</th>
                                             <th title="Total Price">Total Price</th>
                                             <th title="Amount Paid">Amount Paid</th>
-                                            <th title="Payment Mode">Payment Status</th>
-                                            <th title="Phone">Phone</th>
+                                            <th title="Payment Mode">Payment Mode</th>
+                                            <th title="Payment Status">Payment Status</th>
+                                            <!-- <th title="Phone">Phone</th> -->
                                             <th title="Booked By">Booked By</th>
                                             <th title="Created At">Created At</th>
                                             <th title="Status">Status</th>
@@ -126,10 +127,11 @@
                                                 <td><%= bookingRoom ? bookingRoom.Room.number : 'N/A' %></td>
                                                 <td><%= bookingRoom ? bookingRoom.Room.type : 'N/A' %></td>
                                                 <td>&#8358;<%= booking.total_price %></td>
-                                                <td>&#8358;<%= booking.amount_paid != '' ? booking.amount_paid : N/A  %></td>
 
+                                                <td>&#8358;<%= booking.amount_paid != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.amount_paid) : N/A  %></td>
+                                                <td><%= booking.payment_mode %></td>
                                                 <td><%= booking.payment_status %></td>
-                                                <td><%= booking.Customer.phone %></td>
+                                                <!-- <td><%= booking.Customer.phone %></td> -->
                                                 <td><%= booking.booked_by %></td>
                                                 <td><%= booking.createdAt.toLocaleDateString() %></td>
                                                 <% if(booking.status == 'checkedout'){ %>
@@ -219,9 +221,9 @@
                                                                 
                                                                     <p> <b> Customer Name: </b> <%= booking.Customer.name %></p>
                                                                     <p> <b> Booking Reference: </b> <%= booking.booking_reference %></p>
-                                                                    <p> <b> Total Amount: </b>&#8358;<%= booking.total_price %></p>
-                                                                    <p> <b> Amount Paid: </b>&#8358;<%= booking.amount_paid %></p>
-                                                                    <p> <b> Balance: </b>&#8358;<%= booking.total_price - booking.amount_paid %></p>
+                                                                    <p> <b> Total Amount: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.total_price) %></p>
+                                                                    <p> <b> Amount Paid: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.amount_paid) %></p>
+                                                                    <p> <b> Balance: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.total_price- booking.amount_paid) %></p>
                                                              
                                                                   <div class="row mt-2">
                                                                     <div class="col-sm-6">

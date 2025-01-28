@@ -148,11 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
         // Validate Customer Info
         form.querySelectorAll('input[required], select[required]').forEach((input) => {
-            if (input && input.value && input.value.trim()) { // Valid input
-                input.classList.remove('is-invalid');
-            
+            if (!input || !input.value.trim()) { // Invalid input
+                // input.classList.remove('is-invalid');
+                isValid = false;
+                console.log(input)
+                input.classList.add('is-invalid'); // No error, input is an element.
               } else { // Invalid or missing input
-                if (input && input.classList) input.classList.add('is-invalid'); // Only add class if input exists.
+                input.classList.remove('is-invalid');
               }
         });
       
@@ -171,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
           // Validate each required field in the room section
           [roomId, checkInDate, checkInTime, checkOutDate, noPersons, status].forEach((input) => {
             if (!input || !input.value.trim()) { // Invalid input
-                // isValid = false;
+                isValid = false;
                 console.log(input)
-                //input.classList.add('is-invalid'); // No error, input is an element.
+                input.classList.add('is-invalid'); // No error, input is an element.
             } else { // Valid input
                 input.classList.remove('is-invalid');
             }
@@ -335,11 +337,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (paymentStatusSelected == "Part Payment") {
             
             partPaymentInput.style.display = "block";
+            partPaymentInput.setAttribute("required", "required");
           }else{
             partPaymentInput.style.display = "none";
+            partPaymentInput.removeAttribute("required"); 
           }
           if (paymentStatusSelected == "Credit") {
-            paymentModeSelect.disabled = true;
+            paymentModeSelect.disabled = false;
             paymentModeSelect.innerHTML = ''
             const option = document.createElement('option');
             option.value = 'None';

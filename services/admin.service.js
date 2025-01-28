@@ -489,17 +489,48 @@ static async countRooms(){
   return roomCount
 
 }
+static async availableRoomCount() {
+  try {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
 
-static async availableRoomCount(){
-  const roomCount = await Rooms.count({
-    where:{
-      status: true
-    }
+    // Query for available rooms count
+    const availableRooms = await Rooms.count({
+      where: {
+        type: { [Op.ne]: 'others' }, // Exclude rooms of type 'others'
+        id: {
+          [Op.notIn]: sequelize.literal(`
+            (
+              SELECT room_id
+              FROM BookingRooms AS br
+              JOIN Rooms AS r ON br.room_id = r.id
+              WHERE 
+                (r.type = 'others' OR br.status IN ('pending', 'checkedin')) AND
+                ('${today}' BETWEEN br.check_in_date AND br.check_out_date)
+            )
+          `), // Exclude room_ids that are of type 'others' or have conflicting bookings
+        },
+      },
+    });
 
-  })
-  return roomCount
-
+    return availableRooms;
+  } catch (error) {
+    console.error('Error fetching available rooms:', error);
+    throw error;
+  }
 }
+
+
+// static async availableRoomCount(){
+//   const roomCount = await Rooms.count({
+//     where:{
+//       status: true
+//     }
+
+//   })
+//   return roomCount
+
+// }
 
 static async availableRoom(roomId, checkIn, checkOut){
   
@@ -1279,16 +1310,22 @@ static async updateBooking(data) {
           (bookedRoom) => bookedRoom.bookingRoom_status === "checkedout"
         )
         .map((bookedRoom) => bookedRoom.bookingRoom_room_id);
-
-      await Rooms.update(
-        { status: true },
-        { where: { id: checkedOutBookingRoomIds }, transaction }
-      );
       
-      await Booking.update(
-        { status: "checkedout" }, // Updating the booking's status to "checkedout"
-        { where: { id: booking.id }, transaction }
-      );
+        if(checkedOutBookingRoomIds.length > 0){
+   
+          await Booking.update(
+            { status: "checkedout" },
+            { where: { id: booking.id }, transaction }
+          );
+          await Rooms.update(
+            { status: true },
+            { where: { id: checkedOutBookingRoomIds }, transaction }
+          );
+        }
+   
+ 
+      
+   
     }
 
     // Add new booking rooms and calculate total price

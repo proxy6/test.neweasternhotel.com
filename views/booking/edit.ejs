@@ -62,7 +62,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                 <label class="form-label">Address</label>
-                                <input class="form-control" name="address" value="<%= booking.Customer.address %>" type="text" required>
+                                <input class="form-control" name="address" value="<%= booking.Customer.address %>" type="text">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -74,7 +74,7 @@
                             <div class="col-sm-12">
                                 <div class="mb-3">
                                     <label class="form-label">Payment Mode<span>*</span></label>
-                                    <select required name="payment_mode" class="form-select" required> 
+                                    <select required name="payment_mode" class="form-select"> 
                                         <option value="<%= booking.payment_mode %>"><%= booking.payment_mode %></option> 
                                         <% if(typeof paymentModes !== 'undefined'){ %>
                                             <% paymentModes.forEach(paymentMode => { %>
@@ -304,8 +304,8 @@
                              
                                 <div class="col-sm-6">
                                     <div class="mb-3">
-                                    <label class="form-label">Number of Persons</label>
-                                    <input class="form-control" name="bookingRoom_no_persons_<%= bookingRoom.id%>" value="<%= bookingRoom.no_persons %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    <label class="form-label">Number of Persons <span>*</span></label>
+                                    <input required class="form-control" name="bookingRoom_no_persons_<%= bookingRoom.id%>" value="<%= bookingRoom.no_persons %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -331,7 +331,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <% if (typeof bookingRoom.BookingAddons.length > 0) { %>
+                            <% if (bookingRoom.BookingAddons.length > 0) { %>
                             <hr>
                             <h4>Room Addons</h4>
                             <hr>
@@ -371,8 +371,8 @@
                                                 <div class="row"> 
                                                     <div class="col-sm-6">
                                                         <div class="mb-3">
-                                                        <label class="form-label">Addon Type</label>
-                                                        <select required name="addon_type" class="form-select" id="addonType_<%=bookingRoom.id %>"> 
+                                                        <label class="form-label">Addon Type <span>*</span></label>
+                                                        <select name="addon_type" class="form-select" id="addonType_<%=bookingRoom.id %>"> 
                                                             <option value="">Select..</option> 
                                                             <% addonTypes.forEach((addonType) => { %>
                                                                 <option value="<%= addonType.type %>"><%= addonType.type %></option>
@@ -384,17 +384,17 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="mb-3">
-                                                            <label class="form-label">Addon Name</label>
+                                                            <label class="form-label">Addon Name <span>*</span></label>
                                                       
-                                                            <select name="addon_id" required id="addonName_<%= bookingRoom.id %>" class="form-select" disabled>
+                                                            <select name="addon_id" id="addonName_<%= bookingRoom.id %>" class="form-select" disabled>
                                                                 <option value="">Select..</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="mb-3">
-                                                        <label class="form-label">Booked Room</label>
-                                                        <select required name="bookingRoom_id" class="form-select"> 
+                                                        <label class="form-label">Booked Room <span>*</span></label>
+                                                        <select name="bookingRoom_id" class="form-select"> 
                                                             <option value="">Select..</option> 
                                                             <% bookingRooms.forEach((bookingRoom) => { %>
                                                                 <option value="<%= bookingRoom.id %>"><%= bookingRoom.Room.number %> - <%= bookingRoom.Room.type %></option>
@@ -406,17 +406,17 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="mb-3">
-                                                        <label class="form-label">Price</label>
+                                                        <label class="form-label">Price <span>*</span></label>
                                                         <input class="form-control" name="addon_price" type="number" >
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="mb-3">
-                                                        <label class="form-label">Payment Mode</label>
-                                                        <select required name="addon_payment_mode" class="form-select"> 
+                                                        <label class="form-label">Payment Mode <span>*</span></label>
+                                                        <select name="addon_payment_mode" class="form-select"> 
                                                             <option value="">Select..</option> 
                                                             <% paymentModes.forEach((paymentMode) => { %>
-                                                                <option value="<%= bookingRoom.id %>"><%= paymentMode.mode %></option>
+                                                                <option value="<%= paymentMode.mode %>"><%= paymentMode.mode %></option>
                                                             <% }) %>
                          
                                                         </select>

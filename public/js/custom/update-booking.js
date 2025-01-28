@@ -144,11 +144,14 @@ const roomTypeOptions = roomTypes.map(roomType =>
   
     // Validate Customer Info
     form.querySelectorAll('input[required], select[required]').forEach((input) => {
-        if (input && input.value && input.value.trim()) { // Valid input
-            input.classList.remove('is-invalid');
-          } else { // Invalid or missing input
-            if (input && input.classList) input.classList.add('is-invalid'); // Only add class if input exists.
-          }
+        if (!input || !input.value.trim()) { // Invalid input
+          // input.classList.remove('is-invalid');
+          isValid = false;
+          console.log(input)
+          input.classList.add('is-invalid'); // No error, input is an element.
+        } else { // Invalid or missing input
+          input.classList.remove('is-invalid');
+        }
     });
   
     // Validate Dynamic Room Sections

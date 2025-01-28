@@ -294,9 +294,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <hr>
+                                    <% if (bookingRoom.BookingAddons.length > 0) { %>
+                                    <hr>
                                     <h4>Room Addons</h4>
-                                    <hr> -->
+                                    <hr>
                                     <% bookingRoom.BookingAddons.forEach((bookingAddon, index) => { %>
                                     <div class="row"> 
                                         <div class="col-sm-6">
@@ -317,6 +318,7 @@
                                   
                                     </div>
                                     <% }) %>
+                                    <% } %>
                             </div>
                             
                     
