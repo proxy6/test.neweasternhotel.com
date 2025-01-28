@@ -568,8 +568,8 @@ static async availableRoomForEditBooking(roomId, checkIn, checkOut){
 
   const overlappingBookings = await BookingRooms.findAll({
     where: {
-      room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
-      // room_id:  roomId , // Exclude the room with the specified roomId
+      // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+      room_id:  roomId , // Exclude the room with the specified roomId
       status: { [Op.in]: ['checkedin', 'pending'] },
       [Op.or]: [
         {
