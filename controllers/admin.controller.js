@@ -403,7 +403,8 @@ getQuote: async(req, res, next)=>{
       }
   
       let overlappingBookings  = await AdminService.availableRoom(roomId, checkIn, checkOut)
-      console.log(overlappingBookings)
+      console.error("overlappingBookings For Check Bookings")
+      console.error(overlappingBookings)
       if (overlappingBookings.length > 0) {
         return res.json({ available: false });
       }
@@ -428,7 +429,7 @@ getQuote: async(req, res, next)=>{
       }
   
       let overlappingBookings  = await AdminService.availableRoomForEditBooking(roomId, checkIn, checkOut)
-      console.error("overlappingBookings")
+      console.error("overlappingBookings for edit bookings")
       console.error(overlappingBookings)
       // console.log(overlappingBookings)
       if (overlappingBookings.length > 0) {
