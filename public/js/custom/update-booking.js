@@ -458,70 +458,70 @@ fetch(`/bookings/${payload.formData.bookingRoom_id}/addon`, {
 
 
   //check selected room availability
-  async function checkRoomAvailability(event) {
-    const target = event.target;
-    const roomCount = target.closest('.product-info').dataset.index; // Get room index from parent container
+  // async function checkRoomAvailability(event) {
+  //   const target = event.target;
+  //   const roomCount = target.closest('.product-info').dataset.index; // Get room index from parent container
   
-    const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
-    const checkInDate = document.querySelector(`#checkInDate_${roomCount}`);
-    const checkOutDate = document.querySelector(`#checkOutDate_${roomCount}`);
-    const alertSpan = document.querySelector(
-      `#room-container_${roomCount} span[role="alert"] > strong`
-    ); // Select error message <strong>
+  //   const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
+  //   const checkInDate = document.querySelector(`#checkInDate_${roomCount}`);
+  //   const checkOutDate = document.querySelector(`#checkOutDate_${roomCount}`);
+  //   const alertSpan = document.querySelector(
+  //     `#room-container_${roomCount} span[role="alert"] > strong`
+  //   ); // Select error message <strong>
   
-    const roomId = roomNumberSelect.value;
-    const checkIn = checkInDate.value;
-    const checkOut = checkOutDate.value;
+  //   const roomId = roomNumberSelect.value;
+  //   const checkIn = checkInDate.value;
+  //   const checkOut = checkOutDate.value;
   
-    if (roomId && checkIn && checkOut) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const checkInDateObj = new Date(checkIn);
-      checkInDateObj.setHours(0, 0, 0, 0);
-      const checkOutDateObj = new Date(checkOut);
-      checkOutDateObj.setHours(0, 0, 0, 0);
+  //   if (roomId && checkIn && checkOut) {
+  //     const today = new Date();
+  //     today.setHours(0, 0, 0, 0);
+  //     const checkInDateObj = new Date(checkIn);
+  //     checkInDateObj.setHours(0, 0, 0, 0);
+  //     const checkOutDateObj = new Date(checkOut);
+  //     checkOutDateObj.setHours(0, 0, 0, 0);
       
-      console.log(checkIn)
-      console.log(checkOut)
-      // Validate dates
-      if (
-        checkOutDateObj < checkInDateObj ||
-        checkInDateObj < today ||
-        checkOutDateObj < today
-      ) {
-        console.log("got here")
-        const errorMessage = 'Please select valid check-in and check-out dates';
-        if (alertSpan) alertSpan.textContent = errorMessage; // Display the error message
-        updateBtn.setAttribute('disabled', 'true'); // Disable the submit button
-        return; // Stop further execution if dates are invalid
-      }else{
-        if (alertSpan) alertSpan.textContent = ""; // Display the error message
-        updateBtn.setAttribute('disabled', 'false'); // Disable the submit button
-      }
+  //     console.log(checkIn)
+  //     console.log(checkOut)
+  //     // Validate dates
+  //     if (
+  //       checkOutDateObj < checkInDateObj ||
+  //       checkInDateObj < today ||
+  //       checkOutDateObj < today
+  //     ) {
+  //       console.log("got here")
+  //       const errorMessage = 'Please select valid check-in and check-out dates';
+  //       if (alertSpan) alertSpan.textContent = errorMessage; // Display the error message
+  //       updateBtn.setAttribute('disabled', 'true'); // Disable the submit button
+  //       return; // Stop further execution if dates are invalid
+  //     }else{
+  //       if (alertSpan) alertSpan.textContent = ""; // Display the error message
+  //       updateBtn.setAttribute('disabled', 'false'); // Disable the submit button
+  //     }
   
-      try {
-        console.log("GOT HERE")
-        const response = await fetch('/rooms/edit-check-availability', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ roomId, checkIn, checkOut })
-        });
+  //     try {
+  //       console.log("GOT HERE")
+  //       const response = await fetch('/rooms/edit-check-availability', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ roomId, checkIn, checkOut })
+  //       });
   
-        const result = await response.json();
+  //       const result = await response.json();
   
-        if (result.available === true) {
-          updateBtn.removeAttribute('disabled');
-          if (alertSpan) alertSpan.textContent = '';
-        } else {
-          let errorMessage = 'Room is not available for the selected dates';
-          updateBtn.setAttribute('disabled', 'true');
-          if (alertSpan) alertSpan.textContent = errorMessage;
-        }
-      } catch (error) {
-        console.error('Error checking room availability:', error);
-      }
-    }
-  }
+  //       if (result.available === true) {
+  //         updateBtn.removeAttribute('disabled');
+  //         if (alertSpan) alertSpan.textContent = '';
+  //       } else {
+  //         let errorMessage = 'Room is not available for the selected dates';
+  //         updateBtn.setAttribute('disabled', 'true');
+  //         if (alertSpan) alertSpan.textContent = errorMessage;
+  //       }
+  //     } catch (error) {
+  //       console.error('Error checking room availability:', error);
+  //     }
+  //   }
+  // }
   
   
   // Event delegation for dynamically created room sections
