@@ -591,7 +591,7 @@ fetch(`/bookings/${payload.formData.bookingRoom_id}/addon`, {
             });
       
             const result = await response.json();
-      
+            console.log(result)
             if (result.available === true) {
               updateBtn.removeAttribute('disabled');
               if (alertSpan) alertSpan.textContent = '';

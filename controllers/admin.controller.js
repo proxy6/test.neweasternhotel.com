@@ -418,16 +418,18 @@ getQuote: async(req, res, next)=>{
 
   checkAvailabilityForEdit: async(req, res)=>{
     try {
-      console.log("GOT HERE")
+   
 
       const { roomId, checkIn, checkOut } = req.body;
 
       if (!roomId || !checkIn || !checkOut) {
-       
+          console.error("GOT HERE TROUBLESHOOT")
           return res.status(400).json({ error: 'All fields are required.' });
       }
   
       let overlappingBookings  = await AdminService.availableRoomForEditBooking(roomId, checkIn, checkOut)
+      console.error("overlappingBookings")
+      console.error(overlappingBookings)
       // console.log(overlappingBookings)
       if (overlappingBookings.length > 0) {
         return res.json({ available: false });
