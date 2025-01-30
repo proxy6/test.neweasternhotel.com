@@ -1,10 +1,10 @@
 const { DATE } = require('sequelize');
-const { Role, Permission, SubAddon, Addons, Rooms, Employee, Customer, Booking, BookingAddon, BookingRooms, RoomType, Pages, Complaints, PaymentMode, AddonType, BookingTransactions } = require('../models');
+const { Role, Permission, Addons, Rooms, Employee, Customer, Booking, BookingAddon, RoomType, Pages, Complaints, PaymentMode, AddonType, BookingTransactions } = require('../models');
 // const Booking = require('../models/booking');
 const { sequelize } = require('../models'); // Database connection
 const { Op } = require('sequelize'); // Import Sequelize operators
 
-const bookingRooms = require('../models/bookingRooms');
+// const bookingRooms = require('../models/bookingRooms');
 
 
 class AdminService{
@@ -502,10 +502,10 @@ static async availableRoomCount() {
           [Op.notIn]: sequelize.literal(`
             (
               SELECT room_id
-              FROM BookingRooms AS br
+              FROM Bookings AS br
               JOIN Rooms AS r ON br.room_id = r.id
               WHERE 
-                (r.type = 'others' OR br.status IN ('pending', 'checkedin')) AND
+                (r.type = 'others' OR br.status IN ('checkedin')) AND
                 ('${today}' BETWEEN br.check_in_date AND br.check_out_date)
             )
           `), // Exclude room_ids that are of type 'others' or have conflicting bookings
@@ -521,6 +521,26 @@ static async availableRoomCount() {
 }
 
 
+static async countPendingCleanedRooms(){
+  const roomCount = await Rooms.count({
+    where:{
+      clean_status: "needs cleaning"
+    }
+  })
+  return roomCount
+
+}
+
+static async countPendingRetouchedRooms(){
+  const roomCount = await Rooms.count({
+    where:{
+      clean_status: "needs retouch"
+    }
+  })
+  return roomCount
+
+}
+
 // static async availableRoomCount(){
 //   const roomCount = await Rooms.count({
 //     where:{
@@ -535,7 +555,7 @@ static async availableRoomCount() {
 static async availableRoom(roomId, checkIn, checkOut){
   
 
-  const overlappingBookings = await BookingRooms.findAll({
+  const overlappingBookings = await Booking.findAll({
     where: {
       // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
       room_id:  roomId , // Exclude the room with the specified roomId
@@ -566,7 +586,7 @@ static async availableRoom(roomId, checkIn, checkOut){
 static async availableRoomForEditBooking(roomId, checkIn, checkOut){
   
 
-  const overlappingBookings = await BookingRooms.findAll({
+  const overlappingBookings = await Booking.findAll({
     where: {
       // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
       room_id:  roomId , // Exclude the room with the specified roomId
@@ -595,7 +615,7 @@ static async availableRoomForEditBooking(roomId, checkIn, checkOut){
 
 
 static async bookedRoomCount(){
-  const roomCount = await BookingRooms.count({
+  const roomCount = await Booking.count({
     distinct: true, // Enable distinct counting
     col: 'room_id', // Specify the column to count distinct values
     where: {
@@ -612,6 +632,20 @@ static async getAllRooms(page){
   const room = await Rooms.findAll({
 
   });
+  return room
+}
+static async sendRoomRequest(request, roomId){
+  const room = await Rooms.findOne({
+    where:{
+      id: roomId
+    }
+  });
+  if (request == "clean"){
+    room.clean_status = "needs cleaning"
+  }else if(request == "retouch"){
+    room.clean_status = 'needs retouch';
+  }
+  await room.save();
   return room
 }
 static async getAllRoomsByType(type){
@@ -705,7 +739,7 @@ return room;
 static async updateRoomStatus(data){
 
     //check if a booking currentllt has it in use
-    const booking  = await BookingRooms.findOne({
+    const booking  = await Booking.findOne({
       where:{
         room_id: data.id,
         status: {
@@ -749,6 +783,30 @@ static async updateSingleRoom(data){
     type: data.type,
     price: data.price,
     status: data.status,
+  
+  },{
+    where:{
+      id: data.id
+    }
+  })
+}
+
+static async markRoomAsCleaned(data){
+  const room = await Rooms.update({
+    clean_status: "cleaned",
+    cleanedAt: new Date()
+  
+  },{
+    where:{
+      id: data.id
+    }
+  })
+}
+
+static async markRoomAsRetouched(data){
+  const room = await Rooms.update({
+    clean_status: "retouched",
+    retouchedAt: new Date()
   
   },{
     where:{
@@ -829,25 +887,18 @@ static async getAllBookings(page, limit){
               model: Customer,
       
             },
+            {
+              model: Rooms,
+            
+          },
             
           ],
-          order: [['createdAt', 'DESC']] // Order by most recent
+          order: [['id', 'DESC']] // Order by most recent
         });
-  const bookingRooms = await BookingRooms.findAll({
-      include:[
-        {
-          model: Rooms,
-        
-      },
-      {
-        model: Booking,
-
-      },
-      ]
-  })
 
 
-  return {bookingRooms, booking}
+
+  return  booking
 }
 static async getSingleBooking(bookingId){
   const booking = await Booking.findOne({
@@ -855,6 +906,13 @@ static async getSingleBooking(bookingId){
       {
         model: Customer,
     },
+    
+    {
+      model: Rooms
+    },
+    {
+      model: BookingAddon
+    }
   ],
     where:{
       id: bookingId
@@ -862,10 +920,167 @@ static async getSingleBooking(bookingId){
     
   });
   return booking
+  
+}
+static async getBookingsForReceipt(bookingId){
+  let booking = await Booking.findOne({
+    include:[
+      {
+        model: Customer,
+    },
+    
+    {
+      model: Rooms
+    },
+    {
+      model: BookingAddon
+    }
+  ],
+    where:{
+      id: bookingId
+    },
+    
+  });
+
+  //check if other bookings exist for that reference
+  if(booking.booking_reference){
+    booking = await Booking.findAll({
+      include:[
+        {
+          model: Customer,
+      },
+      
+      {
+        model: Rooms
+      },
+      {
+        model: BookingAddon
+      }
+    ],
+      where:{
+        booking_reference: booking.booking_reference
+      },
+    })
+  }
+  return booking
+  
 }
 
-static async getBookingRoom(bookingId) {
-  const bookingRooms = await BookingRooms.findAll({
+static async checkinBooking(bookingId,user){
+  const booking = await Booking.findOne({
+    where:{
+      id: bookingId
+    }
+    
+  });
+  //check if this room should be checked in
+  //
+  let today = new Date();
+  today.setHours(0, 0, 0, 0); 
+
+  const checkInDate = new Date(booking.check_in_date);
+  checkInDate.setHours(0, 0, 0, 0); 
+
+  let checkOutDate = booking.check_out_date ? new Date(booking.check_out_date) : null;
+  if (checkOutDate) {
+      checkOutDate.setHours(0, 0, 0, 0); 
+  }
+
+  if (today >= checkInDate && (!checkOutDate || today <= checkOutDate)) { 
+    booking.check_in_date = today.toLocaleDateString();
+    booking.status = "checkedin"
+    today = new Date(); // This overrides the previous reset
+    booking.check_in_time = today.toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    booking.last_updated_by = `${user.first_name} ${user.last_name}`
+    await booking.save()
+  }
+  return booking
+}
+
+static async checkoutBooking(bookingId,user){
+  const booking = await Booking.findOne({
+    where:{
+      id: bookingId
+    }
+    
+  });
+  //check if this room should be checked in
+  //
+  let today = new Date();
+  today.setHours(0, 0, 0, 0); 
+
+  
+    booking.check_out_date = today.toLocaleDateString();
+    booking.status = "checkedout"
+    today = new Date(); // This overrides the previous reset
+    booking.check_out_time = today.toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    booking.checkedout_by = `${user.first_name} ${user.last_name}`
+     booking.last_updated_by = `${user.first_name} ${user.last_name}`
+    await booking.save()
+  
+  return booking
+}
+
+static async extendBooking(bookingId, data, user){
+  const booking = await Booking.findOne({
+    include: [
+      {
+        model: Rooms, // Include the Room details
+        
+      }
+    ],
+    where:{
+      id: bookingId
+    }
+    
+  });
+
+  
+  // TODO: check if this room can be extended for the specified date
+  //
+
+  //check extended book days 
+  const newCheckout = new Date(data.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+  const oldCheckout = new Date(booking.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+
+  // Calculate the difference in days
+  let booked_days_no = (newCheckout - oldCheckout) / 86400000;
+  // let booked_days_no = new Date(data.check_out_date).setHours(0,0,0,0) -  new Date(booking.check_out_date).setHours(0,0,0,0) / 86400000
+  console.log("booked_days_no")
+  console.log(booked_days_no)
+    
+  if (booked_days_no > 0) {
+      booked_days_no = booked_days_no
+          
+  }else{
+        booked_days_no = 1
+  }
+
+    booking.check_out_date = data.check_out_date
+    booking.booked_days_no = booking.booked_days_no + booked_days_no
+    booking.last_updated_by = `${user.first_name} ${user.last_name}`
+    await booking.save()
+
+    //add to booking transactions
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0]; 
+   
+    await BookingTransactions.create(
+      {
+        booking_id: booking.id,
+        description: `Extended Booking for romm ${booking.Room.number} by ${booked_days_no} days `,
+        payment_mode: data.payment_mode,
+        amount: booking.Room.price,
+        date: formattedDate,
+        employee_id: `${user.first_name} ${user.last_name}`,
+      
+    });
+  
+  return booking
+}
+
+static async getBooking(bookingId) {
+  const booking = await Booking.findAll({
     include: [
       {
         model: Rooms, // Include the Room details
@@ -887,8 +1102,9 @@ static async getBookingRoom(bookingId) {
     }
   });
 
-  return bookingRooms;
+  return booking;
 }
+
 static async completeBookingPayment(data){
   const { user } = data;
   let description = '';
@@ -1032,7 +1248,7 @@ static async addBooking(data){
       })
 
       //check if the room is already booked
-      let bookingRoomData = await BookingRooms.findOne({
+      let bookingRoomData = await Booking.findOne({
         where: {
           [Op.and]: [
             { room_id: room.room_id }, // Ensure it checks the same room
@@ -1099,7 +1315,7 @@ static async addBooking(data){
       : roomData.price * room.booked_days_no;
 
       // const roomPrice = pricePerDay * parseInt(room.booked_days_no); // Calculate room price
-      await BookingRooms.create(
+      await Booking.create(
         {
           booking_id: booking.id,
           room_id: room.room_id,
@@ -1154,6 +1370,445 @@ static async addBooking(data){
     await transaction.commit();
 
     return booking; // Return booking details
+  } catch (error) {
+    console.log(error)
+    if (transaction) await transaction.rollback();
+    throw error; // Propagate error
+  }
+
+}
+
+static async addNewBooking(data){
+  const { user } = data;
+  console.log(data)
+  const booking_reference =  'BR-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+  console.log(booking_reference)
+  const transaction = await sequelize.transaction(); // Start transaction
+  try {
+    // 1. Create Customer
+    const customer = await Customer.create(
+      {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        address: data.address,
+        nationality: data.nationality,
+        id_type: data.id_type,
+        id_number: data.id_number,
+        id_issue_country: data.id_issue_country,
+        id_exp_date: data.id_exp_date,
+        occupation: data.occupation,
+        bus_type: data.bus_type,
+        last_country_entry_date: data.last_country_entry_date,
+      },
+      { transaction }
+    );
+
+    //check if the room is booked for the those selected dates
+    let bookingRoom = await Booking.findOne({
+      where: {
+        [Op.and]: [
+          { room_id: data.room_id }, // Ensure it checks the same room
+          { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+          {
+            [Op.or]: [
+              {
+                check_in_date: {
+                  [Op.lt]: data.check_in_date, // Existing booking starts before the new check-in date
+                },
+                check_out_date: {
+                  [Op.gt]: data.check_in_date, // Existing booking ends after the new check-in date
+                }
+              },
+              {
+                check_in_date: {
+                  [Op.lt]: data.check_out_date, // Existing booking starts before the new check-out date
+                },
+                check_out_date: {
+                  [Op.gt]: data.check_out_date, // Existing booking ends after the new check-out date
+                }
+              }
+            ]
+          }
+        ]
+      },
+      transaction
+    });
+      
+    let room = await Rooms.findOne({
+      where: {
+        id: data.room_id
+      },
+      transaction
+    })
+
+    if(bookingRoom){
+      
+      if (transaction) await transaction.rollback();
+      return (`Room is already booked for the selected dates`);
+    } 
+
+    const checkInDate = new Date(data.check_in_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+    const checkOutDate = new Date(data.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+  
+    // Calculate the difference in days
+    let booked_days_no = (checkOutDate - checkInDate) / 86400000;
+  
+    if (booked_days_no > 0) {
+      booked_days_no = booked_days_no
+        
+    }else{
+      booked_days_no = 1
+    }
+    
+    let amount_paid = 0;
+    if(data.payment_status == 'Part Payment'){
+      amount_paid = data.part_payment_amount;
+    }else if(data.payment_status == 'Credit'){
+      amount_paid = 0
+    }
+    else{
+      // room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
+      amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+    }
+    // 2. Create Booking
+    const booking = await Booking.create(
+      {
+        customer_id: customer.id,
+        booking_reference: booking_reference,
+        booked_by: `${user.first_name} ${user.last_name}`,
+        last_updated_by: `${user.first_name} ${user.last_name}`,
+        payment_mode: data.payment_mode,
+        payment_status: data.payment_status,
+        check_in_date: data.check_in_date,
+        check_in_time: data.check_in_time,
+        check_out_date: data.check_out_date,
+        status: data.check_in_status,
+        price: room.price,
+        booked_days_no,
+        no_persons: data.no_persons,
+        discount: data.discount == '' ? 0  : data.discount,
+        amount_paid,
+        room_id: room.id
+
+        
+      },
+      { transaction }
+    );
+
+    if(data.payment_status == 'Part Payment'){
+      //create  a booking transaction table 
+      const todaysDate = new Date();
+      const formattedDate = todaysDate.toISOString().split('T')[0];
+
+      await BookingTransactions.create(
+        {
+          booking_id: booking.id,
+          description: "Booking Part Payment",
+          payment_mode: data.payment_mode,
+          amount: data.part_payment_amount,
+          date: formattedDate,
+          employee_id: `${user.first_name} ${user.last_name}`,
+         
+        },
+        { transaction }
+      );
+
+    }
+    // else if(data.payment_status == 'Credit'){
+    //   amount_paid = 0
+    // }
+    // else if(data.payment_status == 'Full Payment'){
+    //   amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+    // }
+    // Commit transaction
+    await transaction.commit();
+    console.log(booking)
+    return booking; // Return booking details
+  } catch (error) {
+    console.log(error)
+    if (transaction) await transaction.rollback();
+    throw error; // Propagate error
+  }
+
+}
+
+static async bookRoomForCustomer(data){
+  const { user } = data;
+  console.log(data)
+  const booking_reference =  'BR-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+  console.log(booking_reference)
+  const transaction = await sequelize.transaction(); // Start transaction
+  try {
+    // 1. Create Customer
+    const customer = await Customer.findOne(
+      {
+        where:{
+          id: data.customer_id
+        }
+      },
+      { transaction }
+    );
+
+    //check if the room is booked for the those selected dates
+    const overlappingBookings = await Booking.findAll({
+      where: {
+        // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+        room_id:  data.room_id , // Exclude the room with the specified roomId
+        status: { [Op.in]: ['checkedin', 'pending'] },
+        [Op.or]: [
+          {
+            check_in_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            check_out_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            [Op.and]: [
+              { check_in_date: { [Op.lte]: data.check_in_date } },
+              { check_out_date: { [Op.gte]: data.check_out_date } }
+            ]
+          }
+        ]
+      }
+    });
+  
+      
+    let room = await Rooms.findOne({
+      where: {
+        id: data.room_id
+      },
+      transaction
+    })
+
+    if (overlappingBookings.length > 0){ 
+      
+      if (transaction) await transaction.rollback();
+      return (`Room is already booked for the selected dates`);
+    } 
+
+    const checkInDate = new Date(data.check_in_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+    const checkOutDate = new Date(data.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+  
+    // Calculate the difference in days
+    let booked_days_no = (checkOutDate - checkInDate) / 86400000;
+  
+    if (booked_days_no > 0) {
+      booked_days_no = booked_days_no
+        
+    }else{
+      booked_days_no = 1
+    }
+    
+    let amount_paid = 0;
+    if(data.payment_status == 'Part Payment'){
+      amount_paid = data.part_payment_amount;
+    }else if(data.payment_status == 'Credit'){
+      amount_paid = 0
+    }
+    else{
+      // room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
+      amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+    }
+    // 2. Create Booking
+    const booking = await Booking.create(
+      {
+        customer_id: customer.id,
+        booking_reference: booking_reference,
+        booked_by: `${user.first_name} ${user.last_name}`,
+        last_updated_by: `${user.first_name} ${user.last_name}`,
+        payment_mode: data.payment_mode,
+        payment_status: data.payment_status,
+        check_in_date: data.check_in_date,
+        check_in_time: data.check_in_time,
+        check_out_date: data.check_out_date,
+        status: data.check_in_status,
+        price: room.price,
+        booked_days_no,
+        no_persons: data.no_persons,
+        discount: data.discount == '' ? 0  : data.discount,
+        amount_paid,
+        room_id: room.id
+
+        
+      },
+      { transaction }
+    );
+
+    if(data.payment_status == 'Part Payment'){
+      //create  a booking transaction table 
+      const todaysDate = new Date();
+      const formattedDate = todaysDate.toISOString().split('T')[0];
+
+      await BookingTransactions.create(
+        {
+          booking_id: booking.id,
+          description: "Booking Part Payment",
+          payment_mode: data.payment_mode,
+          amount: data.part_payment_amount,
+          date: formattedDate,
+          employee_id: `${user.first_name} ${user.last_name}`,
+         
+        },
+        { transaction }
+      );
+
+    }
+    // else if(data.payment_status == 'Credit'){
+    //   amount_paid = 0
+    // }
+    // else if(data.payment_status == 'Full Payment'){
+    //   amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+    // }
+    // Commit transaction
+    await transaction.commit();
+    console.log(booking)
+    return booking; // Return booking details
+  } catch (error) {
+    console.log(error)
+    if (transaction) await transaction.rollback();
+    throw error; // Propagate error
+  }
+
+}
+
+static async addRoomToBooking(data){
+  const { user } = data;
+
+  const transaction = await sequelize.transaction(); // Start transaction
+  try {
+    // 1. Create Customer
+
+    //find booking
+    const booking = await Booking.findOne({
+      include: {
+        model: Customer,
+      },
+      where:{
+        id: data.booking_id
+      },
+      transaction
+    })
+    if(!booking){
+      
+      if (transaction) await transaction.rollback();
+      return (`Booking Record Does Not Exist!`);
+    } 
+    //check if the room is booked for the those selected dates
+    let bookingRoom = await Booking.findOne({
+      where: {
+        [Op.and]: [
+          { room_id: data.room_id }, // Ensure it checks the same room
+          { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+          {
+            [Op.or]: [
+              {
+                check_in_date: {
+                  [Op.lt]: data.check_in_date, // Existing booking starts before the new check-in date
+                },
+                check_out_date: {
+                  [Op.gt]: data.check_in_date, // Existing booking ends after the new check-in date
+                }
+              },
+              {
+                check_in_date: {
+                  [Op.lt]: data.check_out_date, // Existing booking starts before the new check-out date
+                },
+                check_out_date: {
+                  [Op.gt]: data.check_out_date, // Existing booking ends after the new check-out date
+                }
+              }
+            ]
+          }
+        ]
+      },
+      transaction
+    });
+    if(bookingRoom){
+      
+      if (transaction) await transaction.rollback();
+      return (`Room is already booked for the selected dates`);
+    } 
+
+    let room = await Rooms.findOne({
+      where: {
+        id: data.room_id
+      },
+      transaction
+    })
+
+ 
+
+    const checkInDate = new Date(data.check_in_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+    const checkOutDate = new Date(data.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
+  
+    // Calculate the difference in days
+    let booked_days_no = (checkOutDate - checkInDate) / 86400000;
+  
+    if (booked_days_no > 0) {
+      booked_days_no = booked_days_no
+        
+    }else{
+      booked_days_no = 1
+    }
+    
+    let amount_paid = 0;
+    if(data.payment_status == 'Part Payment'){
+      amount_paid = data.part_payment_amount;
+    }else if(data.payment_status == 'Credit'){
+      amount_paid = 0
+    }
+    else{
+      // room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
+      amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+    }
+    // 2. Create Booking
+    const newbooking = await Booking.create(
+      {
+        customer_id: booking.Customer.id,
+        booking_reference: booking.booking_reference,
+        booked_by: `${user.first_name} ${user.last_name}`,
+        last_updated_by: `${user.first_name} ${user.last_name}`,
+        payment_mode: data.payment_mode,
+        payment_status: data.payment_status,
+        check_in_date: data.check_in_date,
+        check_in_time: data.check_in_time,
+        status: data.check_in_status,
+        price: room.price,
+        booked_days_no,
+        no_persons: data.no_persons,
+        discount: data.discount == '' ? 0  : data.discount,
+        amount_paid,
+        room_id: room.id
+
+        
+      },
+      { transaction }
+    );
+
+    if(data.payment_status == 'Part Payment'){
+      //create  a booking transaction table 
+      const todaysDate = new Date();
+      const formattedDate = todaysDate.toISOString().split('T')[0];
+
+      await BookingTransactions.create(
+        {
+          booking_id: newbooking.id,
+          description: "Booking Part Payment",
+          payment_mode: data.payment_mode,
+          amount: data.part_payment_amount,
+          date: formattedDate,
+          employee_id: `${user.first_name} ${user.last_name}`,
+         
+        },
+        { transaction }
+      );
+
+    }
+    // Commit transaction
+    await transaction.commit();
+   
+    return newbooking; // Return booking details
   } catch (error) {
     console.log(error)
     if (transaction) await transaction.rollback();
@@ -1287,7 +1942,7 @@ static async updateBooking(data) {
          ? ((roomInfo.price * bookedDaysNo) - bookedRoom.bookingRoom_discount) : roomInfo.price * bookedDaysNo ;
         // Calculate the difference in days
         totalPrice += pricePerRoom
-        await BookingRooms.update(
+        await Booking.update(
           {
             check_in_time: bookedRoom.bookingRoom_check_in_time,
             check_out_date: bookedRoom.bookingRoom_check_out_date,
@@ -1338,7 +1993,7 @@ static async updateBooking(data) {
         });
 
       // Validate room availability
-      const bookingRoomData = await BookingRooms.findOne({
+      const bookingRoomData = await Booking.findOne({
         where: {
           [Op.and]: [
             { room_id: room.room_id }, // Ensure the check is for the specific room
@@ -1386,7 +2041,7 @@ static async updateBooking(data) {
         ? (roomData.price * bookedDaysNo)  - room.discount
         : roomData.price * bookedDaysNo;
         totalPrice += roomPrice
-        await BookingRooms.create(
+        await Booking.create(
           {
             booking_id: id,
             room_id: room.room_id,
@@ -1466,7 +2121,7 @@ static async deleteBooking(bookingId) {
       transaction
     });
     // Find all booking rooms related to the booking ID
-    const bookingRooms = await BookingRooms.findAll({
+    const bookingRooms = await Booking.findAll({
       where: { booking_id: bookingId },
       transaction
     });
@@ -1485,7 +2140,7 @@ static async deleteBooking(bookingId) {
     }
 
     // Delete all booking rooms related to the booking ID
-    await BookingRooms.destroy({
+    await Booking.destroy({
       where: { booking_id: bookingId },
       transaction
     });
@@ -1505,6 +2160,90 @@ static async deleteBooking(bookingId) {
   }
 }
 
+
+//CUSTOMERS LOGIC
+static async countCustomers(){
+  const customerCount = await Customer.count({
+  
+  })
+  return customerCount
+}
+
+static async getAllCustomers(page = 1, limit = 10) {
+    // Calculate offset for pagination
+    const offset = limit * (page - 1);
+
+    // Raw SQL query for customers with total bookings and amount spent
+    const rawQuery = `
+      SELECT 
+        c.id,
+        c.name,
+        c.phone,
+        c.email,
+        c.address,
+        c.id_type,
+        c.id_number,
+        c.id_exp_date,
+        c.id_issue_country,
+        c.occupation,
+        c.nationality,
+        c.last_country_entry_date,
+        c.car_no,
+        c.bus_type,
+        c.createdAt,
+        c.updatedAt,
+        COUNT(b.id) AS totalBookings,
+        IFNULL(SUM(b.price * b.booked_days_no), 0) AS totalAmountSpent
+      FROM 
+        Customers AS c
+      LEFT JOIN 
+        Bookings AS b
+      ON 
+        c.id = b.customer_id
+      GROUP BY 
+        c.id
+      ORDER BY 
+        c.createdAt DESC
+      LIMIT :limit OFFSET :offset;
+    `;
+
+    // Execute the raw query
+    const customers = await sequelize.query(rawQuery, {
+      replacements: { limit, offset },
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    return customers;
+  
+}
+
+static async addCustomer(formData){
+  const customer = await Customer.create(
+    {
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      address: formData.address,
+      nationality: formData.nationality,
+      id_type: formData.id_type,
+      id_number: formData.id_number,
+      id_issue_country: formData.id_issue_country,
+      id_exp_date: formData.id_exp_date,
+      occupation: formData.occupation,
+      bus_type: formData.bus_type,
+      last_country_entry_date: formData.last_country_entry_date,
+    });
+
+return customer;
+
+}
+static async deleteCustomer(id){
+  await Customer.destroy({
+    where:{
+      id: id
+    }
+  });
+ }
 // COMPLAINT LOGIC
 static async countComplaints(){
   const complaintCount = await Complaints.count({
@@ -1583,4 +2322,5 @@ static async deleteComplaint(complaintId){
   });
  }
 }
+
 module.exports = AdminService

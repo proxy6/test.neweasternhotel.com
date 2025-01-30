@@ -33,7 +33,21 @@ getAddonByType,
 addBookingAddon,
 getPaymentMode,
 completeBookingPayment,
-checkAvailabilityForEdit} = require('../controllers/admin.controller')
+checkAvailabilityForEdit,
+getAllCustomers,
+addCustomer,
+deleteCustomer,
+addNewBooking,
+addRoomToBooking,
+sendRoomRequest,
+getBookKeepingPage,
+makeRoomAsCleaned,
+makeRoomAsRetouched,
+checkinBooking,
+checkoutBooking,
+extendBooking,
+addNewRoomToBooking,
+bookRoomForCustomer} = require('../controllers/admin.controller')
 const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
@@ -134,6 +148,7 @@ router.post('/addons/:id/delete', isAuthorized, deleteAddon)
 
 router.get('/rooms', isAuthorized, getAllRooms)
 router.get('/rooms/add', isAuthorized, getAddRoomPage)
+router.post('/rooms/request', isAuthorized, sendRoomRequest)
 router.post('/rooms', isAuthorized, upload, addRoom)
 router.post('/rooms/check-availability', isAuthorized, checkRoomAvailability)
 router.post('/rooms/edit-check-availability', isAuthorized, checkAvailabilityForEdit)
@@ -142,23 +157,35 @@ router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
 router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
+router.get('/bookkeeping', isAuthorized, getBookKeepingPage)
+router.post('/bookkeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
+router.post('/bookkeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
 
 router.get('/bookings', isAuthorized, getAllBookings)
 router.get('/bookings/add', isAuthorized, getAddBookingPage)
 router.get('/bookings/paymentmodes', isAuthorized, getPaymentMode)
 router.post('/bookings/completepayment', isAuthorized, completeBookingPayment )
-router.post('/bookings/add', isAuthorized, addBooking)
+router.post('/bookings/add', isAuthorized, addNewBooking)
+router.post('/bookings/:id/add', isAuthorized, addNewRoomToBooking)
+router.post('/bookings/:id/bookcustomer', isAuthorized, bookRoomForCustomer)
+router.post('/bookings/:id/addroom', isAuthorized, addRoomToBooking)
+router.post('/bookings/', isAuthorized, addBooking)
 router.get('/bookings/:id', isAuthorized, getSingleBooking)
 router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
 router.post('/bookings/:id', isAuthorized, updateBookingById);
 router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
-router.get('/bookings/:id/receipt', getReceipt)
-router.post('/bookings/:id/addon', addBookingAddon)
-router.get('/bookings/:id/guestreceipt', getReceipt)
+router.get('/bookings/:id/receipt', isAuthorized, getReceipt)
+router.post('/bookings/:id/addon', isAuthorized, addBookingAddon)
+router.get('/bookings/:id/guestreceipt', isAuthorized, getReceipt)
+router.post('/bookings/:id/checkin', isAuthorized, checkinBooking)
+router.post('/bookings/:id/checkout', isAuthorized, checkoutBooking)
+router.post('/bookings/:id/extend', isAuthorized, extendBooking)
 
 
 
-
+router.get('/customers', isAuthorized,  getAllCustomers)
+router.post('/customers', isAuthorized, addCustomer)
+router.post('/customers/:id/delete', isAuthorized, deleteCustomer)
 
 router.get('/complaints', isAuthorized, getAllComplaints)
 router.get('/complaints/add', isAuthorized, getAddComplaintPage)
@@ -166,8 +193,5 @@ router.post('/complaints', isAuthorized, addComplaint)
 router.get('/complaints/:id', isAuthorized, getComplaintEditPage)
 router.post('/complaints/:id', isAuthorized, updateComplaintById);
 router.post('/complaints/:id/delete', isAuthorized, deleteComplaint)
-// router.put('/rooms/:id/update-status', isAuthorized, updateRoomStatus)
-// router.get('/rooms/:id', isAuthorized, getRoomEditPage)
-// router.post('/rooms/:id', isAuthorized, updateRoomById);
-// router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
+
 module.exports = router

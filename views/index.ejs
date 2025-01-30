@@ -210,17 +210,16 @@
                                     </thead>
                                     <tbody>
                                         <% if (typeof bookings !== 'undefined') { %>
-                                            <% bookings.booking.forEach((booking, index) => { %>
+                                            <% bookings.forEach((booking, index) => { %>
                                         <tr class="odd">
                                             <td><%= index + 1 %></td>
                                             <td class="sorting_1"><%= booking.Customer.name %></td>
-                                            <% let bookingRoom = bookings.bookingRooms.find(room => room.booking_id === booking.id); %>
-                                            <td><%= bookingRoom ? bookingRoom.Room.number : 'N/A' %></td>
-                                            <td><%= bookingRoom ? bookingRoom.Room.type : 'N/A' %></td>
+                                            <td><%= booking.Room.number %></td>
+                                            <td><%= booking.Room.type %></td>
                                        
-                                            <td>&#8358;<%= booking.total_price %></td>
-                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
-                                            <td><%= booking.createdAt.toLocaleDateString() %></td>
+                                            <td>&#8358;<%= booking.price %></td>
+                                            <td><%= booking.check_in_date %></td>
+                                            <td><%= booking.check_out_date %></td>
                                             <td><%= booking.booked_by %></td>
                                             <% if(booking.status == 'checkedout'){ %>
                                                 <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>

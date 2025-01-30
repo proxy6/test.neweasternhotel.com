@@ -35,6 +35,7 @@ getQuote: async(req, res, next)=>{
         const limit = 10
         const page = req.query.page || 1
         const bookings = await AdminService.getAllBookings(page, limit)
+
         const rooms = await AdminService.getActivePaginatedRooms(page, limit)
         const todaybooking = await AdminService.CountTodayBookings()
         const weekbooking = await AdminService.CountThisWeeksBookings()
@@ -391,6 +392,73 @@ getQuote: async(req, res, next)=>{
           })
   },
 
+  
+  getBookKeepingPage: async(req, res)=>{
+    const limit = 10
+    const page = req.query.page || 1
+    const type = req.query.type
+
+    const roomCount = await AdminService.countRooms()
+    let totalPages = Math.ceil(roomCount / limit);
+    let currentPage = page
+
+    let pendingCleaned = await AdminService.countPendingCleanedRooms()
+    let pendingTouched = await AdminService.countPendingRetouchedRooms()
+    let rooms = await AdminService.getAllRooms(page, limit)
+  
+    res.render('bookkeeping/index', 
+      {
+        rooms,
+        currentPage,
+        totalPages,
+        roomCount,
+        pendingTouched,
+        pendingCleaned,
+        user: req.session.user
+      })
+},
+
+makeRoomAsCleaned: async(req, res)=>{
+  try {
+      const data = req.body
+      data.id = req.params.id;
+      
+      const room = await AdminService.markRoomAsCleaned(data);
+     
+      res.redirect('/bookkeeping')
+   
+      } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
+
+makeRoomAsRetouched: async(req, res)=>{
+  try {
+      const data = req.body
+      data.id = req.params.id;
+      
+      const room = await AdminService.markRoomAsRetouched(data);
+     
+      res.redirect('/bookkeeping')
+   
+      } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
+
+
+  sendRoomRequest: async(req, res)=>{
+  
+    const request = req.query.request
+    const roomId = req.query.roomId
+  
+    await AdminService.sendRoomRequest(request, roomId)
+  
+    res.redirect('/rooms')
+},
+
   checkRoomAvailability: async(req, res)=>{
     try {
 
@@ -530,12 +598,19 @@ getQuote: async(req, res, next)=>{
         let currentPage = page
         const bookings = await AdminService.getAllBookings(page, limit)
       
+        //fetch room types
+        const roomTypes = await AdminService.getRoomTypes()
+     
+       
+        const countries = await getCountries();
         res.render('booking/index', {
           bookings,
           totalPages,
           currentPage,
           bookingCount,
           paymentModes,
+          roomTypes,
+          countries,
           user: req.session.user
         })
     },
@@ -551,7 +626,7 @@ getQuote: async(req, res, next)=>{
     getPaymentMode: async(req, res)=>{
     
       const paymentModes = await AdminService.getPaymentMode()
-      console.log(paymentModes)
+    
       res.status(200).json({data: paymentModes})
      
   },
@@ -577,6 +652,103 @@ getQuote: async(req, res, next)=>{
             res.status(500).json({ error: 'Something went wrong!' });
           }
     },
+
+    addNewBooking: async(req, res)=>{
+      try {
+       
+          const data = req.body
+         
+          data.user = req.session.user
+
+        
+          const booking = await AdminService.addNewBooking(data);
+     
+          if (typeof booking === 'string') {
+            return res.status(500).json({ message: "Failed" });
+          }
+          else{
+            res.status(200).json({ message: 'Successful', booking:booking });
+          }
+          
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Something went wrong!' });
+        }
+  },
+
+  bookRoomForCustomer: async(req, res)=>{
+    try {
+     
+        const data = req.body
+       
+        data.user = req.session.user
+
+      
+        const booking = await AdminService.bookRoomForCustomer(data);
+   
+        if (typeof booking === 'string') {
+          return res.status(500).json({ message: "Failed" });
+        }
+        else{
+          res.status(200).json({ message: 'Successful', booking:booking });
+        }
+        
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Something went wrong!' });
+      }
+},
+  
+
+  addRoomToBooking: async(req, res)=>{
+    try {
+     
+        const data = req.body
+       
+        data.user = req.session.user
+        console.log("GOT HERE")
+        console.log(data)
+        const booking = await AdminService.addRoomToBooking(data);
+   
+        if (typeof booking === 'string') {
+          return res.status(500).json({ message: "Failed" });
+        }
+        else{
+          // res.status(200).json({ message: 'Successful', booking });
+          res.redirect('/bookings')
+        }
+        
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Something went wrong!' });
+      }
+},
+
+addNewRoomToBooking: async(req, res)=>{
+  try {
+   
+      const data = req.body
+     
+      data.user = req.session.user
+      console.log("GOT HERE")
+      console.log(data)
+      const booking = await AdminService.addRoomToBooking(data);
+ 
+      if (typeof booking === 'string') {
+        return res.status(500).json({ message: "Failed" });
+      }
+      else{
+        res.status(200).json({ message: 'Successful', booking: booking });
+      }
+      
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Something went wrong!' });
+    }
+},
+
+
+  
     completeBookingPayment: async(req, res)=>{
       try {
        
@@ -598,12 +770,10 @@ getQuote: async(req, res, next)=>{
          
       const bookingId = req.params.id
     
-      const booking = await AdminService.getSingleBooking(bookingId)
-      const bookingRooms = await AdminService.getBookingRoom(bookingId)
-      console.log(bookingRooms)
+      const booking = await AdminService.getSingleBooking(bookingId) 
+
       res.render('booking/view', {
         booking,
-        bookingRooms,
         user: req.session.user
       })
     } catch (error) {
@@ -617,8 +787,7 @@ getQuote: async(req, res, next)=>{
        
     const bookingId = req.params.id
     const booking = await AdminService.getSingleBooking(bookingId)
-    const bookingRooms = await AdminService.getBookingRoom(bookingId)
-    console.log(bookingRooms)
+ 
     const rooms = await AdminService.getAllActiveRooms()
     const roomTypes = await AdminService.getRoomTypes()
     const paymentModes = await AdminService.getPaymentMode()
@@ -626,7 +795,6 @@ getQuote: async(req, res, next)=>{
     const countries = await getCountries();
     res.render('booking/edit', {
       booking,
-      bookingRooms,
       roomTypes,
       addonTypes,
       rooms,
@@ -660,6 +828,27 @@ updateBookingById: async(req, res)=>{
   }
 },
 
+checkinBooking: async(req, res)=>{
+  // const rooms = await AdminService.getAllActiveRooms()
+  // //fetch room types
+  const bookingId = req.params.id
+  const booking = await AdminService.checkinBooking(bookingId, req.session.user)
+  res.redirect('/bookings')
+},
+
+checkoutBooking: async(req, res)=>{
+  // const rooms = await AdminService.getAllActiveRooms()
+  // //fetch room types
+  const bookingId = req.params.id
+  const booking = await AdminService.checkoutBooking(bookingId, req.session.user)
+  res.redirect('/bookings')
+},
+extendBooking: async(req, res)=>{
+  const data =  req.body;
+  const bookingId = req.params.id
+  const booking = await AdminService.extendBooking(bookingId, data, req.session.user)
+  res.redirect('/bookings')
+},
 addBookingAddon: async(req, res)=>{
   try {
       const data = req.body
@@ -691,9 +880,10 @@ getReceipt: async(req, res)=>{
   // const rooms = await AdminService.getAllActiveRooms()
   // //fetch room types
   const bookingId = req.params.id
-  const booking = await AdminService.getSingleBooking(bookingId)
-  const bookingRooms = await AdminService.getBookingRoom(bookingId)
-  res.render('booking/receipt', { booking, bookingRooms, user: req.session.user})
+  const bookings = await AdminService.getBookingsForReceipt(bookingId)
+  console.log(bookings)
+  // return res.json(booking)
+  res.render('booking/receipt', { bookings, user: req.session.user})
 },
 
 getGuestReceipt: async(req, res)=>{
@@ -707,6 +897,53 @@ getGuestReceipt: async(req, res)=>{
   
 
 
+//CUSTOMERS LOGIC
+
+
+getAllCustomers: async(req, res)=>{
+  const limit = 10
+  const page = req.query.page || 1
+  const totalCustomer = await AdminService.countCustomers()
+  let totalPages = Math.ceil(totalCustomer / limit);
+  let currentPage = page
+  const customers = await AdminService.getAllCustomers(page, limit)
+  
+   //fetch room types
+  const roomTypes = await AdminService.getRoomTypes()
+  res.render('customer/index', 
+    {
+      customers,
+      currentPage,
+      totalPages,
+      totalCustomer,
+      roomTypes,
+      user: req.session.user
+    })
+},
+
+addCustomer: async(req, res)=>{
+  try {
+   
+      const data = req.body
+      console.log(data)
+      await AdminService.addCustomer(data);
+      res.redirect('/customers')
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Something went wrong!' });
+    }
+},
+deleteCustomer: async(req, res)=>{
+
+  const custId = req.params.id;
+  try {
+    await AdminService.deleteCustomer(custId);
+    res.redirect('/customers')
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
 //  COMPLAINT LOGIC
 
 
@@ -783,6 +1020,7 @@ deleteComplaint: async(req, res)=>{
     res.status(500).json({ error: 'Something went wrong!' });
   }
 },
+
 }
 
 const uploadSingleFilesToCloudinary= async file => {

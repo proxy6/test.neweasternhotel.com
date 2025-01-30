@@ -22,6 +22,18 @@ module.exports = (sequelize) => {
        status: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+       },
+       clean_status: {
+        type: DataTypes.STRING,
+        defaultValue: "needs cleaning" //  ['needs retouch', 'retouched', 'needs cleaning', "cleaned"]
+       },
+       cleanedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+       },
+       retouchedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
        }
     },
     { timestamps: true },

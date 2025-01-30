@@ -55,14 +55,10 @@
       .receipt {
         page-break-after: always;
       }
-      #printBtn {
-      display: none;
-    }
     }
   </style>
 </head>
 <body>
-  <button class="btn btn-bg btn-secondary mx-2 my-2" id="printBtn">Print Receipt</button>
   <div id="receipt-container">
     <% if (typeof bookings !== 'undefined') { %>
      
@@ -134,9 +130,7 @@
   </div>
 
   <script>
-      document.getElementById("printBtn").addEventListener("click", function () {
-    window.print();
-  });
+
   </script>
             
              <!-- footer start-->

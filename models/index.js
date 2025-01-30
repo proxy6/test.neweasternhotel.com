@@ -1,7 +1,6 @@
 const sequelize = require('../config/database');
 const Addons = require('./addons')(sequelize);
 const Booking = require('./booking')(sequelize);
-const BookingRooms = require('./bookingRooms')(sequelize);
 const BookingTransactions = require('./bookingTransactions')(sequelize);
 const BookingAddon = require('./bookingAddon')(sequelize);
 const Customer = require('./customer')(sequelize);
@@ -49,31 +48,31 @@ Customer.hasMany(Booking, { foreignKey: 'customer_id' });
 Booking.belongsTo(Customer, { foreignKey: 'customer_id' });
 
 // Rooms
-Rooms.hasMany(BookingRooms, { foreignKey: 'room_id' });
-BookingRooms.belongsTo(Rooms, { foreignKey: 'room_id' });
+Rooms.hasMany(Booking, { foreignKey: 'room_id' });
+Booking.belongsTo(Rooms, { foreignKey: 'room_id' });
 
-Booking.hasMany(BookingRooms, { foreignKey: 'booking_id' });
-BookingRooms.belongsTo(Booking, { foreignKey: 'booking_id' });
+// Booking.hasMany(BookingRooms, { foreignKey: 'booking_id' });
+// BookingRooms.belongsTo(Booking, { foreignKey: 'booking_id' });
 
 Booking.hasMany(BookingTransactions, { foreignKey: 'booking_id' });
-BookingRooms.belongsTo(Booking, { foreignKey: 'booking_id' });
+BookingTransactions.belongsTo(Booking, { foreignKey: 'booking_id' });
 
 // Addons
 Addons.hasMany(BookingAddon, { foreignKey: 'addon_id' });
 BookingAddon.belongsTo(Addons, { foreignKey: 'addon_id' });
 
 // BookingRooms to Addons
-BookingRooms.hasMany(BookingAddon, { foreignKey: 'booking_room_id' });
-BookingAddon.belongsTo(BookingRooms, { foreignKey: 'booking_room_id' });
+Booking.hasMany(BookingAddon, { foreignKey: 'booking_room_id' });
+BookingAddon.belongsTo(Booking, { foreignKey: 'booking_room_id' });
 
 
-// sequelize.sync({ alter: true }) // Use { alter: true } to modify existing tables without dropping them
-//   .then(() => {
-//     console.log('Database & tables synchronized!');
-//   })
-//   .catch((err) => {
-//     console.error('Error syncing tables:', err);
-//   });
+sequelize.sync({ alter: true }) // Use { alter: true } to modify existing tables without dropping them
+  .then(() => {
+    console.log('Database & tables synchronized!');
+  })
+  .catch((err) => {
+    console.error('Error syncing tables:', err);
+  });
 
 module.exports = {
   sequelize,
@@ -84,7 +83,6 @@ module.exports = {
   Rooms,  
   Employee,
   Booking,
-  BookingRooms,
   BookingAddon,
   RoomType,
   Pages,

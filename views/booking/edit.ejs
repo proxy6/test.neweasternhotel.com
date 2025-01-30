@@ -5,7 +5,7 @@
                 <div class="container-fluid">
     <div class="row page-title">
       <div class="col-sm-6">
-        <h3>Add Booking</h3>
+        <h3>Edit Booking</h3>
       </div>
       <div class="col-sm-6">
         <nav>
@@ -27,141 +27,6 @@
         <div class="row"> 
             <% if (typeof booking !== 'undefined') { %>
             <div class="col-xl-6">
-            <div class="card">
-                <div class="card-body">
-                <div class="product-info">
-                    <h4>Customer Info</h4>
-                
-                    <div class="product-group">
-                        <div class="row"> 
-                        <div class="col-sm-12">
-                            <div class="mb-3">
-                            <input name="booking_id" value="<%= booking.id %>" type="hidden">
-                            <input name="customer_id" value="<%= booking.Customer.id %>" type="hidden">
-                            <label class="form-label">Name <span>*</span></label>
-                            <input class="form-control" name="name" value="<%= booking.Customer.name %>" type="text" required>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="row"> 
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                            <label class="form-label">Phone Number <span>*</span></label>
-                            <input class="form-control" name="phone" value="<%= booking.Customer.phone %>" type="text" required>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                            <label class="form-label">Email Address </label>
-                            
-                            <input class="form-control" name="eamil" value="<%= booking.Customer.email %>" type="text">
-                            </div>
-                        </div>
-                        </div>
-                        <div class="row"> 
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                <label class="form-label">Address</label>
-                                <input class="form-control" name="address" value="<%= booking.Customer.address %>" type="text">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Nationality</label>
-                                    <input class="form-control" name="nationality" value="<%= booking.Customer.nationality %>" type="text">
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Payment Mode<span>*</span></label>
-                                    <select required name="payment_mode" class="form-select"> 
-                                        <option value="<%= booking.payment_mode %>"><%= booking.payment_mode %></option> 
-                                        <% if(typeof paymentModes !== 'undefined'){ %>
-                                            <% paymentModes.forEach(paymentMode => { %>
-                                                <option value="<%= paymentMode.mode %>">
-                                                    <%= paymentMode.mode.charAt(0).toUpperCase() + paymentMode.mode.slice(1) %>
-                                                </option>
-                                            <% }) %>
-                                        <% } %>
-                                 
-     
-                                </select>
-                                </div>
-                            </div>
-                            </div>
-                    </div>
-               
-                    <h4 class="mt-4">Customer Profile</h4>
-                    <div class="product-group">
-                        <div class="row">   
-                            <div class="col-sm-6">   
-                                <div class="mb-3">
-                                <label class="form-label">ID Type</label>
-                                
-                                <select name="id_type" class="form-select"> 
-                                    <option value="<%= booking.Customer.id_type %>"> <%= booking.Customer.id_type %> </option>
-                                    <option>Passport</option>
-                                    <option>Drivers License</option>
-                                    <option>NIN</option>
-                                    <option>Voters Card</option>
-                                </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6"> 
-                                <div class="mb-3">
-                                <label class="form-label">ID Number</label>
-                                <input class="form-control" name="id_number" value="<%= booking.Customer.id_number %>" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">   
-                            <div class="col-sm-6">   
-                                <div class="mb-3">
-                                <label class="form-label">ID Issuer Country</label> 
-                                    <select class="form-select" id="country" name="id_issue_country">
-                                        <option value="<%= booking.Customer.id_issue_country %>"><%= booking.Customer.id_issue_country %></option>
-                                        <% if(typeof countries !== 'undefined'){ %>
-                                            <% countries.forEach(country => { %>
-                                                <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>" ><%= country.name %> </option>
-                                            <% }) %>
-                                        <% } %>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6"> 
-                                <div class="mb-3">
-                                <label class="form-label">ID Expring Date</label>
-                                <input class="form-control" name="id_exp_date" value="<%= booking.Customer.id_exp_date ? new Date(booking.Customer.id_exp_date).toISOString().split('T')[0] : booking.Customer.id_exp_date %>" type="date">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">   
-                            <div class="col-sm-6">   
-                                <div class="mb-3">
-                                <label class="form-label">Occupation</label>
-                                <input class="form-control" name="occupation" value="<%= booking.Customer.occupation %>" type="text">
-                                </div>
-                            </div>
-                            <div class="col-sm-6"> 
-                                <div class="mb-3">
-                                <label class="form-label">Business Type</label>
-                                <input class="form-control" name="bus_type" value="<%= booking.Customer.bus_type %>" type="text">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">   
-                        <div class="col-sm-12">  
-                            <div class="mb-3">
-                            <label class="form-label">Date of Last Entry to Nigeria</label>
-                            <input class="form-control" value="<%= booking.Customer.last_country_entry_date ? new Date(booking.Customer.last_country_entry_date).toISOString().split('T')[0] : booking.Customer.last_country_entry_date%>" name="last_country_entry_date" type="date">
-                            </div>
-                        </div>
-                        </div>
-                
-                    </div>
-                </div>
-                </div>
-            </div>
             <div class="card"> 
                 <div class="card-body">
                     <div class="product-info" data-index="0">
@@ -234,24 +99,23 @@
                 <div class="card-body">
                     <div class="product-info room-section" data-index="0" id="room-container_0">
                         <h4>Room Details Info</h4>
-                        <% if (typeof bookingRooms !== 'undefined') { %>
-                            <% bookingRooms.forEach((bookingRoom, index) => { %>
-                        <div class="product-group book-room-section" data-index="<%= index %>" id="bookedRoomContainer_<%=index %>">
+                       
+                        <div class="product-group book-room-section" data-index="<%= booking.id %>" id="bookedRoomContainer_<%=booking.id %>">
                             <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Type <span>*</span></label>
-                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.type %>" disabled>
+                                    <input class="form-control" type="text" value="<%= booking.Room.type %>" disabled>
                                  
                                     </div>
                                 </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
+                                    <input name="bookingRoom_id" value="<%= booking.id%>" type="hidden">
                                     <label class="form-label">Room Number/Name <span>*</span></label>
                               
-                                    <select required id="bookedRoomNumber_<%=index%>" name="bookingRoom_room_id_<%= bookingRoom.id%>" class="form-select" disabled> 
-                                        <option value="<%= bookingRoom.Room.id %>"><%= bookingRoom.Room.number %></option>   
+                                    <select required id="bookedRoomNumber_<%=booking.id%>" name="bookingRoom_room_id_<%= booking.id%>" class="form-select" disabled> 
+                                        <option value="<%= booking.Room.id %>"><%= booking.Room.number %></option>   
                 
                                     </select>
                                 </div>
@@ -262,13 +126,13 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Price</label>
-                                    <input class="form-control" value="<%= bookingRoom.Room.price %>" disabled>
+                                    <input class="form-control" value="<%= booking.price %>" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Discount <span>(* per night)</span></label>
-                                    <input class="form-control" value="<%= bookingRoom.discount %>" name="bookingRoom_discount_<%= bookingRoom.id%>" disabled type="number">
+                                    <input class="form-control" value="<%= booking.discount %>" name="bookingRoom_discount_<%= booking.id%>" disabled type="number">
                                     </div>
                                 </div>
                            
@@ -277,26 +141,26 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Date <span>*</span></label>
-                                    <input class="form-control" id="bookedCheckInDate_<%=index%>" name="bookingRoom_check_in_date_<%= bookingRoom.id%>" value="<%= bookingRoom.check_in_date ? new Date( bookingRoom.check_in_date).toISOString().split('T')[0] : bookingRoom.check_in_date%>" type="date" disabled>
+                                    <input class="form-control" id="bookedCheckInDate_<%=booking.id%>" name="bookingRoom_check_in_date_<%= booking.id%>" value="<%= booking.check_in_date ? new Date( booking.check_in_date).toISOString().split('T')[0] : booking.check_in_date%>" type="date" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Time <span>*</span></label>
-                                    <input class="form-control" name="bookingRoom_check_in_time_<%= bookingRoom.id%>" value="<%= bookingRoom.check_in_time %>" type="time">
+                                    <input class="form-control" name="bookingRoom_check_in_time_<%= booking.id%>" value="<%= booking.check_in_time %>" type="time">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check Out Date <span>*</span></label>
-                                    <input class="form-control" id="bookedCheckOutDate_<%=index %>" name="bookingRoom_check_out_date_<%= bookingRoom.id%>" value="<%= bookingRoom.check_out_date ? new Date( bookingRoom.check_out_date).toISOString().split('T')[0] : bookingRoom.check_out_date %>" type="date">
+                                    <input class="form-control" id="bookedCheckOutDate_<%=booking.id %>" name="bookingRoom_check_out_date_<%= booking.id%>" value="<%= booking.check_out_date ? new Date( booking.check_out_date).toISOString().split('T')[0] : booking.check_out_date %>" type="date">
                                     <span class="" role="alert"> <strong></strong></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check Out Time <span>*</span></label>
-                                    <input class="form-control" name="bookingRoom_check_out_time_<%= bookingRoom.id%>" value="<%= bookingRoom.check_out_time %>" type="time">
+                                    <input class="form-control" name="bookingRoom_check_out_time_<%= booking.id%>" value="<%= booking.check_out_time %>" type="time">
                                     </div>
                                 </div>
                             </div>
@@ -305,37 +169,22 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Number of Persons <span>*</span></label>
-                                    <input required class="form-control" name="bookingRoom_no_persons_<%= bookingRoom.id%>" value="<%= bookingRoom.no_persons %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    <input required class="form-control" name="bookingRoom_no_persons_<%= booking.id%>" value="<%= booking.no_persons %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label class="form-label">Number of Days Booked</label>
-                                        <input class="form-control" name="bookingRoom_no_days_booked_<%= bookingRoom.id%>" value="<%= bookingRoom.booked_days_no %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                        <input class="form-control" name="bookingRoom_no_days_booked_<%= booking.id%>" value="<%= booking.booked_days_no %>" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
                                     </div>
                                 </div>
                             </div>
-                            <div class="row"> 
-                                <div class="col-sm-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Status</label>
-                                        <select required name="bookingRoom_status_<%= bookingRoom.id%>" class="form-select"> 
-                                            <option value="<%= bookingRoom.status %>"><%= bookingRoom.status %></option> 
-                                            <% if(bookingRoom.status == 'pending'){ %>
-                                                <option value="checkedin">Checkin</option>
-                                            <% } %>
-                                            <option value="checkedout">Checkout</option>  
-         
-                                    </select>
-                                       
-                                    </div>
-                                </div>
-                            </div>
-                            <% if (bookingRoom.BookingAddons.length > 0) { %>
+                   
+                            <% if (booking.BookingAddons.length > 0) { %>
                             <hr>
                             <h4>Room Addons</h4>
                             <hr>
-                            <% bookingRoom.BookingAddons.forEach((bookingAddon, index) => { %>
+                            <% booking.BookingAddons.forEach((bookingAddon, index) => { %>
                             <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
@@ -346,7 +195,7 @@
                                 </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
-                                    <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
+                                    <input name="bookingRoom_id" value="<%= booking.id%>" type="hidden">
                                     <label class="form-label">Addon Price <span>*</span></label>
                               
                                     <input class="form-control" type="text" value="<%= bookingAddon.price %>" disabled>
@@ -372,7 +221,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="mb-3">
                                                         <label class="form-label">Addon Type <span>*</span></label>
-                                                        <select name="addon_type" class="form-select" id="addonType_<%=bookingRoom.id %>"> 
+                                                        <select name="addon_type" class="form-select" id="addonType_<%=booking.id %>"> 
                                                             <option value="">Select..</option> 
                                                             <% addonTypes.forEach((addonType) => { %>
                                                                 <option value="<%= addonType.type %>"><%= addonType.type %></option>
@@ -386,24 +235,12 @@
                                                         <div class="mb-3">
                                                             <label class="form-label">Addon Name <span>*</span></label>
                                                       
-                                                            <select name="addon_id" id="addonName_<%= bookingRoom.id %>" class="form-select" disabled>
+                                                            <select name="addon_id" id="addonName_<%= booking.id %>" class="form-select" disabled>
                                                                 <option value="">Select..</option>
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="mb-3">
-                                                        <label class="form-label">Booked Room <span>*</span></label>
-                                                        <select name="bookingRoom_id" class="form-select"> 
-                                                            <option value="">Select..</option> 
-                                                            <% bookingRooms.forEach((bookingRoom) => { %>
-                                                                <option value="<%= bookingRoom.id %>"><%= bookingRoom.Room.number %> - <%= bookingRoom.Room.type %></option>
-                                                            <% }) %>
-                                        
-                         
-                                                    </select>
-                                                        </div>
-                                                    </div>
+                                              
                                                     <div class="col-sm-4">
                                                         <div class="mb-3">
                                                         <label class="form-label">Price <span>*</span></label>
@@ -434,8 +271,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        <% }) %>
-                        <% } %>
+                       
                 
                     </div>
                

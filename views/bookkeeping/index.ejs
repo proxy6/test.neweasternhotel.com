@@ -1,0 +1,254 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+
+            <div class="page-body">
+                    <div class="container-fluid basic_table">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Room Cleaning Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="/">
+                                <svg class="svg-color">
+                                    <use href="/icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                            
+                        <li class="breadcrumb-item active">Rooms Management</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xxl-6 box-col-12">
+            <div class="card role-management">
+                <div class="card-body">
+                    <div class="blog-card">
+                        <div class="blog-card-content">
+                            <% if(typeof user !== 'undefined'){ %>
+                                <h4>Good day, <%= user.first_name %></h4>         
+                              
+                                <% } %>
+                           
+                            <!-- <p>Welcome to the Edmin ! We are glad that you have visited our dashboard.</p> -->
+                            <div class="d-flex">
+                    
+                                <div class="blog-tags m-0">
+                                    <div class="tags-icon bg-light-secondary">
+                                        <svg class="stroke-icon">
+                                            <use href="/icons/iconly-sprite.svg#tags"></use>
+                                        </svg>
+                                    </div>
+                                    <div class="tag-details">
+                                        <h2 class="total-num counter txt-secondary"><%= pendingCleaned %></h2>
+                                        <p>Total Pending Cleaned Rooms</p>
+                                    </div>
+                                </div>
+                                <div class="blog-tags m-0">
+                                    <div class="tags-icon bg-light-secondary">
+                                        <svg class="stroke-icon">
+                                            <use href="/icons/iconly-sprite.svg#tags"></use>
+                                        </svg>
+                                    </div>
+                                    <div class="tag-details">
+                                        <h2 class="total-num counter txt-secondary"><%= pendingTouched %></h2>
+                                        <p>Total Pending Retouched Rooms</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="blog-card-image">
+                            <img src="/images/blog-management.png" alt="">
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-block row">
+                    <div class="role-table">
+                        <div class="table-responsive p-3">
+                            <table class="table" id="blog-table">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th title="Thumbnail">S/N</th>
+                                        <th title="Title">Room</th>
+                                        <th title="Type">Type</th>
+                                   
+                                        <th title="Status">Status</th>
+                                        <th title="Cleaned Status">Clean Status</th>
+                                      ]
+                                        <th title="L.Retouched">Date</th>
+                             
+                                        <th title="Action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    <% if(typeof rooms !== 'undefined'){ %>
+                                        <% rooms.forEach((room, index) => { %>
+                                            <tr class="odd">
+                                                <td><%= index + 1 %></td>
+                                                <td><a href="/rooms/<%= room.id %>"><%= room.number %></a></td>
+                                                <td><%= room.type %></td>
+                                               
+                                                
+                                                <!-- <td>
+                                                    <div class="action-div mt-0">
+                                                        <label class="switch">
+                                                            <input data-route="/rooms/<%= room.id %>/update-status" class="form-check-input toggle-status" type="checkbox" name="status" value="1"  <%= room.status == 1 ? 'checked' : '' %>>
+                                                            <span class="switch-state"></span>
+                                                        </label>
+                                                    </div>
+                                                </td> -->
+                                                <td><%= room.status == 1 ? "Occupied" : "Empty" %></td>
+                                                <td>
+                                                    <%= 
+                                                          room.clean_status.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') 
+                                                          
+                                                    %>
+                                                  </td>
+                                                  
+                                               
+    
+                                               <% if(room.clean_status == 'needs cleaning' || room.clean_status == 'cleaned'){ %>
+                                                <td><%= room.cleanedAt.toLocaleDateString() %> <%= new Date(room.cleanedAt).toLocaleTimeString() %></td>
+                                               <% }else if(room.clean_status == 'needs retouch' || room.clean_status == 'retouched'){ %>
+                                                <td><%= room.retouchedAt.toLocaleDateString() %> <%= new Date(room.retouchedAt).toLocaleTimeString() %></td>
+                                                <% } %>
+                                     
+                                                <td>
+                                                    <div class="action-div mt-0">
+                                                        <% if(room.clean_status == 'needs cleaning'){ %>
+                                                            <a class="btn btn-light-primary" href="#confirmClean<%= room.id %>" data-bs-toggle="modal">Mark as Cleaned</a>
+                                                        <% }else if(room.clean_status == 'needs retouch'){ %>
+                                                            <a class="btn btn-light-primary" href="#confirmRetouch<%= room.id %>" data-bs-toggle="modal">Mark as Retouched</a>
+                                                        <% }else{ %>
+                                                            <a class="btn btn-light-secondary">Completed</a>
+                                                        <% } %>
+
+                                                    
+                                                        <!-- Clean Confirmation-->
+                                                        <div class="modal fade" id="confirmClean<%= room.id %>" tabindex="-1" role="dialog" aria-labelledby="confirmClean" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Confirm Clean</h4>
+                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <h4 class="mb-3"> Are you sure you have cleaned room <%= room.number %> ?</h4>
+                                                                        <p>The clean time will be saved. You cam't undo this action.</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                        <form action="/bookkeeping/<%= room.id %>/cleaned" method="post">
+                                                                          <input type="hidden" name="_method" value="delete">       
+                                                                          <button class="btn btn-danger" type="submit">Save</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Retouch Confirmation-->
+                                                        <div class="modal fade" id="confirmRetouch<%= room.id %>" tabindex="-1" role="dialog" aria-labelledby="confirmRetouch" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirm Retouch</h4>
+                                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h4 class="mb-3"> Are you sure you have retouched room <%= room.number %> ?</h4>
+                                                                            <p>The clean time will be saved. You cam't undo this action.</p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                            <form action="/bookkeeping/<%= room.id %>/retouched" method="post">
+                                                                              <input type="hidden" name="_method" value="delete">       
+                                                                              <button class="btn btn-danger" type="submit">Save</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+
+                            
+                            <div class="table-container">
+                                <%
+                                <!-- Calculate starting and ending page numbers to display -->
+                                let startPage = Math.max(1, currentPage - 2);
+                                let endPage = Math.min(totalPages, startPage + 4);
+                                if (endPage - startPage < 4) {
+                                    startPage = Math.max(1, endPage - 4);
+                                }
+                                %>
+                                <!-- Info text aligned to the left -->
+                                <div class="dataTables_info" id="blog-table_info" role="status" aria-live="polite">
+                                    Showing Page <%= currentPage %>  of <%= totalPages  %> Pages
+                                </div>
+                                
+                                <!-- Pagination buttons aligned to the right -->
+                                <div class="dataTables_paginate paging_simple_numbers" id="blog-table_paginate">
+                                  
+                                    <span>
+                                        <% if(currentPage > 1){%>
+                                            <a href="/bookkeeping?page=<%=currentPage - 1%>" class="paginate_button previous" aria-controls="blog-table" data-dt-idx="0" tabindex="-1" id="blog-table_previous">Previous</a>
+                                        <%}%>
+                                        <% for (let i = startPage; i <= endPage; i++){%>
+                                             
+                                            <% if (i == currentPage) { %>
+                                                <a class="paginate_button current" aria-controls="blog-table" data-dt-idx="1" tabindex="0"><%=i%></a>
+                                            <% }else{ %>
+                                                <a href="/bookkeeping?page=<%=i%>" class="paginate_button" aria-controls="blog-table" data-dt-idx="2" tabindex="0"><%=i%></a>
+                                            <% } %>
+                                        <%}%>
+                                        <!-- Add "Next" button if there are more pages -->
+                                        <%if (endPage < totalPages) { %>
+                                            <a href="/bookkeeping?page=<%=endPage + 1%>" class="paginate_button next" aria-controls="blog-table" data-dt-idx="6" tabindex="0" id="blog-table_next">Next</a>
+                                        <%}%>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+         
+               <!-- footer start-->
+               <%- include('../partials/footer') %>
+
+
+            </div>
+          </main>
+                 
+                  
+                  
+          <%- include('../partials/script') %>
+    
+          <script src="/js/custom/room.js"></script>
+
+
+          
+    
+
+</body>
+</html>

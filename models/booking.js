@@ -3,10 +3,6 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
 return sequelize.define("Booking", {
 
-  // customer_id: { 
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false
-  // },
   check_in_date: { 
     type: DataTypes.STRING, 
     allowNull: true, 
@@ -19,9 +15,25 @@ return sequelize.define("Booking", {
     type: DataTypes.STRING, 
     allowNull: true, 
   },
-  total_price: { 
+  check_out_time: { 
+    type: DataTypes.TIME, 
+    allowNull: true, 
+  },
+  price: { 
     type: DataTypes.DECIMAL(10,2), 
     allowNull: false, 
+  },
+  booked_days_no: { 
+    type: DataTypes.INTEGER, 
+    allowNull: true, 
+  },
+  no_persons: { 
+    type: DataTypes.INTEGER, 
+    allowNull: true, 
+  },
+  discount: { 
+    type: DataTypes.DECIMAL(10,2), 
+    allowNull: true, 
   },
   amount_paid: { 
     type: DataTypes.DECIMAL(10,2), 
@@ -34,6 +46,14 @@ return sequelize.define("Booking", {
   booked_by: { 
     type: DataTypes.STRING, 
     allowNull: false, 
+  },
+  checkedout_by: { 
+    type: DataTypes.STRING, 
+    allowNull: true, 
+  },
+  last_updated_by: { 
+    type: DataTypes.STRING, 
+    allowNull: true, 
   },
   payment_mode: { 
     type: DataTypes.STRING, 

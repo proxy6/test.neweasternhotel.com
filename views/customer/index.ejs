@@ -1,0 +1,463 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+
+            <div class="page-body">
+                    <div class="container-fluid basic_table">
+        <div class="row page-title">
+            <div class="col-sm-6">
+                <h3>Complaint Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <nav>
+                    <ol class="breadcrumb justify-content-sm-end align-items-center">
+                        <li class="breadcrumb-item"> <a href="/">
+                                <svg class="svg-color">
+                                    <use href="/icons/iconly-sprite.svg#Home"></use>
+                                </svg></a></li>
+                            
+                        <li class="breadcrumb-item active">Complaint Management</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xxl-6 box-col-12">
+            <div class="card role-management">
+                <div class="card-body">
+                    <div class="blog-card">
+                        <div class="blog-card-content">
+                            <% if(typeof user !== 'undefined'){ %>
+                                <h4>Good day, <%= user.first_name %></h4>         
+                              
+                                <% } %>
+                           
+                            <!-- <p>Welcome to the Edmin ! We are glad that you have visited our dashboard.</p> -->
+                            <div class="d-flex">
+                                <div class="blog-tags m-0">
+                                    <div class="tags-icon bg-light-primary">
+                                        <svg class="stroke-icon">
+                                            <use href="/icons/iconly-sprite.svg#Message"></use>
+                                        </svg>
+                                    </div>
+                                    <div class="tag-details">
+                                        <h2 class="total-num counter"><%= totalCustomer %></h2>
+                                        <p>Total Customers</p>
+                                    </div>
+                                </div>
+                         
+                            </div>
+                        </div>
+                        <div class="blog-card-image">
+                            <img src="/images/user-management.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm- text-end pr-9 pb-3">
+            <a href="#addCustomer" data-bs-toggle="modal" class="btn btn-primary">Add Customer</a>
+        </div>
+    
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-block row">
+                    <div class="role-table">
+                        <div class="table-responsive p-3">
+                            <table class="table" id="blog-table">
+                                <thead>
+                                    <tr>
+                                        <th title="Thumbnail">S/N</th>
+                                        <th title="Name">Name</th>
+                                        <th title="Phone">Phone</th>
+                                        <th title="Phone">Amount Spent</th>
+                                        <th title="Phone">Total Bookings</th>
+                                        <th title="Created At">Created At</th>
+                                        <th title="Book">Status</th>
+                                        <th title="Action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(typeof customers !== 'undefined'){ %>
+                                        <% customers.forEach((customer, index) => { %>
+                                            <tr class="odd">
+                                        
+                                                <td><%= index + 1 %></td>
+                                                <td><%= customer.name %></td>
+                                                <td><%= customer.phone %></td>
+                                                
+                                                <td>&#8358;<%= customer.totalAmountSpent ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(customer.totalAmountSpent) : '0.00' %></td>
+                                                <td><%= customer.totalBookings || 0 %></td>
+                                                <td><%= customer.createdAt.toLocaleDateString() %></td>
+                                                <td><a href="#addBooking<%=customer.id%>" data-bs-toggle="modal" class="btn btn-sm btn-light-primary">Create Booking</a></td>
+                                                <td>
+                                                    <div class="action-div mt-0">
+                                                        <!-- <a href="#viewComplaint<%=customer.id%>" data-bs-toggle="modal" class="view-svg">
+                                                            <svg class="feather">
+                                                                <use href="/icons/feather-sprite.svg#eye"></use>
+                                                            </svg>
+                                                         
+                                                        </a> -->
+                                                
+                                                        <a href="#deleteCustomer<%=customer.id%>" data-bs-toggle="modal" class="delete-svg">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 remove-icon delete-confirmation"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                        </a>
+                                                   
+                                                        <!-- Remove File Confirmation-->
+                                                        <div class="modal fade" id="deleteCustomer<%=customer.id%>" tabindex="-1" role="dialog" aria-labelledby="deleteComplaint" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Confirm delete</h4>
+                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                                        <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                        <form action="/customers/<%= customer.id %>/delete" method="post">
+
+                                                                            <input type="hidden" name="_method" value="delete">    
+                                                                            <button class="btn btn-danger" type="submit">Delete</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                            <!-- Add New Room -->
+                                                        <div class="modal fade" id="addBooking<%=customer.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Book Room For Customer</h4>
+                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <form id="addRoom_<%= customer.id %>" action="/bookings/<%= customer.id %>/bookcustomer" method="post">
+                                                                        <div class="modal-body">
+                                                                            <div class="product-info room-section" id="room-container_<%=customer.id %>">
+                                                                                <div class="product-group">
+                                                                                    <div class="row">
+                                                                                        <!-- Room Type -->
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Room Type <span>*</span></label>
+                                                                                                <input type="hidden" name="customer_id" id="" value="<%=customer.id%>">
+                                                                                                <select required id="roomType_<%=customer.id%>" class="form-select">
+                                                                                                    <option value="">Select..</option>
+                                                                                                    <% if(typeof roomTypes !== 'undefined'){ %>
+                                                                                                        <% roomTypes.forEach(roomType => { %>
+                                                                                                            <option value="<%= roomType.type %>">
+                                                                                                                <%= roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1) %>
+                                                                                                            </option>
+                                                                                                        <% }) %>
+                                                                                                    <% } %>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    
+                                                                                        <!-- Room Number/Name -->
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Room Number/Name <span>*</span></label>
+                                                                                                <select name="room_id" required id="roomNumber_<%=customer.id%>" class="form-select" disabled>
+                                                                                                    <option value="">Select..</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                    <div class="row"> 
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Check In Date <span>*</span></label>
+                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=customer.id%>" type="date" required>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Check Out Date <span>*</span></label>
+                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=customer.id%>" type="date" required>
+                                                                                            
+                                                                                                <span class="" role="alert"> <strong></strong></span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                
+                                                                                    <div class="row"> 
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Check In Time <span>*</span></label>
+                                                                                                <input class="form-control" name="check_in_time" type="time" required>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Room Discount </label>
+                                                                                                <input class="form-control" name="discount" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                
+                                                                                    <div class="row"> 
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Number of Persons<span>*</span></label>
+                                                                                                <input class="form-control" name="no_persons" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Checkin Status<span>*</span></label>
+                                                                                                <select required name="status" class="form-select" required> 
+                                                                                                    <option value="">Select an Option</option> 
+                                                                                                    <option value="pending">Pending</option>
+                                                                                                    <option value="checkedin">Checkin</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Payment Status<span>*</span></label>
+                                                                                                <select required name="payment_status" class="form-select" id="paymentStatus_<%=customer.id%>" required> 
+                                                                                                    <option value="">Select an Option</option> 
+                                                                                                    <option value="Part Payment"> Part Payment </option>
+                                                                                                    <option value="Full Payment"> Full Payment </option>
+                                                                                                    <option value="Credit"> Credit </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-6">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Payment Mode<span>*</span></label>
+                                                                                                <select required id="paymentMode_<%=customer.id%>" name="payment_mode" class="form-select" required disabled> 
+                                                                                                    <option value="">Select..</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-sm-12" id="partPayment_<%=customer.id %>" style="display: none;">
+                                                                                            <div class="mb-3">
+                                                                                                <label class="form-label">Part Payment Amount<span>*</span></label>
+                                                                                                <input class="form-control" name="part_payment_amount" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            
+                                                                            <button class="btn btn-primary" id="saveBtn_<%= customer.id %>" type="submit">Save</button>
+                                                                    
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        
+                                                </td>
+                                            </tr>
+                                       
+                                        <% }) %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                             <!-- Add Customer -->
+                                          
+                            <div class="modal fade" id="addCustomer" tabindex="-1" role="dialog" aria-labelledby="viewComplaint" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="addCustomerModalLabel">Add Customer</h4>
+                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="addCustomerForm" action="/customers" method="POST">
+                                                <!-- Customer Info Section -->
+                                                <h4>Customer Info</h4>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Name <span>*</span></label>
+                                                            <input class="form-control" name="name" placeholder="Enter Customer Name" type="text" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Phone Number <span>*</span></label>
+                                                            <input class="form-control" name="phone" placeholder="Enter Customer Phone Number" type="text" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Email Address</label>
+                                                            <input class="form-control" name="email" placeholder="Enter Customer Email Address" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Address</label>
+                                                            <input class="form-control" name="address" placeholder="Enter Customer Address" type="text">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Nationality</label>
+                                                            <input class="form-control" name="nationality" placeholder="Enter Customer Nationality" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                            
+                                                <!-- Customer Profile Section -->
+                                                <h4 class="mt-4">Customer Profile</h4>
+                                                <hr>
+                                                <div class="row mt-1">
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">ID Type</label>
+                                                            <select name="id_type" class="form-select">
+                                                                <option value="">Select...</option>
+                                                                <option value="Passport">Passport</option>
+                                                                <option value="Drivers License">Drivers License</option>
+                                                                <option value="NIN">NIN</option>
+                                                                <option value="Voters Card">Voters Card</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">ID Number</label>
+                                                            <input class="form-control" name="id_number" placeholder="Enter ID number" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">ID Issuer Country</label>
+                                                            <select class="form-select" id="country" name="id_issue_country">
+                                                                <option value="" selected disabled hidden>Select Country</option>
+                                                                <% if (typeof countries !== 'undefined') { %>
+                                                                    <% countries.forEach(country => { %>
+                                                                        <option value="<%= country.name %>" data-country-iso2="<%= country.Iso2 %>"><%= country.name %></option>
+                                                                    <% }) %>
+                                                                <% } %>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">ID Expiry Date</label>
+                                                            <input class="form-control" name="id_exp_date" type="date">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Occupation</label>
+                                                            <input class="form-control" name="occupation" type="text">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Business Type</label>
+                                                            <input class="form-control" name="bus_type" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Date of Last Entry to Nigeria</label>
+                                                            <input class="form-control" name="last_country_entry_date" type="date">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit" form="addCustomerForm">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                       
+                            
+                            <div class="table-container">
+                                <%
+                                <!-- Calculate starting and ending page numbers to display -->
+                                let startPage = Math.max(1, currentPage - 2);
+                                let endPage = Math.min(totalPages, startPage + 4);
+                                if (endPage - startPage < 4) {
+                                    startPage = Math.max(1, endPage - 4);
+                                }
+                                %>
+                                <!-- Info text aligned to the left -->
+                                <div class="dataTables_info" id="blog-table_info" role="status" aria-live="polite">
+                                    Showing Page <%= currentPage %>  of <%= totalPages  %> Pages
+                                </div>
+                                
+                                <!-- Pagination buttons aligned to the right -->
+                                <div class="dataTables_paginate paging_simple_numbers" id="blog-table_paginate">
+                                  
+                                    <span>
+                                        <% if(currentPage > 1){%>
+                                            <a href="/customers?page=<%=currentPage - 1%>" class="paginate_button previous" aria-controls="blog-table" data-dt-idx="0" tabindex="-1" id="blog-table_previous">Previous</a>
+                                        <%}%>
+                                        <% for (let i = startPage; i <= endPage; i++){%>
+                                             
+                                            <% if (i == currentPage) { %>
+                                                <a class="paginate_button current" aria-controls="blog-table" data-dt-idx="1" tabindex="0"><%=i%></a>
+                                            <% }else{ %>
+                                                <a href="/customers?page=<%=i%>" class="paginate_button" aria-controls="blog-table" data-dt-idx="2" tabindex="0"><%=i%></a>
+                                            <% } %>
+                                        <%}%>
+                                        <!-- Add "Next" button if there are more pages -->
+                                        <%if (endPage < totalPages) { %>
+                                            <a href="/customers?page=<%=endPage + 1%>" class="paginate_button next" aria-controls="blog-table" data-dt-idx="6" tabindex="0" id="blog-table_next">Next</a>
+                                        <%}%>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+         
+               <!-- footer start-->
+               <%- include('../partials/footer') %>
+
+
+            </div>
+          </main>
+                 
+                  
+                  
+          <%- include('../partials/script') %>
+    
+          <script src="/js/custom/customer.js"></script>
+
+          <script src="/js/custom/add-room.js"></script>
+
+          
+    
+
+</body>
+</html>

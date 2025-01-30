@@ -1,392 +1,640 @@
-document.addEventListener('DOMContentLoaded', () => {
-    //const roomTypeSelect = document.getElementById('roomType');
-    // const roomNumberSelect = document.getElementById('roomNumber');
-    const checkInDate = document.getElementById('checkInDate');
-    const checkOutDate = document.getElementById('checkOutDate');
-    const addRoomBtn = document.getElementById('add-room-btn');
-    const submitBtn = document.getElementById('submit-btn');
-    const roomContainer = document.getElementById('room-container_0');
-    const form = document.getElementById('bookingForm');
-    // const updateBtn = document.getElementById('update-btn');
-    // const form = document.querySelector('form');
-    let roomCount = 0;
+let paneContainer = document.getElementById("bookingForm"); // The wrapper that holds form panes
+const submitBtn = document.getElementById('savePane2');
+document.addEventListener("DOMContentLoaded", function () {
+  const panes = document.querySelectorAll(".form-pane");
+  let currentPane = 0;
+  let bookingId = null; // Store the booking ID from API response
   
-    // Function to generate unique booking reference
-    function generateBookingReference() {
-      return 'BR-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    }
-  
-     // Generate room options dynamically
-  const roomOptions = rooms.map(room => 
-    `<option value="${room.id}">${room.number.charAt(0).toUpperCase() + room.number.slice(1)} - &#8358;${room.price}</option>`
-  ).join('');
 
-  const roomTypeOptions = roomTypes.map(roomType => 
-    `<option value="${roomType.type}">${roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1)} </option>`
-  ).join('');
-    // Function to add a new room section
-    function addRoomSection() {
-      roomCount++; // Increment room count to assign unique identifiers
-      const roomSection = document.createElement('div');
-      roomSection.classList.add('product-info', 'room-section');
-      roomSection.id = `room-container_${roomCount}`; // Unique container ID
-      roomSection.dataset.index = roomCount;
-      
-      roomSection.innerHTML = `
-             <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h4>Room Details Info</h4>
-        <a href="#" class="remove-room" onclick="removeRoomSection(this)">Remove</a>
-      </div>
-        <div class="product-group">
-        
-          <div class="row">
-            <!-- Room Type -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Room Type <span>*</span></label>
-                <select required id="roomType_${roomCount}" class="form-select">
-                  <option value="">Select..</option>
-                     ${roomTypeOptions}
-                </select>
-              </div>
-            </div>
-    
-            <!-- Room Number/Name -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Room Number/Name <span>*</span></label>
-                <select name="room_id_${roomCount}" required id="roomNumber_${roomCount}" class="form-select" disabled>
-                  <option value="">Select..</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <div class="row">
-            <!-- Check In Date -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Check In Date <span>*</span></label>
-                <input class="form-control" name="check_in_date_${roomCount}" id="checkInDate_${roomCount}" type="date" required>
-              </div>
-            </div>
-            
-            <!-- Check Out Date -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Check Out Date <span>*</span></label>
-                <input class="form-control" name="check_out_date_${roomCount}" id="checkOutDate_${roomCount}" type="date" required>
-                <span class="error-message" role="alert" style="color: red;"><strong></strong></span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="row">
-            <!-- Check In Time -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Check In Time <span>*</span></label>
-                <input class="form-control" name="check_in_time_${roomCount}" type="time" required>
-              </div>
-            </div>
-            
-            <!-- Room Discount -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Room Discount <span>(* per night)</span></label>
-                <input class="form-control" name="discount_${roomCount}" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-              </div>
-            </div>
-          </div>
-          
-          <div class="row">
-            <!-- Number of Persons -->
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Number of Persons</label>
-                <input class="form-control" name="no_persons_${roomCount}" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
-              </div>
-            </div>
-            
-            <div class="col-sm-6">
-              <div class="mb-3">
-                <label class="form-label">Status<span>*</span></label>
-                <select required name="status_${roomCount}" class="form-select">
-                  <option value="">Select an Option</option>
-                  <option value="pending">Pending</option>
-                  <option value="checkedin">Checkin</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          </div>
-          
-       
-      `;
-    
-      // Append the new room section to the room container
-      roomContainer.appendChild(roomSection);
-    }
-  
-    // Function to remove room section
-    window.removeRoomSection = function (anchor) {
-      const section = anchor.parentElement.parentElement;
-      section.remove();
-    };
-  
-    // Add room section on button click
+  function showPane(index) {
+      const allPanes = document.querySelectorAll(".form-pane");
+      allPanes.forEach((pane, i) => {
+          pane.style.display = i === index ? "block" : "none";
+      });
+  }
 
-    addRoomBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      addRoomSection();
+  function validateInputs(pane) {
+    let isValid = true;
+    console.log("THIS IS THE PANE RECEIVED")
+    console.log(pane)
+    pane.querySelectorAll("input[required], select[required]").forEach(input => {
+        // Check if the input is empty and required
+        if (!input.value.trim()) {
+            isValid = false;
+            input.classList.add('is-invalid');
+            alert("Please fill out all required inputs")
+        } else {
+            input.classList.remove('is-invalid');
+        }
     });
 
-    submitBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent form submission if validation fails.
-      
-        let isValid = true; // Assume form is valid initially.
-      
-        // Validate Customer Info
-        form.querySelectorAll('input[required], select[required]').forEach((input) => {
-            if (!input || !input.value.trim()) { // Invalid input
-                // input.classList.remove('is-invalid');
-                isValid = false;
-                console.log(input)
-                input.classList.add('is-invalid'); // No error, input is an element.
-              } else { // Invalid or missing input
-                input.classList.remove('is-invalid');
+    return isValid;
+}
+
+
+  async function submitPane(url, pane, prompt, callback) {
+    // const formData = new FormData(document.getElementById("bookingForm"));
+    console.log("This is the pane")
+    console.log(pane)
+      const formData = new FormData();
+      panes.forEach(pane => {
+        pane.querySelectorAll("input, select").forEach(input => {
+            formData.append(input.name, input.value);
+        });
+    });
+      if (bookingId) {
+          formData.append("booking_id", bookingId); // Attach booking ID if available
+      }
+
+      console.log("THIS IS FORM DATA")
+      console.log(formData)
+      console.log("THIS IS FORM URL")
+      console.log(url)
+
+      try {
+          const response = await fetch(url, {
+              method: "POST",
+              body: JSON.stringify(Object.fromEntries(formData)),
+              headers: { "Content-Type": "application/json" }
+          });
+
+          const data = await response.json();
+          console.log("This is the response data")
+          console.log(data)
+          if (data.message= "Successful") {
+              if (prompt === "continue") {
+                  bookingId = data.booking.id; // Save the booking ID from response
               }
-        });
-      
-        // Validate Dynamic Room Sections
-        document.querySelectorAll('.room-section').forEach((section) => {
-            const roomIndex = section.dataset.index; // Use data-index attribute for reliability
-          
-            const roomId = section.querySelector(`[name='room_id_${roomIndex}']`);
-            const checkInDate = section.querySelector(`[name='check_in_date_${roomIndex}']`);
-            const checkInTime = section.querySelector(`[name='check_in_time_${roomIndex}']`);
-            const checkOutDate = section.querySelector(`[name='check_out_date_${roomIndex}']`);
-            const noPersons = section.querySelector(`[name='no_persons_${roomIndex}']`);
-            const status = section.querySelector(`[name='status_${roomIndex}']`);
-            
-      
-          // Validate each required field in the room section
-          [roomId, checkInDate, checkInTime, checkOutDate, noPersons, status].forEach((input) => {
-            if (!input || !input.value.trim()) { // Invalid input
-                isValid = false;
-                console.log(input)
-                input.classList.add('is-invalid'); // No error, input is an element.
-            } else { // Valid input
-                input.classList.remove('is-invalid');
-            }
-        });
-        
-        });
-      
-        if (!isValid) {
-          alert('Please fill in all required fields before submitting the form.');
-          return; // Stop further execution if validation fails.
-        }else{
-        // Proceed with submission if valid
-        const bookingReference = generateBookingReference();
-        const formData = new FormData(form);
-      
-        // Collect room data
-        const rooms = [];
-        document.querySelectorAll('.room-section').forEach((section) => {
-                const roomIndex = section.dataset.index; // Use data-index attribute for reliability    
-                const roomData = {
-                  room_id: section.querySelector(`[name='room_id_${roomIndex}']`)?.value || '',
-                  check_in_date: section.querySelector(`[name='check_in_date_${roomIndex}']`)?.value || '',
-                  check_in_time: section.querySelector(`[name='check_in_time_${roomIndex}']`)?.value || '',
-                  check_out_date: section.querySelector(`[name='check_out_date_${roomIndex}']`)?.value || '',
-                  discount: section.querySelector(`[name='discount_${roomIndex}']`)?.value || '',
-                  no_persons: section.querySelector(`[name='no_persons_${roomIndex}']`)?.value || '',
-                  //booked_days_no: section.querySelector(`[name='booked_days_no_${roomIndex}']`)?.value || '',
-                  status: section.querySelector(`[name='status_${roomIndex}']`)?.value || ''
-                };
-         
-                rooms.push(roomData);
-              });
-        
-        const payload = {
-        booking_reference: bookingReference,
-        formData: Object.fromEntries(formData),
-        rooms: rooms
-      };
-  
-      fetch('/bookings/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      }).then(response => {
-
-        if (response.ok) {
-        
-          return response.json().then(data => {
-          
-              toastr.options = {
-              closeButton: false,
-              progressBar: true,
-              timeOut: 6000,
-              extendedTimeOut: 1000,
-          };
-          toastr.success('Booking successfully created with reference: ' + bookingReference);
-            form.reset();
-            const roomDynamics = document.getElementsByClassName('room-dynamics');
-            roomDynamics.innerHTML = '';
-          
-            setTimeout(() => {
-              window.location.href = `/bookings`;
-            }, 5000); // Redirects after 3 seconds
-            
-          })
-
-        
-        } else {
-        
-          return response.json().then(err => {
-
-            errorMessage = err.message || 'Something went wrong!';
+              callback(data);
+          } else {
             toastr.options = {
               closeButton: false,
               progressBar: true,
-              // timeOut: 5000,
+              timeOut: 3000,
               extendedTimeOut: 1000,
           };
-          toastr.error(errorMessage);
-          });
-    
-        
-        }
+           toastr.success('Error submitting data. Please try again.');
+              // alert("Error submitting data. Please try again.");
+          }
+      
+        } catch (error) {
+          console.error("Error:", error);
+      }
+  }
+
+  // Move to Pane 2 when "Next" is clicked in Pane 1
+  document.getElementById("nextPane1").addEventListener("click", function () {
+      if (!validateInputs(panes[0])) return; // Validate Pane 1 before proceeding
+
+      currentPane = 1;
+      showPane(currentPane);
+      currentPane++;
+      currentPane++;
+  });
+
+  // Move to Pane 1 when "Prev" is clicked in Pane 2
+  document.getElementById("prevPane").addEventListener("click", function () {
+      currentPane = 0;
+      showPane(currentPane);
+  });
+
+  // Handle "Save" button on Pane 2 → Calls /bookings and redirects to thank-you page
+  submitBtn.addEventListener("click", function () {
+    const saveButton = this;
+      if (!validateInputs(panes[0]) || !validateInputs(panes[1])) return; // Validate Pane 1 & 2
+      saveButton.disabled = true;
+      saveButton.textContent = "Saving...";
+      console.log("SUBMIT")
+      console.log("DISPLAY THE PLANE BEFORE SENDING")
+      console.log(panes[0])
+      let prompt = "save";
+      submitPane("/bookings/add", [panes[0], panes[1]], prompt, () => {
+         
+          window.location.href = "/bookings";
       });
-    }
-    });
+  });
+
+ 
+document.getElementById("saveAndAddRoom").addEventListener("click", function () {
+    if (!validateInputs(panes[0]) || !validateInputs(panes[1])) return; // Validate Pane 1 & 2
 
 
-     // Listen for changes on Room Type
-    document.addEventListener('change', async (event) => {
-      const target = event.target;
-
-      // Check if the changed element is a Room Type dropdown
-      if (target.matches('[id^="roomType_"]')) {
-        const roomTypeSelect = target;
-        const roomCount = roomTypeSelect.id.split('_')[1]; // Extract room index from ID
-        console.log(roomCount)
-        const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
-
-        const selectedRoomType = roomTypeSelect.value;
-
-        // Disable Room Number/Name if no Room Type is selected
-        if (!selectedRoomType) {
-          roomNumberSelect.disabled = true;
-          roomNumberSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
-          return;
+    submitPane(`/bookings/add`, [panes[0], panes[1]], "continue", () => {
+        if (!bookingId) {
+            alert("Saving Booking Failed");
+            return;
         }
 
-        // Fetch and populate Room Number/Name options based on selected Room Type
-        try {
-          const response = await fetch(`/rooms?type=${selectedRoomType}`);
-          const rooms = await response.json();
+      
+        // panes[0].querySelectorAll("input, select").forEach(input => input.value = "");
+        // panes[1].querySelectorAll("input, select").forEach(input => input.value = "");
 
-          // Populate Room Number/Name dropdown
-          roomNumberSelect.innerHTML = '<option value="">Select..</option>';
-          rooms.rooms.forEach(room => {
-            const option = document.createElement('option');
+        console.log("CURRNT PANE")
+        console.log(currentPane)
+        addRoomSection(currentPane);
+
+
+        document.querySelectorAll(".form-pane").forEach((pane) => {
+          pane.style.display = "none";
+        });
+        const allPanes = document.querySelectorAll(".form-pane");
+        const newPane = allPanes[allPanes.length - 1];
+        newPane.style.display = "block";
+        // Navigate back to pane 1
+        // currentPane = 2;
+        // showPane(currentPane);
+
+
+    });
+});
+
+async function addRoomAndExit(event) {
+  if (!bookingId){
+    alert("Adding Rooms Failed")
+    return;
+  }
+
+  console.log("CURRENT PANE VALIDATION")
+  console.log(currentPane-1)
+  console.log(panes[currentPane-1])
+  if (!validateInputs(panes[currentPane-1])) return; // Validate Pane
+
+  submitPane(`/bookings/${bookingId}/add`, [panes[currentPane-1]], "save", () => {
+      window.location.href = "/bookings";
+
+  });
+};
+
+async function addMoreRoom(event) {
+  
+  console.log("CURRENT PANE VALIDATION")
+
+  let validatePaneNo = currentPane - 1
+  console.log(panes[validatePaneNo])
+  const allPanes1 = document.querySelectorAll(".form-pane");
+  const newPane1 = allPanes1[allPanes1.length - 1];
+  console.log(newPane1)
+
+  if (!newPane1) {
+    console.error("No valid pane found to validate.");
+    return;
+}
+  if (!validateInputs(newPane1)) return; // Validate Pane
+
+  submitPane(`/bookings/${bookingId}/add`, [panes[currentPane - 1]], "continue", () => {
+      if (!bookingId) {
+          alert("Saving Booking Failed");
+          return;
+      }
+
+      console.log("CURRNT PANE")
+      console.log(currentPane)
+      addRoomSection(currentPane);
+
+
+      document.querySelectorAll(".form-pane").forEach((pane) => {
+        pane.style.display = "none";
+      });
+      const allPanes = document.querySelectorAll(".form-pane");
+      const newPane = allPanes[allPanes.length - 1];
+      newPane.style.display = "block";
+      // Navigate back to pane 1
+      // currentPane = 2;
+      // showPane(currentPane);
+
+
+  });
+};
+
+// Listen for changes on addMoreRoom (Delegated Event Listener)
+document.addEventListener("click", function (event) {
+  if (event.target.matches('[id^="addMoreRoom_"]')) {
+    addMoreRoom(event.target);
+  }
+});
+
+// Listen for changes on addRoomAndExit (Delegated Event Listener)
+document.addEventListener("click", function (event) {
+  if (event.target.matches('[id^="addRoomAndExit_"]')) {
+    addRoomAndExit(event.target);
+  }
+});
+
+
+  // showPane(currentPane);
+
+
+function addRoomSection(currentPane) {
+  const roomTypeOptions = roomTypes.map(roomType => 
+    `<option value="${roomType.type}">${roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1)} </option>`
+   ).join('');
+   
+  let roomCount = bookingId
+  roomCount++; // Increment room count to assign unique identifiers
+  // currentPane++
+  let pane = document.createElement("div");
+        pane.className = "form-pane";
+        pane.id = `pane${currentPane}`;
+        pane.style.display = "block"; // Show the pane immediately
+        currentPane =  currentPane++
+        // Add inner HTML structure
+        pane.innerHTML = `
+            <div class="card"> 
+                <div class="card-body">
+                    <div class="product-info room-section" id="room-container">
+                        <h4>Room Details Info</h4>
+                        <div class="product-group">
+                            <div class="row">
+                                <!-- Room Type -->
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Type <span>*</span></label>
+                                        <select required id="roomType_${roomCount}" class="form-select">
+                                            <option value="">Select..</option>
+                                               ${roomTypeOptions}
+                                        </select>
+                                    </div>
+                                </div>
+                            
+                                <!-- Room Number/Name -->
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Number/Name <span>*</span></label>
+                                        <select name="room_id_0" required id="roomNumber_${roomCount}" class="form-select" disabled>
+                                            <option value="">Select..</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Check In Date <span>*</span></label>
+                                        <input class="form-control" name="check_in_date_0" id="checkInDate_${roomCount}" type="date" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Check Out Date <span>*</span></label>
+                                        <input class="form-control" name="check_out_date_0" id="checkOutDate_${roomCount}" type="date" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Check In Time <span>*</span></label>
+                                        <input class="form-control" name="check_in_time_0" type="time" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Room Discount </label>
+                                        <input class="form-control" name="discount_0" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Number of Persons<span>*</span></label>
+                                        <input class="form-control" name="no_persons_0" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Checkin Status<span>*</span></label>
+                                        <select required name="status_0" class="form-select"> 
+                                            <option value="">Select an Option</option> 
+                                            <option value="pending">Pending</option>
+                                            <option value="checkedin">Checkin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Payment Status<span>*</span></label>
+                                        <select required name="payment_status_0" class="form-select" id="paymentStatus_${roomCount}"> 
+                                            <option value="">Select an Option</option> 
+                                            <option value="Part Payment"> Part Payment </option>
+                                            <option value="Full Payment"> Full Payment </option>
+                                            <option value="Credit"> Credit </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Payment Mode<span>*</span></label>
+                                        <select required id="paymentMode_${roomCount}" name="payment_mode_0" class="form-select" disabled> 
+                                            <option value="">Select..</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" id="partPayment_${roomCount}" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">Part Payment Amount<span>*</span></label>
+                                        <input class="form-control" name="part_payment_amount_0" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="mt-4">
+                        <div class="row"> 
+                            <div class="col-sm-12 text-end">
+                                <button type="button" id="addRoomAndExit_${roomCount}" class="btn btn-primary">Save</button>
+                                <button type="button" id="addMoreRoom_${roomCount}" class="btn btn-tertiary">Save and Add Room</button>
+                                <a href="/bookings" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Append the pane to the DOM
+        paneContainer.appendChild(pane);
+}
+});
+
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   // const paneContainer = document.getElementById("paneContainer"); // The wrapper holding all form panes
+//   // let roomIndex = 1; // Counter to track unique room indexes
+//     // Function to update room numbers based on the selected room type
+
+//     async function updateRoomNumbers(roomTypeSelect) {
+//       const roomIndex = roomTypeSelect.id.split('_')[1];
+//       // const roomCount = roomTypeSelect.dataset.index; // Get unique index
+//       const roomNumberSelect =  document.querySelector(`#roomNumber_${roomIndex}`);
+//       console.log("SELECTED ROOM NUMBER")
+//       console.log(roomNumberSelect)
+//       console.log(roomNumberSelect)
+//       const selectedRoomType = roomTypeSelect.value;
+//       console.log(selectedRoomType)
+//       if (!selectedRoomType) {
+//           console.log("GOT HERE")
+//           roomNumberSelect.disabled = true;
+//           roomNumberSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
+//           return;
+//       }
+
+//       try {
+//         console.log("try rooms")
+//           const response = await fetch(`/rooms?type=${selectedRoomType}`);
+//           const rooms = await response.json();
+//           console.log(rooms)
+//           console.log("rooms")
+//           // Populate Room Number dropdown
+//           roomNumberSelect.innerHTML = '<option value="">Select..</option>';
+//           rooms.rooms.forEach(room => {
+//               const option = document.createElement("option");
+//               option.value = room.id;
+//               option.textContent = `${room.number.charAt(0).toUpperCase() + room.number.slice(1)} - ₦${room.price}`;
+//               roomNumberSelect.appendChild(option);
+//           });
+
+//           // Enable the Room Number dropdown
+//           roomNumberSelect.disabled = false;
+//       } catch (error) {
+//           console.error("Error fetching rooms:", error);
+//           roomNumberSelect.disabled = true;
+//           roomNumberSelect.innerHTML = '<option value="">Error loading rooms</option>';
+//       }
+//   }
+
+//   // Listen for changes on Room Type (Delegated Event Listener)
+//   document.addEventListener("change", function (event) {
+//       if (event.target.matches('[id^="roomType_"]')) {
+//         // console.log(event.target.value)
+//         // const data = event.target.value
+//           updateRoomNumbers(event.target);
+//       }
+//   });
+
+// })
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+// const paymentStatusChange = document.getElementById('paymentStatus');
+// // Listen for payment status change
+// paymentStatusChange.addEventListener('change', async (event) => {
+//   // const target = event.target;
+
+//   // Check if the changed element is a Room Type dropdown
+//   // if (target.matches('[id^="paymentStatus"]')) {
+//     const paymentStatusSelected = paymentStatusChange.value;
+//     // const paymentStatusSelect = paymentStatusChange.value;
+//     // const roomCount = paymentStatusSelect.id.split('_')[1]; // Extract room index from ID
+//     // console.log(roomCount)
+//     // const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
+//     const paymentModeSelect = document.querySelector(`#paymentMode`);
+   
+//     const partPaymentInput = document.querySelector(`#partPaymentInput`);
+//     const partPaymentAmountInput = partPaymentInput.querySelector('input');
+//     // Disable Room Number/Name if no Room Type is selected
+//     if (!paymentStatusSelected) {
+//       paymentModeSelect.disabled = true;
+//       paymentModeSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
+//       return;
+//     }
+//     console.log(paymentStatusSelected)
+
+//     if (paymentStatusSelected == "Part Payment") {
+      
+//       partPaymentInput.style.display = "block";
+//       partPaymentAmountInput.setAttribute("required", "true");
+//              // 🔹 Manually validate the input when shown
+//             // if (!partPaymentInput.value.trim()) {
+//             //     partPaymentInput.classList.add('is-invalid');
+//             // } else {
+//             //     partPaymentInput.classList.remove('is-invalid');
+//             // }
+      
+           
+//     }else{
+//       partPaymentInput.style.display = "none";
+//       partPaymentAmountInput.removeAttribute("required"); 
+//       // partPaymentInput.classList.remove('is-invalid'); // Remove error styling
+//     }
+//     if (paymentStatusSelected == "Credit") {
+//       paymentModeSelect.disabled = false;
+//       paymentModeSelect.innerHTML = ''
+//       const option = document.createElement('option');
+//       option.value = 'None';
+//       option.textContent = 'None';
+//       paymentModeSelect.appendChild(option);
+//       return;
+//     }
+//     // Fetch and populate Room Number/Name options based on selected Room Type
+//     try {
+//       const response = await fetch(`/bookings/paymentmodes`);
+//       const paymentModes = await response.json();
+//       console.log(paymentModes)
+//       // Populate Room Number/Name dropdown
+//       paymentModeSelect.innerHTML = '<option value="">Select..</option>';
+
+//       paymentModes.data.forEach(paymentMode => {
+//         const option = document.createElement('option');
+//         option.value = paymentMode.mode;
+//         option.textContent = paymentMode.mode;
+//         paymentModeSelect.appendChild(option);
+//       });
+
+//       // Enable the Room Number/Name dropdown
+//       paymentModeSelect.disabled = false;
+//     } catch (error) {
+//       console.error('Error fetching rooms:', error);
+//       paymentModeSelect.disabled = true;
+//       paymentModeSelect.innerHTML = '<option value="">Error loading payment modes</option>';
+//     }
+
+// });
+// })
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  // const paneContainer = document.getElementById("paneContainer"); // The wrapper holding all form panes
+  async function updateRoomNumbers(roomTypeSelect) {
+    const roomIndex = roomTypeSelect.id.split('_')[1]; // Extract index from roomType_0
+    const roomNumberSelect = document.querySelector(`#roomNumber_${roomIndex}`); // Correct selection
+    console.log("SELECTED ROOM NUMBER:", roomNumberSelect);
+
+    const selectedRoomType = roomTypeSelect.value;
+    if (!selectedRoomType) {
+        roomNumberSelect.disabled = true;
+        roomNumberSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
+        return;
+    }
+
+    try {
+        const response = await fetch(`/rooms?type=${selectedRoomType}`);
+        const data = await response.json();
+
+        console.log("Fetched Rooms:", data.rooms);
+
+        // Populate Room Number dropdown
+        roomNumberSelect.disabled = false;
+        roomNumberSelect.innerHTML = '<option value="">Select..</option>';
+        data.rooms.forEach(room => {
+            const option = document.createElement("option");
             option.value = room.id;
             option.textContent = `${room.number.charAt(0).toUpperCase() + room.number.slice(1)} - ₦${room.price}`;
             roomNumberSelect.appendChild(option);
-          });
+        });
 
-          // Enable the Room Number/Name dropdown
-          roomNumberSelect.disabled = false;
-        } catch (error) {
-          console.error('Error fetching rooms:', error);
-          roomNumberSelect.disabled = true;
-          roomNumberSelect.innerHTML = '<option value="">Error loading rooms</option>';
-        }
+    } catch (error) {
+        console.error("Error fetching rooms:", error);
+        roomNumberSelect.disabled = true;
+        roomNumberSelect.innerHTML = '<option value="">Error loading rooms</option>';
+    }
+}
+
+// Listen for changes on Room Type (Delegated Event Listener)
+document.addEventListener("change", function (event) {
+    if (event.target.matches('[id^="roomType_"]')) {
+        updateRoomNumbers(event.target);
+    }
+});
+
+
+})
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  // const paneContainer = document.getElementById("paneContainer"); // The wrapper holding all form panes
+  async function updatePaymentMode(paymentStatusSelect) {
+    const roomIndex = paymentStatusSelect.id.split('_')[1]; // Extract index from roomType_0
+    const paymentModeSelect = document.querySelector(`#paymentMode_${roomIndex}`); // Correct selection
+    const partPaymentDiv = document.querySelector(`#partPayment_${roomIndex}`);
+;
+
+    const selectedPaymentStatus = paymentStatusSelect.value;
+    if (!selectedPaymentStatus) {
+      paymentModeSelect.disabled = true;
+      paymentModeSelect.innerHTML = '<option value="">Selecty...</option>'; // Clear options
+        return;
+    }
+       // Handle the "Part Payment" case
+    if (selectedPaymentStatus === "Part Payment") {
+      if (partPaymentDiv) {
+          partPaymentDiv.style.display = "block";
+          const partPaymentAmountInput = partPaymentDiv.querySelector('input');
+          if (partPaymentAmountInput) {
+             partPaymentAmountInput.setAttribute("required", "true");
+          }
       }
-    });
-
-
-    const paymentStatusChange = document.getElementById('paymentStatus');
-      // Listen for payment status change
-      paymentStatusChange.addEventListener('change', async (event) => {
-        // const target = event.target;
-  
-        // Check if the changed element is a Room Type dropdown
-        // if (target.matches('[id^="paymentStatus"]')) {
-          const paymentStatusSelected = paymentStatusChange.value;
-          // const paymentStatusSelect = paymentStatusChange.value;
-          // const roomCount = paymentStatusSelect.id.split('_')[1]; // Extract room index from ID
-          // console.log(roomCount)
-          // const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
-          const paymentModeSelect = document.querySelector(`#paymentMode`);
-         
-          const partPaymentInput = document.querySelector(`#partPaymentInput`);
-          // Disable Room Number/Name if no Room Type is selected
-          if (!paymentStatusSelected) {
-            paymentModeSelect.disabled = true;
-            paymentModeSelect.innerHTML = '<option value="">Select..</option>'; // Clear options
-            return;
+      } else {
+      if (partPaymentDiv) {
+          partPaymentDiv.style.display = "none";
+          const partPaymentAmountInput = partPaymentDiv.querySelector('input');
+          if (partPaymentAmountInput) {
+              partPaymentAmountInput.removeAttribute("required");
           }
-          console.log(paymentStatusSelected)
-   
-          if (paymentStatusSelected == "Part Payment") {
-            
-            partPaymentInput.style.display = "block";
-            partPaymentInput.setAttribute("required", "required");
-          }else{
-            partPaymentInput.style.display = "none";
-            partPaymentInput.removeAttribute("required"); 
-          }
-          if (paymentStatusSelected == "Credit") {
-            paymentModeSelect.disabled = false;
-            paymentModeSelect.innerHTML = ''
-            const option = document.createElement('option');
-            option.value = 'None';
-            option.textContent = 'None';
-            paymentModeSelect.appendChild(option);
-            return;
-          }
-          // Fetch and populate Room Number/Name options based on selected Room Type
-          try {
-            const response = await fetch(`/bookings/paymentmodes`);
-            const paymentModes = await response.json();
-            console.log(paymentModes)
-            // Populate Room Number/Name dropdown
-            paymentModeSelect.innerHTML = '<option value="">Select..</option>';
-
-            paymentModes.data.forEach(paymentMode => {
+      }
+          if (selectedPaymentStatus == "Credit") {
+              paymentModeSelect.disabled = false;
+              paymentModeSelect.innerHTML = ''
               const option = document.createElement('option');
-              option.value = paymentMode.mode;
-              option.textContent = paymentMode.mode;
+              option.value = 'None';
+              option.textContent = 'None';
               paymentModeSelect.appendChild(option);
-            });
-  
-            // Enable the Room Number/Name dropdown
-            paymentModeSelect.disabled = false;
-          } catch (error) {
-            console.error('Error fetching rooms:', error);
-            paymentModeSelect.disabled = true;
-            paymentModeSelect.innerHTML = '<option value="">Error loading payment modes</option>';
+              return;
           }
-     
-      });
-  
+      }
+
+    try {
+        const response = await fetch(`/bookings/paymentmodes`);
+        const paymentModes = await response.json();
+
+        console.log("Fetched Rooms:", paymentModes);
+
+        // Populate Room Number dropdown
+        paymentModeSelect.disabled = false;
+        paymentModeSelect.innerHTML = '<option value="">Select..</option>';
+        paymentModes.data.forEach(paymentMode => {
+          const option = document.createElement('option');
+          option.value = paymentMode.mode;
+          option.textContent = paymentMode.mode;
+          paymentModeSelect.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Error fetching rooms:", error);
+        paymentModeSelect.disabled = true;
+        paymentModeSelect.innerHTML = '<option value="">Error loading rooms</option>';
+    }
+}
+
+// Listen for changes on Room Type (Delegated Event Listener)
+document.addEventListener("change", function (event) {
+    if (event.target.matches('[id^="paymentStatus_"]')) {
+        updatePaymentMode(event.target);
+    }
+});
+
+
+})
 
   //check selected room availability
   async function checkRoomAvailability(event) {
     const target = event.target;
-    const roomCount = target.closest('.product-info').dataset.index; // Get room index from parent container
-  
-    const roomNumberSelect = document.querySelector(`#roomNumber_${roomCount}`);
-    const checkInDate = document.querySelector(`#checkInDate_${roomCount}`);
-    const checkOutDate = document.querySelector(`#checkOutDate_${roomCount}`);
+    console.log(target)
+    // const roomCount = target.closest('.product-info').dataset.index; // Get room index from parent container
+    const roomIndex = target.id.split('_')[1]; // Extract index from roomType_0
+    console.log("DATA INDEX")
+    console.log(roomIndex)
+    const roomNumberSelect = document.querySelector(`#roomNumber_${roomIndex}`);
+    const checkInDate = document.querySelector(`#checkInDate_${roomIndex}`);
+    const checkOutDate = document.querySelector(`#checkOutDate_${roomIndex}`);
     const alertSpan = document.querySelector(
-      `#room-container_${roomCount} span[role="alert"] > strong`
+      `#room-container_${roomIndex} span[role="alert"] > strong`
     ); // Select error message <strong>
   
     const roomId = roomNumberSelect.value;
@@ -456,10 +704,3 @@ document.addEventListener('DOMContentLoaded', () => {
       checkRoomAvailability(event);
     }
   });
-  
-
-
-
-    
-  });
-  

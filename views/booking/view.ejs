@@ -23,9 +23,10 @@
 </div>
 <!-- Container-fluid starts-->
 <div class="container-fluid add-product">
+
     <form id="bookingForm">
         <div class="row"> 
-            <% if (typeof booking !== 'undefined') { %>
+        <% if (typeof booking !== 'undefined') { %>
             <div class="col-xl-6">
             <div class="card">
                 <div class="card-body">
@@ -176,7 +177,7 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Total Price</label>
-                                    <input class="form-control" value="<%= booking.total_price %>" type="text" disabled>
+                                    <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price * booking.booked_days_no) %>" type="text" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -194,15 +195,13 @@
         
                 </div>
                 </div>
-                <% } %>
+            
             </div>
             
          
           
             <div class="col-xl-6">
        
-                <% if (typeof bookingRooms !== 'undefined') { %>
-                    <% bookingRooms.forEach(bookingRoom => { %>
                 <div class="card"> 
                     <div class="card-body">
                         <div class="product-info room-section" data-index="0" id="room-container">
@@ -212,14 +211,14 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Type <span>*</span></label>
-                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.type %>" disabled>
+                                    <input class="form-control" type="text" value="<%= booking.Room.type %>" disabled>
                                  
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Room Number/Name <span>*</span></label>
-                                    <input class="form-control" type="text" value="<%= bookingRoom.Room.number %>" disabled>
+                                    <input class="form-control" type="text" value="<%= booking.Room.number %>" disabled>
                                  
                                     </div>
                                 </div>
@@ -229,13 +228,13 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                         <label class="form-label">Room Price</label>
-                                        <input class="form-control" value="<%= bookingRoom.Room.price %>" disabled>
+                                        <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.Room.price) %>"" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                         <label class="form-label">Room Discount <span>(* per day)</span></label>
-                                        <input class="form-control" value="<%= bookingRoom.discount %>" disabled>
+                                        <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.discount) %>"" disabled>
                                         </div>
                                     </div>
                                   
@@ -245,13 +244,13 @@
                                         <div class="mb-3">
                                         <label class="form-label">Check In Date <span>*</span></label>
                                         
-                                        <input class="form-control" value="<%= bookingRoom.check_in_date ? new Date( bookingRoom.check_in_date).toISOString().split('T')[0] : bookingRoom.check_in_date %>" type="date" disabled>
+                                        <input class="form-control" value="<%= booking.check_in_date ? new Date( booking.check_in_date).toISOString().split('T')[0] : booking.check_in_date %>" type="date" disabled>
                                         </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                     <label class="form-label">Check In Time <span>*</span></label>
-                                    <input class="form-control" value="<%= bookingRoom.check_in_time %>" type="time" disabled>
+                                    <input class="form-control" value="<%= booking.check_in_time %>" type="time" disabled>
                                     </div>
                                 </div>
                               
@@ -262,13 +261,13 @@
                                         <div class="mb-3">
                                         <label class="form-label">Check Out Date <span>*</span></label>
                                        
-                                        <input class="form-control" value="<%= bookingRoom.check_out_date ? new Date( bookingRoom.check_out_date).toISOString().split('T')[0] : bookingRoom.check_out_date %>" type="date" disabled>
+                                        <input class="form-control" value="<%= booking.check_out_date ? new Date( booking.check_out_date).toISOString().split('T')[0] : booking.check_out_date %>" type="date" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                         <label class="form-label">Check Out Time <span>*</span></label>
-                                        <input class="form-control" value="<%= bookingRoom.check_out_time %>" type="time" disabled>
+                                        <input class="form-control" value="<%= booking.check_out_time %>" type="time" disabled>
                                         </div>
                                     </div>
                                
@@ -278,27 +277,27 @@
                                         <div class="col-sm-6">
                                             <div class="mb-3">
                                             <label class="form-label">Number of Persons</label>
-                                            <input class="form-control" value="<%= bookingRoom.no_persons %>" type="text" disabled>
+                                            <input class="form-control" value="<%= booking.no_persons %>" type="text" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="mb-3">
                                                 <label class="form-label">Number of Days Booked</label>
-                                                <input class="form-control" value="<%= bookingRoom.booked_days_no %>" disabled type="text">
+                                                <input class="form-control" value="<%= booking.booked_days_no %>" disabled type="text">
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="mb-3">
                                                 <label class="form-label">Status</label>
-                                                <input class="form-control" value="<%= bookingRoom.status %>" disabled type="text">
+                                                <input class="form-control" value="<%= booking.status %>" disabled type="text">
                                             </div>
                                         </div>
                                     </div>
-                                    <% if (bookingRoom.BookingAddons.length > 0) { %>
+                                    <% if (booking.BookingAddons.length > 0) { %>
                                     <hr>
                                     <h4>Room Addons</h4>
                                     <hr>
-                                    <% bookingRoom.BookingAddons.forEach((bookingAddon, index) => { %>
+                                    <% booking.BookingAddons.forEach((bookingAddon, index) => { %>
                                     <div class="row"> 
                                         <div class="col-sm-6">
                                             <div class="mb-3">
@@ -312,7 +311,7 @@
                                             <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
                                             <label class="form-label">Addon Price <span>*</span></label>
                                       
-                                            <input class="form-control" type="text" value="<%= bookingAddon.price %>" disabled>
+                                            <input class="form-control" type="text" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(bookingAddon.price) %>"" disabled>
                                         </div>
                                     </div>
                                   
@@ -326,9 +325,9 @@
 
                     </div>
                     </div>
-                    <% }) %>
-                <% } %>
+            
             </div>
+        <% } %>
         
         </div>
     </form>
