@@ -194,4 +194,5 @@ router.get('/complaints/:id', isAuthorized, getComplaintEditPage)
 router.post('/complaints/:id', isAuthorized, updateComplaintById);
 router.post('/complaints/:id/delete', isAuthorized, deleteComplaint)
 
+
 module.exports = router
