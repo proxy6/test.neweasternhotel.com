@@ -775,7 +775,7 @@ static async updateRoomStatus(data){
       return true
     }
 
-    
+
   // if(data.status == '1'){
   //   await Rooms.update({
   //     status: true
@@ -1466,36 +1466,35 @@ static async addNewBooking(data){
     );
 
     //check if the room is booked for the those selected dates
-    let bookingRoom = await Booking.findOne({
+    const overlappingBookings = await Booking.findAll({
       where: {
-        [Op.and]: [
-          { room_id: data.room_id }, // Ensure it checks the same room
-          { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+        // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+        room_id:  data.room_id , // Exclude the room with the specified roomId
+        status: { [Op.in]: ['checkedin', 'pending'] },
+        [Op.or]: [
           {
-            [Op.or]: [
-              {
-                check_in_date: {
-                  [Op.lt]: data.check_in_date, // Existing booking starts before the new check-in date
-                },
-                check_out_date: {
-                  [Op.gt]: data.check_in_date, // Existing booking ends after the new check-in date
-                }
-              },
-              {
-                check_in_date: {
-                  [Op.lt]: data.check_out_date, // Existing booking starts before the new check-out date
-                },
-                check_out_date: {
-                  [Op.gt]: data.check_out_date, // Existing booking ends after the new check-out date
-                }
-              }
+            check_in_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            check_out_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            [Op.and]: [
+              { check_in_date: { [Op.lte]: data.check_in_date } },
+              { check_out_date: { [Op.gte]: data.check_out_date } }
             ]
           }
         ]
-      },
-      transaction
+      }
     });
+  
+    if (overlappingBookings.length > 0){ 
       
+      if (transaction) await transaction.rollback();
+      return (`Room is already booked for the selected dates`);
+    }  
+
+
     let room = await Rooms.findOne({
       where: {
         id: data.room_id
@@ -1503,12 +1502,11 @@ static async addNewBooking(data){
       transaction
     })
 
-    if(bookingRoom){
+    if (!room){ 
       
       if (transaction) await transaction.rollback();
-      return (`Room is already booked for the selected dates`);
-    } 
-
+      return (`Room not Found`);
+    }  
     const checkInDate = new Date(data.check_in_date).setHours(0, 0, 0, 0); // Normalize time to midnight
     const checkOutDate = new Date(data.check_out_date).setHours(0, 0, 0, 0); // Normalize time to midnight
   
@@ -1586,9 +1584,18 @@ static async addNewBooking(data){
 
     
     //update room status
-    await Rooms.update(
-      { status: true },
-      { where: { id: booking.room_id } })
+    
+    // await Rooms.update(
+    //   { status: true },
+    //   { where: { id: booking.room_id } })
+
+    await room.update(
+      {
+        status: true
+      },
+        { transaction }
+      );
+
     await transaction.commit();
     console.log(booking)
     return booking; // Return booking details
@@ -1731,10 +1738,15 @@ static async bookRoomForCustomer(data){
 
     
     //update room status to occupied
-    await Rooms.update(
-      { status: true },
-      { where: { id: booking.room_id } })
-
+    // await Rooms.update(
+    //   { status: true },
+    //   { where: { id: booking.room_id } })
+      await room.update(
+        {
+          status: true
+        },
+          { transaction }
+        );
     await transaction.commit();
     console.log(booking)
     return booking; // Return booking details
@@ -1877,10 +1889,16 @@ static async addRoomToBooking(data){
 
    
     //update room status to occupied
-    await Rooms.update(
-      { status: true },
-      { where: { id: room.id } })
+    // await Rooms.update(
+    //   { status: true },
+    //   { where: { id: room.id } })
 
+      await room.update(
+        {
+          status: true
+        },
+          { transaction }
+        );
     // Commit transaction
     await transaction.commit();
    
@@ -2215,9 +2233,10 @@ static async deleteBooking(bookingId) {
       });
     }
     //update room status to not occupied
+    
     await Rooms.update(
       { status: false },
-      { where: { id: booking.id } })
+      { where: { id: booking.id }, transaction })
       
     // Finally, delete the booking itself
     await Booking.destroy({

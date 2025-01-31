@@ -67,14 +67,7 @@
                 </div>
             </div>
         </div>
-        <% if(typeof user !== 'undefined'){ %>
-            <% if(user.Role.name == "Admin"){ %>
-                <div class="col-sm- text-end pr-9 pb-3">
-                    <a href="#crConfirm" data-bs-toggle="modal" class="btn btn-primary">Run House Keeping Cron</a>
-                </div>
-            <% } %>
-        <% } %>
- 
+  
 
         <div class="col-sm-12">
             <div class="card">
@@ -173,7 +166,7 @@
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <h4 class="mb-3"> Are you sure you have retouched room <%= room.number %> ?</h4>
-                                                                            <p>The clean time will be saved. You cam't undo this action.</p>
+                                                                            <p>The clean time will be saved. You can't undo this action.</p>
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
@@ -186,28 +179,7 @@
                                                                 </div>
                                                         </div>
 
-                                                           <!-- Clean Confirmation-->
-                                                           <div class="modal fade" id="crConfirm" tabindex="-1" role="dialog" aria-labelledby="crConfirm" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Confirn Job Clean</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <h4 class="mb-3"> Are you sure you want to run this cron job?</h4>
-                                                                        <p>The cleaning and retouching room status wil be updated. You cam't undo this action.</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        <form action="/housekeeping/<%= room.id %>/delete" method="post">
-                                                                          
-                                                                          <button class="btn btn-danger" type="submit">Save</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    
                                                 
                                                     </div>
                                                 </td>

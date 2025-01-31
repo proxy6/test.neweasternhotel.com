@@ -455,7 +455,7 @@ makeRoomAsRetouched: async(req, res)=>{
       //call cron job function here
       await CronService.callCron(); // Call the function
       console.error('Running manual activated house keeping cron...');
-      res.redirect('/housekeeping')
+      res.redirect('/bookings')
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Something went wrong!' });
