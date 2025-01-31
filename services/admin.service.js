@@ -494,22 +494,29 @@ static async availableRoomCount() {
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
 
-    // Query for available rooms count
+    // Query for available rooms count -- removed to use only status in room
+    // const availableRooms = await Rooms.count({
+    //   where: {
+    //     type: { [Op.ne]: 'others' }, // Exclude rooms of type 'others'
+    //     id: {
+    //       [Op.notIn]: sequelize.literal(`
+    //         (
+    //           SELECT room_id
+    //           FROM Bookings AS br
+    //           JOIN Rooms AS r ON br.room_id = r.id
+    //           WHERE 
+    //             (r.type = 'others' OR br.status IN ('checkedin')) AND
+    //             ('${today}' BETWEEN br.check_in_date AND br.check_out_date)
+    //         )
+    //       `), // Exclude room_ids that are of type 'others' or have conflicting bookings
+    //     },
+    //   },
+    // });
+
     const availableRooms = await Rooms.count({
       where: {
         type: { [Op.ne]: 'others' }, // Exclude rooms of type 'others'
-        id: {
-          [Op.notIn]: sequelize.literal(`
-            (
-              SELECT room_id
-              FROM Bookings AS br
-              JOIN Rooms AS r ON br.room_id = r.id
-              WHERE 
-                (r.type = 'others' OR br.status IN ('checkedin')) AND
-                ('${today}' BETWEEN br.check_in_date AND br.check_out_date)
-            )
-          `), // Exclude room_ids that are of type 'others' or have conflicting bookings
-        },
+        status: true, // Only count rooms where status === true
       },
     });
 
@@ -1018,6 +1025,11 @@ static async checkinBooking(bookingId,user){
     booking.check_in_time = today.toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     booking.last_updated_by = `${user.first_name} ${user.last_name}`
     await booking.save()
+
+  // update room status 
+  await Rooms.update(
+    { status: true },
+    { where: { id: booking.room_id } });
   }
   return booking
 }
@@ -1042,7 +1054,13 @@ static async checkoutBooking(bookingId,user){
     booking.checkedout_by = `${user.first_name} ${user.last_name}`
      booking.last_updated_by = `${user.first_name} ${user.last_name}`
     await booking.save()
+
+    //update room status
+    await Rooms.update(
+      { status: false },
+      { where: { id: booking.room_id } });
   
+    
   return booking
 }
 
@@ -1547,6 +1565,12 @@ static async addNewBooking(data){
     //   amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
     // }
     // Commit transaction
+
+    
+    //update room status
+    await Rooms.update(
+      { status: true },
+      { where: { id: booking.room_id } })
     await transaction.commit();
     console.log(booking)
     return booking; // Return booking details
@@ -1686,6 +1710,13 @@ static async bookRoomForCustomer(data){
     //   amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
     // }
     // Commit transaction
+
+    
+    //update room status to occupied
+    await Rooms.update(
+      { status: true },
+      { where: { id: booking.room_id } })
+
     await transaction.commit();
     console.log(booking)
     return booking; // Return booking details
@@ -1825,6 +1856,13 @@ static async addRoomToBooking(data){
       );
 
     }
+
+   
+    //update room status to occupied
+    await Rooms.update(
+      { status: true },
+      { where: { id: room.id } })
+
     // Commit transaction
     await transaction.commit();
    
@@ -2136,35 +2174,33 @@ static async deleteBooking(bookingId) {
       },
       transaction
     })
-    await Customer.destroy({
-      where: { id: booking.customer_id },
-      transaction
-    });
+    // await Customer.destroy({
+    //   where: { id: booking.customer_id },
+    //   transaction
+    // });
     // Find all booking rooms related to the booking ID
-    const bookingRooms = await Booking.findAll({
-      where: { booking_id: bookingId },
-      transaction
-    });
+    // const bookingRooms = await Booking.findAll({
+    //   where: { booking_id: bookingId },
+    //   transaction
+    // });
 
     // Extract booking room IDs
-    const bookingRoomIds = bookingRooms.map(room => room.id);
+    // const bookingRoomIds = bookingRooms.map(room => room.id);
 
     // Delete all related booking addons linked to these booking rooms
-    if (bookingRoomIds.length > 0) {
+    if (booking) {
       await BookingAddon.destroy({
         where: {
-          booking_room_id: bookingRoomIds
+          booking_id: booking.id
         },
         transaction
       });
     }
-
-    // Delete all booking rooms related to the booking ID
-    await Booking.destroy({
-      where: { booking_id: bookingId },
-      transaction
-    });
-
+    //update room status to not occupied
+    await Rooms.update(
+      { status: false },
+      { where: { id: booking.id } })
+      
     // Finally, delete the booking itself
     await Booking.destroy({
       where: { id: bookingId },
@@ -2172,6 +2208,7 @@ static async deleteBooking(bookingId) {
     });
 
     // Commit the transaction
+
     await transaction.commit();
   } catch (error) {
     // Rollback transaction if any operation fails

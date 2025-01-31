@@ -17,21 +17,25 @@ const updateRoomCleanStatus = async () => {
       for (const room of rooms) {
         try {
           // Find any active booking for this room
-          const booking = await Booking.findOne({
-            where: {
-              room_id: room.id,
-              status: 'checkin', // Only consider rooms currently occupied
-              check_in_date: { [Op.lte]: today }, // Check-in date is today or before
-              check_out_date: { [Op.gte]: today }, // Check-out date is today or later
-            },
-          });
+        //   const booking = await Booking.findOne({
+        //     where: {
+        //       room_id: room.id,
+        //       status: 'checkin', // Only consider rooms currently occupied
+        //       check_in_date: { [Op.lte]: today }, // Check-in date is today or before
+        //       check_out_date: { [Op.gte]: today }, // Check-out date is today or later
+        //     },
+        //   });
   
-          if (booking) {
+          if (room.status == true) {
             // Room is occupied
             await room.update({ clean_status: 'needs cleaning' });
           } else {
             // Room is not occupied
-            if (room.clean_status !== 'needs cleaning') {
+            // if (room.clean_status !== 'needs cleaning') {
+            //   await room.update({ clean_status: 'needs retouch' });
+            // }
+
+            if (room.status == false) {
               await room.update({ clean_status: 'needs retouch' });
             }
           }

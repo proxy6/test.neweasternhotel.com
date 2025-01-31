@@ -63,8 +63,8 @@ Addons.hasMany(BookingAddon, { foreignKey: 'addon_id' });
 BookingAddon.belongsTo(Addons, { foreignKey: 'addon_id' });
 
 // BookingRooms to Addons
-Booking.hasMany(BookingAddon, { foreignKey: 'booking_room_id' });
-BookingAddon.belongsTo(Booking, { foreignKey: 'booking_room_id' });
+Booking.hasMany(BookingAddon, { foreignKey: 'booking_id' });
+BookingAddon.belongsTo(Booking, { foreignKey: 'booking_id' });
 
 
 sequelize.sync({ alter: true }) // Use { alter: true } to modify existing tables without dropping them
