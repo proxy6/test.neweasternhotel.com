@@ -35,9 +35,9 @@ const updateRoomCleanStatus = async () => {
             //   await room.update({ clean_status: 'needs retouch' });
             // }
 
-            if (room.status == false) {
+            // if (room.status == false) {
               await room.update({ clean_status: 'needs retouch' });
-            }
+            // }
           }
   
           successCount++; // Increment success count if no error occurs

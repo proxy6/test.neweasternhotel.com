@@ -159,10 +159,10 @@ router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
 router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
-router.get('/housekeeping', isAuthorized, getBookKeepingPage)
+router.get('/housekeeping', getBookKeepingPage)
 router.post('/housekeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
 router.post('/housekeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
-router.post('/housekeeping/:id/delete', isAuthorized, cronHouseKeepingCron)
+router.post('/housekeeping/:id/delete',  cronHouseKeepingCron)
 
 router.get('/bookings', isAuthorized, getAllBookings)
 router.get('/bookings/add', isAuthorized, getAddBookingPage)

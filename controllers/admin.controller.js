@@ -502,18 +502,17 @@ makeRoomAsRetouched: async(req, res)=>{
 
   checkAvailabilityForEdit: async(req, res)=>{
     try {
-   
-
-      const { roomId, checkIn, checkOut } = req.body;
+    
+      const { roomId, checkIn, checkOut, booking_id } = req.body;
+      console.log(req.body)
 
       if (!roomId || !checkIn || !checkOut) {
           console.error("GOT HERE TROUBLESHOOT")
           return res.status(400).json({ error: 'All fields are required.' });
       }
   
-      let overlappingBookings  = await AdminService.availableRoomForEditBooking(roomId, checkIn, checkOut)
-      console.error("overlappingBookings for edit bookings")
-      console.error(overlappingBookings)
+      let overlappingBookings  = await AdminService.availableRoomForEditBooking(roomId, checkIn, checkOut, booking_id)
+  
       // console.log(overlappingBookings)
       if (overlappingBookings.length > 0) {
         return res.json({ available: false });
@@ -551,7 +550,8 @@ makeRoomAsRetouched: async(req, res)=>{
       
             const data = req.body
             data.id = req.params.id
-          
+            console.log("GOT HERE")
+            console.log(data)
             const room = await AdminService.updateRoomStatus(data);
           
             if(room){

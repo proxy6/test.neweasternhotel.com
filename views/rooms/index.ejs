@@ -135,6 +135,12 @@
                                                                
                                                                     Request to Retouch
                                                                 </a>
+                                                                <% if(room.status == true){ %>
+                                                                <a  class="dropdown-item" href="/rooms/<%= room.id %>/update-status" data-bs-toggle="modal" >
+                                                               
+                                                                    Change Room Status
+                                                                </a>
+                                                                <% } %>
                                                                 <!-- <a class="dropdown-item" href="#deleteRoom<%= room.id %>" data-bs-toggle="modal" class="delete-svg">
                                                                    
                                                                 Delete

@@ -67,13 +67,13 @@ Booking.hasMany(BookingAddon, { foreignKey: 'booking_id' });
 BookingAddon.belongsTo(Booking, { foreignKey: 'booking_id' });
 
 
-sequelize.sync({ alter: true }) // Use { alter: true } to modify existing tables without dropping them
-  .then(() => {
-    console.log('Database & tables synchronized!');
-  })
-  .catch((err) => {
-    console.error('Error syncing tables:', err);
-  });
+// sequelize.sync({ alter: true }) // Use { alter: true } to modify existing tables without dropping them
+//   .then(() => {
+//     console.log('Database & tables synchronized!');
+//   })
+//   .catch((err) => {
+//     console.error('Error syncing tables:', err);
+//   });
 
 module.exports = {
   sequelize,

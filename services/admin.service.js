@@ -590,24 +590,32 @@ static async availableRoom(roomId, checkIn, checkOut){
 }
 
 
-static async availableRoomForEditBooking(roomId, checkIn, checkOut){
+static async availableRoomForEditBooking(roomId, checkIn, checkOut, booking_id) {
   
+  // Retrieve the existing booking
+  const existingBooking = await Booking.findOne({
+    where: { id: booking_id }
+  });
+
+  if (!existingBooking) {
+    console.error("BOOKING ID NOT FOUND IN availableRoomForEditBooking SERVICE ")
+    throw new Error("Booking not found");
+  }
 
   const overlappingBookings = await Booking.findAll({
     where: {
-      // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
-      room_id:  roomId , // Exclude the room with the specified roomId
+      room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
       status: { [Op.in]: ['checkedin', 'pending'] },
       [Op.or]: [
         {
-          check_in_date: { [Op.between]: [checkIn, checkOut] }
+          check_in_date: { [Op.between]: [existingBooking.check_out_date, checkOut] }
         },
         {
-          check_out_date: { [Op.between]: [checkIn, checkOut] }
+          check_out_date: { [Op.between]: [existingBooking.check_out_date, checkOut] }
         },
         {
           [Op.and]: [
-            { check_in_date: { [Op.lte]: checkIn } },
+            { check_in_date: { [Op.lte]: existingBooking.check_out_date } },
             { check_out_date: { [Op.gte]: checkOut } }
           ]
         }
@@ -615,9 +623,7 @@ static async availableRoomForEditBooking(roomId, checkIn, checkOut){
     }
   });
 
-  
- return overlappingBookings 
-
+  return overlappingBookings;
 }
 
 
@@ -757,30 +763,42 @@ static async updateRoomStatus(data){
 
     if(booking){
       return false
+    }else{
+      await Rooms.update({
+        status: false
+      },
+    {
+      where:{
+        id: data.id
+      }
+    })
+      return true
     }
-  if(data.status == '1'){
-    await Rooms.update({
-      status: true
-    },
-  {
-    where:{
-      id: data.id
-    }
-  })
-    return true
-  }else if(data.status == '0'){
-    await Rooms.update({
-      status: false
-    },
-  {
-    where:{
-      id: data.id
-    }
-  })
-    return true
-  }else{
-    return false
-  }
+
+    
+  // if(data.status == '1'){
+  //   await Rooms.update({
+  //     status: true
+  //   },
+  // {
+  //   where:{
+  //     id: data.id
+  //   }
+  // })
+  //   return true
+  // }else if(data.status == '0'){
+  //   await Rooms.update({
+  //     status: false
+  //   },
+  // {
+  //   where:{
+  //     id: data.id
+  //   }
+  // })
+  //   return true
+  // }else{
+  //   return false
+  // }
 
 }
 

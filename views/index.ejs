@@ -319,8 +319,9 @@
                                             <th title="Thumbnail">S/N</th>
                                             <th title="Title">Number</th>
                                             <th title="Type">Type</th>
-                                            <th title="Title">Price</th>
                                             <th title="Status">Status</th>
+                                            <!-- <th title="Title">Price</th> -->
+                                            <!-- <th title="Status">Status</th> -->
                                             <th title="Action">Action</th>
                                             
                                         </tr>
@@ -332,16 +333,17 @@
                                                     <td><%= index + 1 %></td>
                                                     <td><%= room.number %></td>
                                                     <td><%= room.type %></td>
-                                                    <td><%= room.price %></td>
+                                                    <td><%= room.status == 1 ? "Occupied" : "Empty" %></td>
+                                                    <!-- <td><%= room.price %></td> -->
                                                  
-                                                    <td>
+                                                    <!-- <td>
                                                         <div class="action-div mt-0">
                                                             <label class="switch">
                                                                 <input data-route="/rooms/<%= room.id %>/update-status" class="form-check-input toggle-status" type="checkbox" name="status" value="1"  <%= room.status == 1 ? 'checked' : '' %>>
                                                                 <span class="switch-state"></span>
                                                             </label>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <div class="action-div mt-0">
                                                             <a href="/rooms/<%= room.id %>" class="edit-icon">
