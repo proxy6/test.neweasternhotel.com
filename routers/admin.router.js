@@ -49,7 +49,8 @@ extendBooking,
 addNewRoomToBooking,
 bookRoomForCustomer,
 getSingleReceipt,
-cronHouseKeepingCron} = require('../controllers/admin.controller')
+cronHouseKeepingCron,
+getSingleBookingTransactions} = require('../controllers/admin.controller')
 const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
@@ -159,10 +160,10 @@ router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
 router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
-router.get('/housekeeping', getBookKeepingPage)
+router.get('/housekeeping', isAuthorized, getBookKeepingPage)
 router.post('/housekeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
 router.post('/housekeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
-router.post('/housekeeping/:id/delete',  cronHouseKeepingCron)
+router.post('/housekeeping/:id/delete', isAuthorized,  cronHouseKeepingCron)
 
 router.get('/bookings', isAuthorized, getAllBookings)
 router.get('/bookings/add', isAuthorized, getAddBookingPage)
@@ -174,6 +175,7 @@ router.post('/bookings/:id/bookcustomer', isAuthorized, bookRoomForCustomer)
 router.post('/bookings/:id/addroom', isAuthorized, addRoomToBooking)
 router.post('/bookings/', isAuthorized, addBooking)
 router.get('/bookings/:id', isAuthorized, getSingleBooking)
+router.get('/bookings/:id/transactions', isAuthorized, getSingleBookingTransactions)
 router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
 router.post('/bookings/:id', isAuthorized, updateBookingById);
 router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
@@ -187,8 +189,8 @@ router.post('/bookings/:id/extend', isAuthorized, extendBooking)
 
 
 
-router.get('/customers', isAuthorized,  getAllCustomers)
-router.post('/customers', isAuthorized, addCustomer)
+router.get('/customers', isAuthorized, getAllCustomers)
+router.post('/customers', isAuthorized,  addCustomer)
 router.post('/customers/:id/delete', isAuthorized, deleteCustomer)
 
 router.get('/complaints', isAuthorized, getAllComplaints)

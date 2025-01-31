@@ -1,0 +1,233 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidenav') %>
+
+    <div class="page-body">
+                <div class="container-fluid">
+    <div class="row page-title">
+      <div class="col-sm-6">
+        <h3>Booking Details</h3>
+      </div>
+      <div class="col-sm-6">
+        <nav>
+          <ol class="breadcrumb justify-content-sm-end align-items-center">
+            <li class="breadcrumb-item"> <a href="/">
+                <svg class="svg-color">
+                  <use href="/icons/iconly-sprite.svg#Home"></use>
+                </svg></a></li>
+            <li class="breadcrumb-item"><a style="color: #43b9b299;" href="/bookings">Booking Management</a></li>
+            <li class="breadcrumb-item active">Booking Details</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+</div>
+<!-- Container-fluid starts-->
+<div class="container-fluid add-product">
+
+    <form id="bookingForm">
+        <div class="row"> 
+        <% if (typeof booking !== 'undefined') { %>
+            <div class="col-xl-6">
+       
+            <div class="card"> 
+                <div class="card-body">
+                    <div class="product-info room-section" data-index="0" id="room-container">
+                        <h4>Booking Info</h4>
+                        <div class="product-group">
+                            <div class="row"> 
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Booking Reference</label>
+                             
+                                <input type="text" class="form-control" value="<%= booking.booking_reference %>" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <input class="form-control" value="<%= booking.status %>" disabled type="text">
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row"> 
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Check In Date </label>
+                                
+                                <input class="form-control" value="<%= booking.check_in_date ? new Date(booking.check_in_date).toISOString().split('T')[0] : booking.check_in_date  %>"  type="date" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                <label class="form-label">Check In Time <span>*</span></label>
+                                <input class="form-control" value="<%= booking.check_in_time %>" disabled type="time">
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row"> 
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Type <span>*</span></label>
+                                    <input class="form-control" type="text" value="<%= booking.Room.type %>" disabled>
+                                 
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Number/Name <span>*</span></label>
+                                    <input class="form-control" type="text" value="<%= booking.Room.number %>" disabled>
+                                 
+                                    </div>
+                                </div>
+                                
+                                </div> 
+                            <div class="row"> 
+                                
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Price</label>
+                                    <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price * booking.booked_days_no) %>" type="text" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-3">
+                                    <label class="form-label">Room Discount <span>(* per day)</span></label>
+                                    <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.discount) %>"" disabled>
+                                    </div>
+                                </div>
+                           
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Check Out Date</label>
+                                          
+                                            <input class="form-control" value="<%= booking.check_out_date ? new Date( booking.check_out_date).toISOString().split('T')[0] : booking.check_out_date %>" disabled type="date">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                        <label class="form-label">Check In Time <span>*</span></label>
+                                        <input class="form-control" value="<%= booking.check_in_time %>" type="time" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                        </div>
+                        
+                
+                    </div>
+        
+                </div>
+                </div>
+            
+            </div>
+            
+         
+           
+                
+            <div class="col-xl-6">
+       
+                <div class="card"> 
+                    <div class="card-body">
+                     
+                        <div class="product-info room-section" data-index="0" id="room-container">
+                            <% if (booking.BookingTransactions.length > 0) { %>
+                            <h4>Booking Transactions</h4>
+                            <% booking.BookingTransactions.forEach((transaction, index) => { %>
+                            <div class="product-group">
+                                <div class="row"> 
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(transaction.amount) %>" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                        <label class="form-label">Date <span>*</span></label>
+                                        
+                                        <input class="form-control" value="<%= transaction.date ? new Date( transaction.date).toISOString().split('T')[0] : transaction.date %>" type="date" disabled>
+                                        
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                        <label class="form-label">Payment Mode</label>
+                                        <input class="form-control" value="<%= transaction.payment_mode %>" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"> 
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" id=""><%= transaction.description  %></textarea>
+                                        <!-- <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.Room.price) %>"" disabled> -->
+                                        </div>
+                                    </div>
+                                </div>
+                           
+                                </div>
+                            <% }) %>
+                            <% } %>
+                            <% if (booking.BookingAddons.length > 0) { %>
+                                    <hr>
+                                    <h4>Room Addons</h4>
+                                    <hr>
+                                    <% booking.BookingAddons.forEach((bookingAddon, index) => { %>
+                                    <div class="row"> 
+                                        <div class="col-sm-6">
+                                            <div class="mb-3">
+                                            <label class="form-label">Addon Name <span>*</span></label>
+                                            <input class="form-control" type="text" value="<%= bookingAddon.Addon.name %>" disabled>
+                                         
+                                            </div>
+                                        </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <input name="bookingRoom_id" value="<%= bookingRoom.id%>" type="hidden">
+                                            <label class="form-label">Addon Price <span>*</span></label>
+                                      
+                                            <input class="form-control" type="text" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(bookingAddon.price) %>"" disabled>
+                                        </div>
+                                    </div>
+                                  
+                                    </div>
+                                    <% }) %>
+                            <% } %>
+                            </div>
+                            
+                    
+                        </div>
+
+                    </div>
+                    </div>
+            
+            </div>
+   
+        <% } %>
+        </div>
+    </form>
+</div>
+              <!-- Container-fluid ends-->
+            </div>
+            
+            <%- include('../partials/footer') %>
+
+
+        </div>
+      </main>
+             
+              
+              
+      <%- include('../partials/script') %>
+
+
+      
+ 
+
+</body>
+</html>

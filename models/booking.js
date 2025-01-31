@@ -65,7 +65,7 @@ return sequelize.define("Booking", {
   },
   status: { 
     type: DataTypes.STRING(20), 
-    defaultValue: 'pending' 
+    defaultValue: 'pending' //checkin checkedout
   },
 }, {
   timestamps: true,

@@ -947,6 +947,32 @@ static async getSingleBooking(bookingId){
   return booking
   
 }
+
+static async getSingleBookingTransactions(bookingId){
+  const booking = await Booking.findOne({
+    include:[
+      {
+        model: Customer,
+    },
+    
+    {
+      model: Rooms
+    },
+    {
+      model: BookingAddon
+    },
+    {
+      model: BookingTransactions
+    }
+  ],
+    where:{
+      id: bookingId
+    },
+    
+  });
+  return booking
+  
+}
 static async getBookingsForReceipt(bookingId){
   let booking = await Booking.findOne({
     include:[
@@ -1075,7 +1101,9 @@ static async checkoutBooking(bookingId,user){
 
     //update room status
     await Rooms.update(
-      { status: false },
+      { status: false,
+        clean_status: "needs cleaning"
+       },
       { where: { id: booking.room_id } });
   
     
@@ -1175,8 +1203,14 @@ static async completeBookingPayment(data){
 
   if (!booking) throw new Error("Booking not found");
   let amount_paid = parseFloat(booking.amount_paid) + parseFloat(data.amount)
-  if(parseFloat(booking.total_price) > (parseFloat(booking.amount_paid) + parseFloat(data.amount))){
+  if(parseFloat(booking.price) > (parseFloat(booking.amount_paid) + parseFloat(data.amount))){
     description = "Booking Part Payment"
+    await booking.update(
+      {
+       // check_in_time: formData.booking_check_in_time,
+        payment_status: "Part Payment",
+      }
+    );
   }else{
      description = "Booking Complete Payment"
      booking.payment_status = "Full Payment"
@@ -1542,7 +1576,7 @@ static async addNewBooking(data){
         check_in_date: data.check_in_date,
         check_in_time: data.check_in_time,
         check_out_date: data.check_out_date,
-        status: data.check_in_status,
+        status: data.status,
         price: room.price,
         booked_days_no,
         no_persons: data.no_persons,
@@ -1696,7 +1730,7 @@ static async bookRoomForCustomer(data){
         check_in_date: data.check_in_date,
         check_in_time: data.check_in_time,
         check_out_date: data.check_out_date,
-        status: data.check_in_status,
+        status: data.status,
         price: room.price,
         booked_days_no,
         no_persons: data.no_persons,
@@ -1854,7 +1888,7 @@ static async addRoomToBooking(data){
         check_in_date: data.check_in_date,
         check_in_time: data.check_in_time,
         check_out_date: data.check_in_date,
-        status: data.check_in_status,
+        status: data.status,
         price: room.price,
         booked_days_no,
         no_persons: data.no_persons,

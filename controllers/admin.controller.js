@@ -797,6 +797,23 @@ addNewRoomToBooking: async(req, res)=>{
     }
   },
 
+  getSingleBookingTransactions: async(req, res)=>{
+    try {
+       
+    const bookingId = req.params.id
+  
+    const booking = await AdminService.getSingleBookingTransactions(bookingId) 
+    console.log(booking)
+    res.render('booking/transaction', {
+      booking,
+      user: req.session.user
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong!' });
+  }
+},
+
   getEditBooking: async(req, res)=>{
     try {
        
