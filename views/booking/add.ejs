@@ -115,7 +115,7 @@
                                 <div class="col-sm-6"> 
                                     <div class="mb-3">
                                     <label class="form-label">ID Expring Date</label>
-                                    <input class="form-control" name="id_exp_date" type="date">
+                                    <input class="form-control" name="id_exp_date" type="date" min="<%= new Date().toISOString().split('T')[0] %>">
                                     </div>
                                 </div>
                             </div>
@@ -198,13 +198,13 @@
                          <div class="col-sm-6">
                             <div class="mb-3">
                             <label class="form-label">Check In Date <span>*</span></label>
-                            <input class="form-control" name="check_in_date" id="checkInDate_0" type="date" required>
+                            <input class="form-control" name="check_in_date" id="checkInDate_0" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="mb-3">
                             <label class="form-label">Check Out Date <span>*</span></label>
-                            <input class="form-control" name="check_out_date" id="checkOutDate_0" type="date" required>
+                            <input class="form-control" name="check_out_date" id="checkOutDate_0" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
                             <span class="" role="alert"> <strong></strong></span>
                            
                             </div>

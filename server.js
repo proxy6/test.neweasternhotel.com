@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cron = require('node-cron');
 const express = require("express");
 const ejs = require("ejs");
 const path = require('path');
@@ -8,6 +9,9 @@ const routerIndex = require('./routers/index.router');
 // const association = require('./models/association');
 const configSession = require('./config/session');
 // const db = require('./config/database'); // Load m`odels
+
+const CronService  = require('./services/cron.service'); // Import the cron job
+
 
 // // Define associations here, after importing models
 // association(db);
@@ -39,4 +43,10 @@ app.use(routerIndex);
 const port = process.env.PORT || 3500;
 app.listen(port, () => {
   console.log("Server listening on port " + port);
+  // Schedule the cron job to run once a day at midnight
+cron.schedule('0 0 * * *', () => {
+    console.error('Running daily house keeping cron...');
+    CronService.callCron();
+});
+
 });

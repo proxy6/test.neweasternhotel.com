@@ -127,9 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 
-// const submitBtn = document.querySelector(`#saveBtn_${roomIndex}`);
-
-
 //SUMIT MODAL FORM
 document.addEventListener("DOMContentLoaded", function () {
   
@@ -177,11 +174,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: backendData,
                 headers: { "Content-Type": "application/json" }
             });
-
+            console.log("RESPONSE")
+            console.log(response)
             if (response.ok) {
-                alert("Room added successfully!");
+                // alert("Room added successfully!");
+                response.json().then(data => {
+                    console.log("SUBMIT FORM")
+                    console.log(data)
+                    toastr.options = {
+                    closeButton: false,
+                    progressBar: true,
+                    timeOut: 6000,
+                    extendedTimeOut: 1000,
+                };
+                toastr.success('Booking successfully created with reference: ' + data.booking.booking_reference);
                 form.reset(); // Reset form after success
-                location.reload(); // Optionally reload to reflect changes
+                //  location.reload(); // Optionally reload to reflect changes
+                window.location.href = `/bookings/${data.booking.id}/singlereceipt`;
+            })
+             
             } else {
                 const errorMessage = await response.text();
                 console.error("Submission failed:", errorMessage);

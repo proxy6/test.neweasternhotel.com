@@ -217,7 +217,7 @@
                                             <td><%= booking.Room.number %></td>
                                             <td><%= booking.Room.type %></td>
                                        
-                                            <td>&#8358;<%= booking.price %></td>
+                                            <td>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price) %></td>
                                             <td><%= booking.check_in_date %></td>
                                             <td><%= booking.check_out_date %></td>
                                             <td><%= booking.booked_by %></td>

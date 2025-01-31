@@ -118,7 +118,7 @@
                                                 <% bookings.forEach((booking, index) => { %>
                                             <tr class="odd">
                                                 <td><%= index + 1 %></td>
-                                                <td class="sorting_1"><%= booking.Customer.name %></td>
+                                                <td class="sorting_1"><a href="/bookings/<%=booking.id %>"><%= booking.Customer.name %></a></td>
                                                 
                                                 <!-- <td><%= booking.booking_reference %></td> -->
                                                 <!-- Assuming bookingRooms is an array that is related to the current booking -->
@@ -147,13 +147,18 @@
                                                             <!-- <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"> -->
                                                                 <i class="icon-more-alt" data-bs-toggle="dropdown"></i>
                                                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown08">
-                                                                <a class="dropdown-item" href="/bookings/<%=booking.id %>">View</a> 
-                                                                <% if(booking.status != 'checkedout' && booking.Room.type != 'others'){ %>
-                                                                    <a class="dropdown-item" href="#deleteBooking<%=booking.id %>"  data-bs-toggle="modal">Add Room</a>
-                                                                <% } %>   
+                                                                <a class="dropdown-item" href="/bookings/<%=booking.id %>/receipt">Print Receipt</a>
                                                                 <% if(booking.status == 'pending'){ %>
                                                                     <a class="dropdown-item" href="#checkInBooking<%=booking.id %>"  data-bs-toggle="modal">Check In</a>
                                                                 <% } %> 
+                                                                <% if(booking.status != 'checkedout'){ %>
+                                                                    <a class="dropdown-item" href="#extendBooking<%=booking.id %>" data-bs-toggle="modal">Extend Booking</a>
+        
+                                                                <% } %>
+                                                                <% if(booking.status != 'checkedout' && booking.Room.type != 'others'){ %>
+                                                                    <a class="dropdown-item" href="#deleteBooking<%=booking.id %>"  data-bs-toggle="modal">Add Room</a>
+                                                                <% } %>   
+                                                          
                                                                 <% if(booking.status != 'checkedout' && booking.status != 'pending'){ %>
                                                                     <a class="dropdown-item" href="#checkOutBooking<%=booking.id %>"  data-bs-toggle="modal">Checkout</a>
                                                                 <% } %> 
@@ -162,13 +167,16 @@
                                                                 <% } %>
 
                   
+                                                               
                                                                 
-                                                                <a class="dropdown-item" href="/bookings/<%=booking.id %>/receipt">Print Receipt</a>
-                                                                <% if(booking.status != 'checkedout'){ %>
+                                                            
+                                                                <a class="dropdown-item" href="/bookings/<%=booking.id %>">View</a> 
+                                                                <!-- <% if(booking.status != 'checkedout'){ %>
+                                                                  
                                                                     <a class="dropdown-item" href="/bookings/<%= booking.id %>/edit">Edit</a>
-                                                                    <a class="dropdown-item" href="#extendBooking<%=booking.id %>" data-bs-toggle="modal">Extend Booking</a>
+
                 
-                                                                <% } %>
+                                                                <% } %> -->
                                                                 <a class="dropdown-item" data-bs-toggle="modal" href="#delete<%=booking.id %>">Delete</a>
                                                             </div>
                                                         </div>
@@ -182,7 +190,7 @@
                                                                         <h4 class="modal-title">Add New Room To Booking</h4>
                                                                         <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                     </div>
-                                                                    <form id="addRoom_<%= booking.id %>" action="/bookings/<%= booking.id %>/addroom" method="post">
+                                                                    <form id="addRoom_<%= booking.id %>" action="/bookings/<%= booking.id %>/add" method="post">
                                                                         <div class="modal-body">
                                                                             <div class="product-info room-section" id="room-container_<%=booking.id %>">
                                                                                 <div class="product-group">
@@ -220,13 +228,13 @@
                                                                                         <div class="col-sm-6">
                                                                                             <div class="mb-3">
                                                                                                 <label class="form-label">Check In Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=booking.id%>" type="date" required>
+                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="col-sm-6">
                                                                                             <div class="mb-3">
                                                                                                 <label class="form-label">Check Out Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=booking.id%>" type="date" required>
+                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
                                                                                             
                                                                                                 <span class="" role="alert"> <strong></strong></span>
                                                                                             </div>

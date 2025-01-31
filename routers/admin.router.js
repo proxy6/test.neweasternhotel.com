@@ -47,7 +47,9 @@ checkinBooking,
 checkoutBooking,
 extendBooking,
 addNewRoomToBooking,
-bookRoomForCustomer} = require('../controllers/admin.controller')
+bookRoomForCustomer,
+getSingleReceipt,
+cronHouseKeepingCron} = require('../controllers/admin.controller')
 const { isAuthorized } = require('../middleware/authorization');
 
 // const { getDashboard, getSermonList, getEventList, getUserList,
@@ -157,9 +159,10 @@ router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
 router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
-router.get('/bookkeeping', isAuthorized, getBookKeepingPage)
-router.post('/bookkeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
-router.post('/bookkeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
+router.get('/housekeeping', isAuthorized, getBookKeepingPage)
+router.post('/housekeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
+router.post('/housekeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
+router.post('/housekeeping/:id/delete', isAuthorized, cronHouseKeepingCron)
 
 router.get('/bookings', isAuthorized, getAllBookings)
 router.get('/bookings/add', isAuthorized, getAddBookingPage)
@@ -175,6 +178,7 @@ router.get('/bookings/:id/edit', isAuthorized, getEditBooking)
 router.post('/bookings/:id', isAuthorized, updateBookingById);
 router.post('/bookings/:id/delete', isAuthorized, deleteBooking)
 router.get('/bookings/:id/receipt', isAuthorized, getReceipt)
+router.get('/bookings/:id/singlereceipt', isAuthorized, getSingleReceipt)
 router.post('/bookings/:id/addon', isAuthorized, addBookingAddon)
 router.get('/bookings/:id/guestreceipt', isAuthorized, getReceipt)
 router.post('/bookings/:id/checkin', isAuthorized, checkinBooking)

@@ -4,6 +4,7 @@ const axios = require('axios')
 const {HashPassword} = require('../utils/auth');
 const { welcomeEmailNotification } = require("../utils/welcome-email");
 const employees = require("../models/employee");
+const CronService = require('../services/cron.service');
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_NAME, 
@@ -425,7 +426,7 @@ makeRoomAsCleaned: async(req, res)=>{
       
       const room = await AdminService.markRoomAsCleaned(data);
      
-      res.redirect('/bookkeeping')
+      res.redirect('/housekeeping')
    
       } catch (error) {
     console.error(error);
@@ -440,13 +441,27 @@ makeRoomAsRetouched: async(req, res)=>{
       
       const room = await AdminService.markRoomAsRetouched(data);
      
-      res.redirect('/bookkeeping')
+      res.redirect('/housekeeping')
    
       } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Something went wrong!' });
   }
 },
+
+  cronHouseKeepingCron: async(req, res)=>{
+
+    try {
+      //call cron job function here
+      await CronService.callCron(); // Call the function
+      console.error('Running manual activated house keeping cron...');
+      res.redirect('/housekeeping')
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Something went wrong!' });
+    }
+  },
+
 
 
   sendRoomRequest: async(req, res)=>{
@@ -863,7 +878,7 @@ addBookingAddon: async(req, res)=>{
     res.status(500).json({ error: 'Something went wrong!' });
   }
 },
-  deleteBooking: async(req, res)=>{
+deleteBooking: async(req, res)=>{
 
     const bookingId = req.params.id;
 
@@ -881,6 +896,16 @@ getReceipt: async(req, res)=>{
   // //fetch room types
   const bookingId = req.params.id
   const bookings = await AdminService.getBookingsForReceipt(bookingId)
+  console.log(bookings)
+  // return res.json(booking)
+  res.render('booking/receipt', { bookings, user: req.session.user})
+},
+
+getSingleReceipt: async(req, res)=>{
+  // const rooms = await AdminService.getAllActiveRooms()
+  // //fetch room types
+  const bookingId = req.params.id
+  const bookings = await AdminService.getSingleReceipt(bookingId)
   console.log(bookings)
   // return res.json(booking)
   res.render('booking/receipt', { bookings, user: req.session.user})

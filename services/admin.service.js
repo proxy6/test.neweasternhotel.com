@@ -966,6 +966,31 @@ static async getBookingsForReceipt(bookingId){
   
 }
 
+static async getSingleReceipt(bookingId){
+  let booking = await Booking.findAll({
+    include:[
+      {
+        model: Customer,
+    },
+    
+    {
+      model: Rooms
+    },
+    {
+      model: BookingAddon
+    }
+  ],
+    where:{
+      id: bookingId
+    },
+    
+  });
+
+ 
+  return booking
+  
+}
+
 static async checkinBooking(bookingId,user){
   const booking = await Booking.findOne({
     where:{
@@ -1695,40 +1720,34 @@ static async addRoomToBooking(data){
       return (`Booking Record Does Not Exist!`);
     } 
     //check if the room is booked for the those selected dates
-    let bookingRoom = await Booking.findOne({
+    const overlappingBookings = await Booking.findAll({
       where: {
-        [Op.and]: [
-          { room_id: data.room_id }, // Ensure it checks the same room
-          { status: { [Op.ne]: 'checkedout' } }, // Ensure status is not 'checkedout'
+        // room_id: { [Op.ne]: roomId }, // Exclude the room with the specified roomId
+        room_id:  data.room_id , // Exclude the room with the specified roomId
+        status: { [Op.in]: ['checkedin', 'pending'] },
+        [Op.or]: [
           {
-            [Op.or]: [
-              {
-                check_in_date: {
-                  [Op.lt]: data.check_in_date, // Existing booking starts before the new check-in date
-                },
-                check_out_date: {
-                  [Op.gt]: data.check_in_date, // Existing booking ends after the new check-in date
-                }
-              },
-              {
-                check_in_date: {
-                  [Op.lt]: data.check_out_date, // Existing booking starts before the new check-out date
-                },
-                check_out_date: {
-                  [Op.gt]: data.check_out_date, // Existing booking ends after the new check-out date
-                }
-              }
+            check_in_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            check_out_date: { [Op.between]: [data.check_in_date, data.check_out_date] }
+          },
+          {
+            [Op.and]: [
+              { check_in_date: { [Op.lte]: data.check_in_date } },
+              { check_out_date: { [Op.gte]: data.check_out_date } }
             ]
           }
         ]
-      },
-      transaction
+      }
     });
-    if(bookingRoom){
+  
+    if (overlappingBookings.length > 0){ 
       
       if (transaction) await transaction.rollback();
       return (`Room is already booked for the selected dates`);
     } 
+ 
 
     let room = await Rooms.findOne({
       where: {
@@ -1773,6 +1792,7 @@ static async addRoomToBooking(data){
         payment_status: data.payment_status,
         check_in_date: data.check_in_date,
         check_in_time: data.check_in_time,
+        check_out_date: data.check_in_date,
         status: data.check_in_status,
         price: room.price,
         booked_days_no,

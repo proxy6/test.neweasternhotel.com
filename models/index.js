@@ -14,6 +14,7 @@ const Complaints = require('./complaint')(sequelize);
 const Sessions = require('./session')(sequelize);
 const PaymentMode = require('./paymentMode')(sequelize);
 const AddonType = require('./addonType')(sequelize);
+const CronJobLogs = require('./cronjob-logs')(sequelize)
 // Define Associations
 Role.belongsToMany(Permission, {
   through: 'RolePermissions',
@@ -90,5 +91,6 @@ module.exports = {
   Sessions,
   PaymentMode,
   AddonType,
-  BookingTransactions
+  BookingTransactions,
+  CronJobLogs
 };

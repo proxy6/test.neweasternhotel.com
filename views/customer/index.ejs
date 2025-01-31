@@ -175,13 +175,13 @@
                                                                                         <div class="col-sm-6">
                                                                                             <div class="mb-3">
                                                                                                 <label class="form-label">Check In Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=customer.id%>" type="date" required>
+                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=customer.id%>" min="<%= new Date().toISOString().split('T')[0] %>" type="date" required>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="col-sm-6">
                                                                                             <div class="mb-3">
                                                                                                 <label class="form-label">Check Out Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=customer.id%>" type="date" required>
+                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=customer.id%>" min="<%= new Date().toISOString().split('T')[0] %>" type="date" required>
                                                                                             
                                                                                                 <span class="" role="alert"> <strong></strong></span>
                                                                                             </div>
@@ -359,7 +359,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="mb-3">
                                                             <label class="form-label">ID Expiry Date</label>
-                                                            <input class="form-control" name="id_exp_date" type="date">
+                                                            <input class="form-control" name="id_exp_date" min="<%= new Date().toISOString().split('T')[0] %>" type="date">
                                                         </div>
                                                     </div>
                                                 </div>

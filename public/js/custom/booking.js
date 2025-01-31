@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("This is the response data")
           console.log(data)
           if (data.message= "Successful") {
-              if (prompt === "continue") {
+              // if (prompt === "continue") {
                   bookingId = data.booking.id; // Save the booking ID from response
-              }
+              // }
               callback(data);
           } else {
             toastr.options = {
@@ -109,8 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(panes[0])
       let prompt = "save";
       submitPane("/bookings/add", [panes[0], panes[1]], prompt, () => {
+          if(bookingId){
+            window.location.href = `/bookings/${bookingId}/receipt`;
+          }else{
+            window.location.href = "/bookings"
+          }
          
-          window.location.href = "/bookings";
       });
   });
 
@@ -160,7 +164,11 @@ async function addRoomAndExit(event) {
   if (!validateInputs(panes[currentPane-1])) return; // Validate Pane
 
   submitPane(`/bookings/${bookingId}/add`, [panes[currentPane-1]], "save", () => {
-      window.location.href = "/bookings";
+    if(bookingId){
+      window.location.href = `/bookings/${bookingId}/receipt`;
+    }else{
+      window.location.href = "/bookings"
+    }
 
   });
 };

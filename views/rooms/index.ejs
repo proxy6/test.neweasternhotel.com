@@ -96,7 +96,7 @@
                                                 <td><%= index + 1 %></td>
                                                 <td><a href="/rooms/<%= room.id %>"><%= room.number %></a></td>
                                                 <td><%= room.type %></td>
-                                                <td><%= room.price %></td>
+                                                <td>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(room.price) %></td>
                                                 
                                                 <!-- <td>
                                                     <div class="action-div mt-0">
