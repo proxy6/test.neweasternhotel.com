@@ -166,8 +166,8 @@
                                     
                                                 <!-- <td><%= booking.Customer.phone %></td> -->
                                                 <td><%= booking.booked_by %></td>
-                                                <td><%= new Date(booking.check_in_date).toLocaleDateString('en-US') %></td>
-                                                <td><%= new Date(booking.check_out_date).toLocaleDateString('en-US') %></td>
+                                                <td><%= (booking.check_in_date) %></td>
+                                                <td><%= (booking.check_out_date) %></td>
                                                 <td><%= booking.createdAt.toLocaleDateString() %></td>
                                                 <% if(booking.status == 'checkedout'){ %>
                                                     <td><button class="btn btn-light-tertiary"><%= booking.status %></button></td>
