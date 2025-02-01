@@ -200,6 +200,10 @@
                                             <th>Room Number</th>
                                             <th>Room Type</th>
                                             <th title="Total Price">Total Price</th>
+                                            <th title="Amount Paid">Amount Paid</th>
+                                            <th title="Discount">Discount</th>
+                                            <th title="Days">Days</th>
+                                            <th title="Payment Status">Payment Status</th>
                                             <th title="Created At">Checkin Date</th>
                                             <th title="Created At">Checkout Date</th>
                                             <!-- <th title="Created At">Rooms</th> -->
@@ -214,10 +218,14 @@
                                         <tr class="odd">
                                             <td><%= index + 1 %></td>
                                             <td class="sorting_1"><%= booking.Customer.name %></td>
-                                            <td><%= booking.Room.number %></td>
+                                            <td class="text-center"><%= booking.Room.number %></td>
                                             <td><%= booking.Room.type %></td>
                                        
-                                            <td>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price) %></td>
+                                            <td><a href="/bookings/<%=booking.id%>/transactions">&#8358;<%= booking.price != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price * booking.booked_days_no) : N/A  %></a></td>
+                                            <td>&#8358;<%= booking.amount_paid != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.amount_paid) : N/A  %></td>
+                                            <td>&#8358;<%= booking.discount != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.discount * booking.booked_days_no) : N/A  %></td>
+                                            <td><%= booking.booked_days_no %></td>
+                                            <td><%= booking.payment_status %></td>
                                             <td><%= booking.check_in_date %></td>
                                             <td><%= booking.check_out_date %></td>
                                             <td><%= booking.booked_by %></td>
@@ -233,10 +241,10 @@
                                                 <div class="action-div mt-0">
                                                     <div class="action-div mt-0">
                                                         <% if(booking.status != 'checkedout'){ %>
-                                                            <a href="/bookings/<%= booking.id %>/edit" class="edit-icon">
+                                                            <!-- <a href="/bookings/<%= booking.id %>/edit" class="edit-icon">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
                                                             
-                                                            </a>
+                                                            </a> -->
                                                         <% } %>
                                                         <a href="/bookings/<%=booking.id %>">
                                                             <svg class="feather">

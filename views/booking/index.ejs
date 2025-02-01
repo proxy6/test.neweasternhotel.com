@@ -122,7 +122,7 @@
                         <div class="table-responsive p-3">
                             <div style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table" id="tag-table">
-                                    <thead>
+                                    <thead class="text-center">
                                         <tr>
                                             <th>S/N</th>
                                             <th title="Name">Name</th>
@@ -132,13 +132,14 @@
                                             <th title="Room Type">Room Type</th>
                                             <th title="Total Price">Total Price</th>
                                             <th title="Amount Paid">Amount Paid</th>
-                                            <th>Discount</th>
+                                            <th title="Discount">Discount</th>
+                                            <th title="Days">Days</th>
                                             <th title="Payment Mode">Payment Mode</th>
                                             <th title="Payment Status">Payment Status</th>
                                             <!-- <th title="Phone">Phone</th> -->
                                             <th title="Booked By">Booked By</th>
-                                            <th>Check In</th>
-                                            <th>Check Out</th>
+                                            <th title="Check In">Check In</th>
+                                            <th title="Check Out">Check Out</th>
                                             <th title="Created At">Created At</th>
                                             <th title="Status">Status</th>
                                             <th title="Action">Action</th>
@@ -146,7 +147,7 @@
                                         <tbody>
                                             <% if (typeof bookings !== 'undefined') { %>
                                                 <% bookings.forEach((booking, index) => { %>
-                                            <tr class="odd">
+                                            <tr class="odd text-center">
                                                 <td><%= index + 1 %></td>
                                                 <td class="sorting_1"><a href="/bookings/<%=booking.id %>"><%= booking.Customer.name %></a></td>
                                                 
@@ -158,7 +159,8 @@
                                                 
                                                 <td><a href="/bookings/<%=booking.id%>/transactions">&#8358;<%= booking.price != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price * booking.booked_days_no) : N/A  %></a></td>
                                                 <td>&#8358;<%= booking.amount_paid != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.amount_paid) : N/A  %></td>
-                                                <td>&#8358;<%= booking.discount != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.discount) : N/A  %></td>
+                                                <td>&#8358;<%= booking.discount != '' ? new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.discount * booking.booked_days_no) : N/A  %></td>
+                                                <td><%= booking.booked_days_no %></td>
                                                 <td><%= booking.payment_mode %></td>
                                                 <td><%= booking.payment_status %></td>
                                     
@@ -214,365 +216,363 @@
                                                                 <a class="dropdown-item" data-bs-toggle="modal" href="#delete<%=booking.id %>">Delete</a>
                                                             </div>
                                                         </div>
-                                                        
-                                                
-                                                        <!-- Add New Room -->
-                                                        <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Add New Room To Booking</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <form id="addRoom_<%= booking.id %>" action="/bookings/<%= booking.id %>/add" method="post">
-                                                                        <div class="modal-body">
-                                                                            <div class="product-info room-section" id="room-container_<%=booking.id %>">
-                                                                                <div class="product-group">
-                                                                                    <div class="row">
-                                                                                        <!-- Room Type -->
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Room Type <span>*</span></label>
-                                                                                                <input type="hidden" name="booking_id" id="" value="<%=booking.id%>">
-                                                                                                <select required id="roomType_<%=booking.id%>" class="form-select">
-                                                                                                    <option value="">Select..</option>
-                                                                                                    <% if(typeof roomTypes !== 'undefined'){ %>
-                                                                                                        <% roomTypes.forEach(roomType => { %>
-                                                                                                            <option value="<%= roomType.type %>">
-                                                                                                                <%= roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1) %>
-                                                                                                            </option>
-                                                                                                        <% }) %>
-                                                                                                    <% } %>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    
-                                                                                        <!-- Room Number/Name -->
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Room Number/Name <span>*</span></label>
-                                                                                                <select name="room_id" required id="roomNumber_<%=booking.id%>" class="form-select" disabled>
-                                                                                                    <option value="">Select..</option>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    
-                                                                                    <div class="row"> 
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Check In Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_in_date" id="checkInDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Check Out Date <span>*</span></label>
-                                                                                                <input class="form-control" name="check_out_date" id="checkOutDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
-                                                                                            
-                                                                                                <span class="" role="alert"> <strong></strong></span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                
-                                                                                    <div class="row"> 
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Check In Time <span>*</span></label>
-                                                                                                <input class="form-control" name="check_in_time" type="time" required>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Room Discount </label>
-                                                                                                <input class="form-control" name="discount" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                
-                                                                                    <div class="row"> 
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Number of Persons<span>*</span></label>
-                                                                                                <input class="form-control" name="no_persons" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Checkin Status<span>*</span></label>
-                                                                                                <select required name="status" class="form-select" required> 
-                                                                                                    <option value="">Select an Option</option> 
-                                                                                                    <option value="pending">Pending</option>
-                                                                                                    <option value="checkedin">Checkin</option>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Payment Status<span>*</span></label>
-                                                                                                <select required name="payment_status" class="form-select" id="paymentStatus_<%=booking.id%>" required> 
-                                                                                                    <option value="">Select an Option</option> 
-                                                                                                    <option value="Part Payment"> Part Payment </option>
-                                                                                                    <option value="Full Payment"> Full Payment </option>
-                                                                                                    <option value="Credit"> Credit </option>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-6">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Payment Mode<span>*</span></label>
-                                                                                                <select required id="paymentMode_<%=booking.id%>" name="payment_mode" class="form-select" required disabled> 
-                                                                                                    <option value="">Select..</option>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-sm-12" id="partPayment_<%=booking.id %>" style="display: none;">
-                                                                                            <div class="mb-3">
-                                                                                                <label class="form-label">Part Payment Amount<span>*</span></label>
-                                                                                                <input class="form-control" name="part_payment_amount" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                                             
-                                                                            <button class="btn btn-primary" id="saveBtn_<%= booking.id %>" type="submit">Save</button>
-                                                                    
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                          <!-- Remove File Confirmation-->
-                                                        <div class="modal fade" id="delete<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Confirm delete</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <h4 class="mb-3"> Are you sure want to delete ?</h4>
-                                                                        <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        <form action="/bookings/<%= booking.id %>/delete" method="post">
-
-                                                                            <input type="hidden" name="_method" value="delete">                                       
-                                                                            <button class="btn btn-danger" type="submit">Delete</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Complete Payment-->
-                                                        <div class="modal fade" id="completePayment<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Complete Payment</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <form action="/bookings/completepayment" method="post">
-                                                                    <div class="modal-body">
-                                                                    
-                                                                        <p> <b> Customer Name: </b> <%= booking.Customer.name %></p>
-                                                                        <p> <b> Booking Reference: </b> <%= booking.booking_reference %></p>
-                                                                        <p> <b> Total Amount: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.price) %></p>
-                                                                        <p> <b> Amount Paid: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.amount_paid) %></p>
-                                                                        <p> <b> Balance: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.price- booking.amount_paid) %></p>
-                                                                
-                                                                    <div class="row mt-2">
-                                                                        <div class="col-sm-6">
-                                                                            <div class="mb-3">
-                                                                                <label class="form-label"> Amount</label>
-                                                                                <input type="hidden" name="booking_id" value="<%= booking.id %>">
-                                                                                <input class="form-control" name="amount" required  type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
-                                                                            </div>
-                                                                        </div>
-                                                                        
-                                                                        <div class="col-sm-6">
-                                                                            <div class="mb-3">
-                                                                            <label class="form-label">Payment Mode</label>
-                                                                            <select required name="payment_mode" class="form-select"> 
-                                                                                <option value="">Select..</option> 
-                                                                                <% paymentModes.forEach((paymentMode) => { %>
-                                                                                    <option value="<%= paymentMode.mode %>"><%= paymentMode.mode %></option>
-                                                                                <% }) %>
-                                                            
-                                            
-                                                                            </select>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                                        
-                                                                        <button class="btn btn-danger" type="submit">Save</button>
-                                                                    
-                                                                    </div>
-                                                                </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    
-                                                               <!-- Clean Confirmation-->
-                                                           <div class="modal fade" id="crConfirm" tabindex="-1" role="dialog" aria-labelledby="crConfirm" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Confirn Job Clean</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <h4 class="mb-3"> Are you sure you want to run this cron job?</h4>
-                                                                        <p>The cleaning and retouching room status wil be updated. You can't undo this action.</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        <form action="/housekeeping/<%= booking.id %>/delete" method="post">
-                                                                          
-                                                                          <button class="btn btn-danger" type="submit">Save</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    
-                                                        <!-- checkout -->
-                                                        <div class="modal fade" id="checkOutBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Confirm checkout</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <h4 class="mb-3"> Are you sure want to checkout room <%= booking.Room.number %> ?</h4>
-                                                                        <p>You Can not Undo This Action!</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        <form action="/bookings/<%= booking.id %>/checkout" method="post">
-                                        
-                                                                            <button class="btn btn-danger" type="submit">Checkout</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Checkin -->
-
-                                                        <div class="modal fade" id="checkInBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title">Confirm check in</h4>
-                                                                        <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                        <% 
-                                                                        const today = new Date();
-                                                                        today.setHours(0, 0, 0, 0); // Normalize today's date
-                                                                    
-                                                                        const checkInDate = new Date(booking.check_in_date);
-                                                                        checkInDate.setHours(0, 0, 0, 0); // Normalize check-in date
-                                                                    
-                                                                        let checkOutDate = booking.check_out_date ? new Date(booking.check_out_date) : null;
-                                                                        if (checkOutDate) {
-                                                                            checkOutDate.setHours(0, 0, 0, 0); // Normalize check-out date if it exists
-                                                                        }
-                                                                    
-                                                                        if (today >= checkInDate && (!checkOutDate || today <= checkOutDate)) { 
-                                                                    %>
-                                                                
-                                                                    <div class="modal-body">
-                                                                        <h4 class="mb-3"> Are you sure want to checkin room <%= booking.Room.number %> ?</h4>
-                                                                        <p>You Can not Undo This Action!</p>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        <form action="/bookings/<%= booking.id %>/checkin" method="post">
-                                        
-                                                                            <button class="btn btn-danger" type="submit">Check in</button>
-                                                                        </form>
-                                                                    </div>
-                                                                    <% }else{%>
-                                                                        <div class="modal-body">
-                                                                            <p> You cannot check in room <%= booking.Room.number %>. The check in date is <%= booking.check_in_date %></p><br>
-                                                                            <% if(booking.check_out_date){ %>
-                                                                            and the check out date is <%= booking.check_out_date %>
-                                                                            <% } %>
-                                                                        
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                                        
-                                                                        </div>
-                                                                    <% } %>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                         <!-- extend -->
-                                                        <div class="modal fade" id="extendBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h4 class="modal-title">Extend booking</h4>
-                                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <form action="/bookings/<%= booking.id %>/extend" method="post">
-                                                                        <div class="modal-body">
-                                                                        
-                                                                            <p><b>Room:</b><%= booking.Room.number %></p>
-                                                                            <p><b>Room Type:</b> <%= booking.Room.type %></p>
-                                                                            <p><b>Check in Date:</b> <%= booking.check_in_date %></p>
-                                                                            <p><b>Check out Date: </b> <%= booking.check_out_date %></p>
-                                                                            <div class="row mt-2">
-                                                                                <div class="col-sm-6">
-                                                                                    <div class="mb-3">
-                                                                                    <label class="form-label">New Check Out Date</label>
-                                                                                    <input name="check_out_date" type="date" class="form-control" required>
-                                                                                </div>
-                                                                                </div>
-                                                                                <div class="col-sm-6">
-                                                                                    <div class="mb-3">
-                                                                                    <label class="form-label">Payment Mode</label>
-                                                                                    <select required name="payment_mode" class="form-select"> 
-                                                                                        <option value="">Select..</option> 
-                                                                                        <% paymentModes.forEach((paymentMode) => { %>
-                                                                                            <option value="<%= paymentMode.mode %>"><%= paymentMode.mode %></option>
-                                                                                        <% }) %>
-                                                                    
-                                                    
-                                                                                    </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
-                                                        
-                                                                                <button class="btn btn-danger" type="submit">Extend Booking</button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                        </div>
-
-                                                        <!-- add room -->
-                                                     
-                                                </div>
-                                                    
-                                            </div>
+                                                    </div>
+                                          
                                                 </td>
                                             </tr>
+                                              <!-- Add New Room -->
+                                              <div class="modal fade" id="deleteBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Add New Room To Booking</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form id="addRoom_<%= booking.id %>" action="/bookings/<%= booking.id %>/add" method="post">
+                                                            <div class="modal-body">
+                                                                <div class="product-info room-section" id="room-container_<%=booking.id %>">
+                                                                    <div class="product-group">
+                                                                        <div class="row">
+                                                                            <!-- Room Type -->
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Room Type <span>*</span></label>
+                                                                                    <input type="hidden" name="booking_id" id="" value="<%=booking.id%>">
+                                                                                    <select required id="roomType_<%=booking.id%>" class="form-select">
+                                                                                        <option value="">Select..</option>
+                                                                                        <% if(typeof roomTypes !== 'undefined'){ %>
+                                                                                            <% roomTypes.forEach(roomType => { %>
+                                                                                                <option value="<%= roomType.type %>">
+                                                                                                    <%= roomType.type.charAt(0).toUpperCase() + roomType.type.slice(1) %>
+                                                                                                </option>
+                                                                                            <% }) %>
+                                                                                        <% } %>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        
+                                                                            <!-- Room Number/Name -->
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Room Number/Name <span>*</span></label>
+                                                                                    <select name="room_id" required id="roomNumber_<%=booking.id%>" class="form-select" disabled>
+                                                                                        <option value="">Select..</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div class="row"> 
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Check In Date <span>*</span></label>
+                                                                                    <input class="form-control" name="check_in_date" id="checkInDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Check Out Date <span>*</span></label>
+                                                                                    <input class="form-control" name="check_out_date" id="checkOutDate_<%=booking.id%>" type="date" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                                                                                
+                                                                                    <span class="" role="alert"> <strong></strong></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                    
+                                                                        <div class="row"> 
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Check In Time <span>*</span></label>
+                                                                                    <input class="form-control" name="check_in_time" type="time" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Room Discount </label>
+                                                                                    <input class="form-control" name="discount" placeholder="Discount for Room" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                    
+                                                                        <div class="row"> 
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Number of Persons<span>*</span></label>
+                                                                                    <input class="form-control" name="no_persons" placeholder="Enter Number of Persons" type="number" required onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Checkin Status<span>*</span></label>
+                                                                                    <select required name="status" class="form-select" required> 
+                                                                                        <option value="">Select an Option</option> 
+                                                                                        <option value="pending">Pending</option>
+                                                                                        <option value="checkedin">Checkin</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Payment Status<span>*</span></label>
+                                                                                    <select required name="payment_status" class="form-select" id="paymentStatus_<%=booking.id%>" required> 
+                                                                                        <option value="">Select an Option</option> 
+                                                                                        <option value="Part Payment"> Part Payment </option>
+                                                                                        <option value="Full Payment"> Full Payment </option>
+                                                                                        <option value="Credit"> Credit </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-6">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Payment Mode<span>*</span></label>
+                                                                                    <select required id="paymentMode_<%=booking.id%>" name="payment_mode" class="form-select" required disabled> 
+                                                                                        <option value="">Select..</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-12" id="partPayment_<%=booking.id %>" style="display: none;">
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label">Part Payment Amount<span>*</span></label>
+                                                                                    <input class="form-control" name="part_payment_amount" type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                
+                                                                <button class="btn btn-primary" id="saveBtn_<%= booking.id %>" type="submit">Save</button>
+                                                        
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                              <!-- Remove File Confirmation-->
+                                            <div class="modal fade" id="delete<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Confirm delete</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h4 class="mb-3"> Are you sure want to delete ?</h4>
+                                                            <p>This Item Will Be Deleted Permanently. You Can not Undo This Action.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <form action="/bookings/<%= booking.id %>/delete" method="post">
+
+                                                                <input type="hidden" name="_method" value="delete">                                       
+                                                                <button class="btn btn-danger" type="submit">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Complete Payment-->
+                                            <div class="modal fade" id="completePayment<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Complete Payment</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="/bookings/completepayment" method="post">
+                                                        <div class="modal-body">
+                                                        
+                                                            <p> <b> Customer Name: </b> <%= booking.Customer.name %></p>
+                                                            <p> <b> Booking Reference: </b> <%= booking.booking_reference %></p>
+                                                            <p> <b> Total Amount: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.price) %></p>
+                                                            <p> <b> Discount: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.discount) %></p>
+                                                            <p> <b> Amount Paid: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format(booking.amount_paid) %></p>
+                                                            <p> <b> Balance: </b>&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2 }).format((booking.price - booking.discount) - booking.amount_paid) %></p>
+                                                    
+                                                        <div class="row mt-2">
+                                                            <div class="col-sm-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label"> Amount</label>
+                                                                    <input type="hidden" name="booking_id" value="<%= booking.id %>">
+                                                                    <input class="form-control" name="amount" required  type="number" onkeydown="return event.key !== 'e' && event.key !== 'E'">
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-sm-6">
+                                                                <div class="mb-3">
+                                                                <label class="form-label">Payment Mode</label>
+                                                                <select required name="payment_mode" class="form-select"> 
+                                                                    <option value="">Select..</option> 
+                                                                    <% paymentModes.forEach((paymentMode) => { %>
+                                                                        <option value="<%= paymentMode.mode %>"><%= paymentMode.mode %></option>
+                                                                    <% }) %>
+                                                
+                                
+                                                                </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                                            
+                                                            <button class="btn btn-danger" type="submit">Save</button>
+                                                        
+                                                        </div>
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                                   <!-- Clean Confirmation-->
+                                               <div class="modal fade" id="crConfirm" tabindex="-1" role="dialog" aria-labelledby="crConfirm" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Confirn Job Clean</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h4 class="mb-3"> Are you sure you want to run this cron job?</h4>
+                                                            <p>The cleaning and retouching room status wil be updated. You can't undo this action.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <form action="/housekeeping/<%= booking.id %>/delete" method="post">
+                                                              
+                                                              <button class="btn btn-danger" type="submit">Save</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                            <!-- checkout -->
+                                            <div class="modal fade" id="checkOutBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Confirm checkout</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h4 class="mb-3"> Are you sure want to checkout room <%= booking.Room.number %> ?</h4>
+                                                            <p>You Can not Undo This Action!</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <form action="/bookings/<%= booking.id %>/checkout" method="post">
+                            
+                                                                <button class="btn btn-danger" type="submit">Checkout</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Checkin -->
+
+                                            <div class="modal fade" id="checkInBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Confirm check in</h4>
+                                                            <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                            <% 
+                                                            const today = new Date();
+                                                            today.setHours(0, 0, 0, 0); // Normalize today's date
+                                                        
+                                                            const checkInDate = new Date(booking.check_in_date);
+                                                            checkInDate.setHours(0, 0, 0, 0); // Normalize check-in date
+                                                        
+                                                            let checkOutDate = booking.check_out_date ? new Date(booking.check_out_date) : null;
+                                                            if (checkOutDate) {
+                                                                checkOutDate.setHours(0, 0, 0, 0); // Normalize check-out date if it exists
+                                                            }
+                                                        
+                                                            if (today >= checkInDate && (!checkOutDate || today <= checkOutDate)) { 
+                                                        %>
+                                                    
+                                                        <div class="modal-body">
+                                                            <h4 class="mb-3"> Are you sure want to checkin room <%= booking.Room.number %> ?</h4>
+                                                            <p>You Can not Undo This Action!</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                            <form action="/bookings/<%= booking.id %>/checkin" method="post">
+                            
+                                                                <button class="btn btn-danger" type="submit">Check in</button>
+                                                            </form>
+                                                        </div>
+                                                        <% }else{%>
+                                                            <div class="modal-body">
+                                                                <p> You cannot check in room <%= booking.Room.number %>. The check in date is <%= booking.check_in_date %></p><br>
+                                                                <% if(booking.check_out_date){ %>
+                                                                and the check out date is <%= booking.check_out_date %>
+                                                                <% } %>
+                                                            
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                                            
+                                                            </div>
+                                                        <% } %>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                             <!-- extend -->
+                                            <div class="modal fade" id="extendBooking<%=booking.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteModalBooking" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Extend booking</h4>
+                                                                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="/bookings/<%= booking.id %>/extend" method="post">
+                                                            <div class="modal-body">
+                                                            
+                                                                <p><b>Room:</b><%= booking.Room.number %></p>
+                                                                <p><b>Room Type:</b> <%= booking.Room.type %></p>
+                                                                <p><b>Check in Date:</b> <%= booking.check_in_date %></p>
+                                                                <p><b>Check out Date: </b> <%= booking.check_out_date %></p>
+                                                                <div class="row mt-2">
+                                                                    <div class="col-sm-6">
+                                                                        <div class="mb-3">
+                                                                        <label class="form-label">New Check Out Date</label>
+                                                                        <input name="check_out_date" type="date" class="form-control" required>
+                                                                    </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <div class="mb-3">
+                                                                        <label class="form-label">Payment Mode</label>
+                                                                        <select required name="payment_mode" class="form-select"> 
+                                                                            <option value="">Select..</option> 
+                                                                            <% paymentModes.forEach((paymentMode) => { %>
+                                                                                <option value="<%= paymentMode.mode %>"><%= paymentMode.mode %></option>
+                                                                            <% }) %>
+                                                        
+                                        
+                                                                        </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                                            
+                                                                    <button class="btn btn-danger" type="submit">Extend Booking</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                            </div>
+
+                                          
                                             <% }) %>
                                             <% } %>
                                         </tbody>

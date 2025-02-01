@@ -40,7 +40,7 @@ deleteCustomer,
 addNewBooking,
 addRoomToBooking,
 sendRoomRequest,
-getBookKeepingPage,
+getHouseKeepingPage,
 makeRoomAsCleaned,
 makeRoomAsRetouched,
 checkinBooking,
@@ -160,7 +160,7 @@ router.get('/rooms/:id', isAuthorized, getRoomEditPage)
 router.post('/rooms/:id', isAuthorized, updateRoomById);
 router.post('/rooms/:id/delete', isAuthorized, deleteRoom)
 
-router.get('/housekeeping', isAuthorized, getBookKeepingPage)
+router.get('/housekeeping', isAuthorized, getHouseKeepingPage)
 router.post('/housekeeping/:id/cleaned', isAuthorized, makeRoomAsCleaned);
 router.post('/housekeeping/:id/retouched', isAuthorized, makeRoomAsRetouched);
 router.post('/housekeeping/:id/delete', isAuthorized,  cronHouseKeepingCron)

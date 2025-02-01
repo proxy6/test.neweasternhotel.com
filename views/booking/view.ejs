@@ -176,8 +176,8 @@
                             <div class="row"> 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
-                                    <label class="form-label">Total Price</label>
-                                    <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format(booking.price * booking.booked_days_no) %>" type="text" disabled>
+                                    <label class="form-label">Total Amount Paid</label>
+                                    <input class="form-control" value="&#8358;<%= new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0 }).format((booking.price * booking.booked_days_no)- (booking.discount * booking.booked_days_no)) %>" type="text" disabled>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">

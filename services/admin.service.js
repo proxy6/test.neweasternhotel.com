@@ -1203,7 +1203,7 @@ static async completeBookingPayment(data){
 
   if (!booking) throw new Error("Booking not found");
   let amount_paid = parseFloat(booking.amount_paid) + parseFloat(data.amount)
-  if(parseFloat(booking.price) > (parseFloat(booking.amount_paid) + parseFloat(data.amount))){
+  if(parseFloat(booking.price - booking.discount) > (parseFloat(booking.amount_paid) + parseFloat(data.amount))){
     description = "Booking Part Payment"
     await booking.update(
       {
@@ -1562,8 +1562,11 @@ static async addNewBooking(data){
     }
     else{
       // room.discount != null && room.discount < roomData.price ? roomData.price - room.discount : roomData.price ;
-      amount_paid = data.discount != null && data.discount < room.price ? ((room.price * booked_days_no) - data.discount) :  room.price * booked_days_no
+      amount_paid = data.discount != "" && parseFloat(data.discount) < room.price ? ((room.price * booked_days_no) - parseFloat(data.discount)) :  room.price * booked_days_no
     }
+    console.log("THIS IS AMOUNT PAID")
+    console.log(data.discount)
+    console.log(amount_paid)
     // 2. Create Booking
     const booking = await Booking.create(
       {

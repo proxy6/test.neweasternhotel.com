@@ -394,7 +394,7 @@ getQuote: async(req, res, next)=>{
   },
 
   
-  getBookKeepingPage: async(req, res)=>{
+  getHouseKeepingPage: async(req, res)=>{
     const limit = 10
     const page = req.query.page || 1
     const type = req.query.type
@@ -407,7 +407,7 @@ getQuote: async(req, res, next)=>{
     let pendingTouched = await AdminService.countPendingRetouchedRooms()
     let rooms = await AdminService.getAllRooms(page, limit)
   
-    res.render('bookkeeping/index', 
+    res.render('housekeeping/index', 
       {
         rooms,
         currentPage,
